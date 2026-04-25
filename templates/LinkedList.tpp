@@ -39,7 +39,7 @@ LinkedList<T>::LinkedList(T* items, int count)
     this->tail = nullptr;
 
     try {
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < count; i++) {
             this->Append(items[i]);
         }
     }
@@ -169,7 +169,7 @@ LinkedList<T>* LinkedList<T>::GetSubList(int startIndex, int endIndex)
             }
 
             current = current->next;
-            ++currentIndex;
+            currentIndex++;
         }
 
         if (endIndex >= currentIndex) {
@@ -242,7 +242,7 @@ void LinkedList<T>::InsertAt(T item, int index)
 
     while (previous != nullptr && previousIndex < index - 1) {
         previous = previous->next;
-        ++previousIndex;
+        previousIndex++;
     }
 
     if (previous == nullptr) {
