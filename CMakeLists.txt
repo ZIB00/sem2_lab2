@@ -17,6 +17,7 @@ add_subdirectory(tests/googletest-1.17.0)
 
 add_executable(tests
     tests/DynamicArrayTests.cpp
+    tests/LinkedListTests.cpp
 )
 
 target_include_directories(tests PRIVATE

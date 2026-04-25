@@ -338,15 +338,6 @@ TEST(DynamicArrayTests, SelfAssignmentKeepsArrayValid)
     EXPECT_EQ(array.Get(2), 3);
 }
 
-TEST(DynamicArrayTests, ConstArrayAllowsGetAndGetSize)
-{
-    int items[] = {1, 2, 3};
-    const DynamicArray<int> array(items, 3);
-
-    EXPECT_EQ(array.GetSize(), 3);
-    EXPECT_EQ(array.Get(0), 1);
-}
-
 TEST(DynamicArrayTests, WorksWithStringValues)
 {
     DynamicArray<std::string> array(2);

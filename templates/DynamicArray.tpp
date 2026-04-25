@@ -22,7 +22,7 @@ DynamicArray<T>::DynamicArray(T* items, int count)
     this->data = new T[count];
     this->size = count;
 
-    for (int i = 0; i < this->size; ++i) {
+    for (int i = 0; i < this->size; i++) {
         this->data[i] = items[i];
     }
 }
@@ -56,7 +56,7 @@ DynamicArray<T>::DynamicArray(const DynamicArray<T>& dynamicArray)
 
     this->data = new T[this->size];
 
-    for (int i = 0; i < this->size; ++i) {
+    for (int i = 0; i < this->size; i++) {
         this->data[i] = dynamicArray.data[i];
     }
 }
@@ -79,7 +79,7 @@ DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T>& dynamicArray)
     if (dynamicArray.size > 0) {
         newData = new T[dynamicArray.size];
 
-        for (int i = 0; i < dynamicArray.size; ++i) {
+        for (int i = 0; i < dynamicArray.size; i++) {
             newData[i] = dynamicArray.data[i];
         }
     }
@@ -93,7 +93,7 @@ DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T>& dynamicArray)
 }
 
 template<class T>
-T DynamicArray<T>::Get(int index) const
+T DynamicArray<T>::Get(int index)
 {
     if (index < 0) {
         throw InvalidArgument("Index cannot be negative");
@@ -107,7 +107,7 @@ T DynamicArray<T>::Get(int index) const
 }
 
 template<class T>
-int DynamicArray<T>::GetSize() const
+int DynamicArray<T>::GetSize()
 {
     return this->size;
 }
@@ -144,7 +144,7 @@ void DynamicArray<T>::Resize(int newSize)
 
     int elementsToCopy = this->size < newSize ? this->size : newSize;
 
-    for (int i = 0; i < elementsToCopy; ++i) {
+    for (int i = 0; i < elementsToCopy; i++) {
         newData[i] = this->data[i];
     }
 

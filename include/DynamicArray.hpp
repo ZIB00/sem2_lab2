@@ -17,8 +17,8 @@ class DynamicArray
 
         DynamicArray<T>& operator=(const DynamicArray<T>& dynamicArray);
 
-        T Get(int index) const;
-        int GetSize() const;
+        T Get(int index);
+        int GetSize();
 
         void Set(int index, T value);
         void Resize(int newSize);
