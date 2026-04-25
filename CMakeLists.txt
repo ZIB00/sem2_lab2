@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 
-project(Sequences LANGUAGES CXX)
-
-enable_testing()
+project(Sequences)
 
 add_executable(main
     src/main.cpp
@@ -18,6 +16,7 @@ add_subdirectory(tests/googletest-1.17.0)
 add_executable(tests
     tests/DynamicArrayTests.cpp
     tests/LinkedListTests.cpp
+    tests/SequenceTests.cpp
 )
 
 target_include_directories(tests PRIVATE
@@ -29,5 +28,3 @@ target_link_libraries(tests PRIVATE
     gtest
     gtest_main
 )
-
-add_test(NAME tests COMMAND tests)

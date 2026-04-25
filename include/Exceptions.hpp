@@ -6,17 +6,11 @@
 class InvalidArgument : public std::invalid_argument
 {
     public:
-        explicit InvalidArgument(const std::string& message)
-            : std::invalid_argument(message)
-        {
-        }
+        using std::invalid_argument::invalid_argument;
 };
 
 class OutOfRange : public std::out_of_range
 {
     public:
-        explicit OutOfRange(const std::string& message)
-            : std::out_of_range(message)
-        {
-        }
+        using std::out_of_range::out_of_range;
 };
