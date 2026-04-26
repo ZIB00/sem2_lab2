@@ -64,9 +64,7 @@ void ListSequence<T>::InsertAtInternal(T item, int index)
 template<class T>
 void ListSequence<T>::ConcatInternal(Sequence<T>* list)
 {
-    if (list == nullptr) {
-        throw InvalidArgument("Sequence cannot be null");
-    }
+    if (list == nullptr) throw InvalidArgument("Sequence cannot be null");
 
     int length = list->GetLength();
 
@@ -149,6 +147,81 @@ Sequence<T>* ListSequence<T>::Concat(Sequence<T>* list)
 {
     ListSequence<T>* result = this->Instance();
     result->ConcatInternal(list);
+    return result;
+}
+
+template<class T>
+Sequence<T>* ListSequence<T>::Map(T (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    Sequence<T>* result = nullptr;
+
+    if (dynamic_cast<ImmutableListSequence<T>*>(this) != nullptr) {
+        result = new ImmutableListSequence<T>();
+    }
+    else {
+        result = new MutableListSequence<T>();
+    }
+
+    try {
+        int length = this->GetLength();
+
+        for (int index = 0; index < length; ++index) {
+            Sequence<T>* updated = result->Append(Function(this->items->Get(index)));
+            if (updated != result) {
+                delete result;
+                result = updated;
+            }
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+Sequence<T>* ListSequence<T>::Where(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    ListSequence<T>* result = this->CreateEmpty();
+
+    try {
+        int length = this->GetLength();
+
+        for (int index = 0; index < length; ++index) {
+            T value = this->items->Get(index);
+
+            if (Function(value)) {
+                result->AppendInternal(value);
+            }
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+T ListSequence<T>::Reduce(T (*Function)(T, T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
+
+    T result = this->items->Get(0);
+    int length = this->GetLength();
+
+    for (int index = 1; index < length; ++index) {
+        result = Function(result, this->items->Get(index));
+    }
+
     return result;
 }
 

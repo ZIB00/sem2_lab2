@@ -5,9 +5,7 @@
 template<class T>
 DynamicArray<T>::DynamicArray(T* items, int count)
 {
-    if (count < 0) {
-        throw InvalidArgument("Count cannot be negative");
-    }
+    if (count < 0) throw InvalidArgument("Count cannot be negative");
 
     if (count == 0) {
         this->data = nullptr;
@@ -15,9 +13,7 @@ DynamicArray<T>::DynamicArray(T* items, int count)
         return;
     }
 
-    if (items == nullptr) {
-        throw InvalidArgument("Items cannot be null when count is positive");
-    }
+    if (items == nullptr) throw InvalidArgument("Items cannot be null when count is positive");
 
     this->data = new T[count];
     this->size = count;
@@ -30,9 +26,7 @@ DynamicArray<T>::DynamicArray(T* items, int count)
 template<class T>
 DynamicArray<T>::DynamicArray(int size)
 {
-    if (size < 0) {
-        throw InvalidArgument("Size cannot be negative");
-    }
+    if (size < 0) throw InvalidArgument("Size cannot be negative");
 
     if (size == 0) {
         this->data = nullptr;
@@ -95,13 +89,8 @@ DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T>& dynamicArray)
 template<class T>
 T DynamicArray<T>::Get(int index)
 {
-    if (index < 0) {
-        throw InvalidArgument("Index cannot be negative");
-    }
-
-    if (index >= this->size) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (index < 0) throw InvalidArgument("Index cannot be negative");
+    if (index >= this->size) throw OutOfRange("Index is out of range");
 
     return this->data[index];
 }
@@ -115,13 +104,8 @@ int DynamicArray<T>::GetSize()
 template<class T>
 void DynamicArray<T>::Set(int index, T value)
 {
-    if (index < 0) {
-        throw InvalidArgument("Index cannot be negative");
-    }
-
-    if (index >= this->size) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (index < 0) throw InvalidArgument("Index cannot be negative");
+    if (index >= this->size) throw OutOfRange("Index is out of range");
 
     this->data[index] = value;
 }
@@ -129,9 +113,7 @@ void DynamicArray<T>::Set(int index, T value)
 template<class T>
 void DynamicArray<T>::Resize(int newSize)
 {
-    if (newSize < 0) {
-        throw InvalidArgument("Size cannot be negative");
-    }
+    if (newSize < 0) throw InvalidArgument("Size cannot be negative");
 
     if (newSize == 0) {
         delete[] this->data;

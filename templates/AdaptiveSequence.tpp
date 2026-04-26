@@ -154,21 +154,10 @@ T AdaptiveSequence<T>::Get(int index)
 template<class T>
 Sequence<T>* AdaptiveSequence<T>::GetSubsequence(int startIndex, int endIndex)
 {
-    if (startIndex < 0) {
-        throw InvalidArgument("Start index cannot be negative");
-    }
-
-    if (endIndex < 0) {
-        throw InvalidArgument("End index cannot be negative");
-    }
-
-    if (startIndex > endIndex) {
-        throw InvalidArgument("Start index cannot be greater than end index");
-    }
-
-    if (endIndex >= this->GetLength()) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (startIndex < 0) throw InvalidArgument("Start index cannot be negative");
+    if (endIndex < 0) throw InvalidArgument("End index cannot be negative");
+    if (startIndex > endIndex) throw InvalidArgument("Start index cannot be greater than end index");
+    if (endIndex >= this->GetLength()) throw OutOfRange("Index is out of range");
 
     AdaptiveSequence<T>* result = new AdaptiveSequence<T>();
 
@@ -229,4 +218,76 @@ Sequence<T>* AdaptiveSequence<T>::Concat(Sequence<T>* list)
     this->UpdateStrategy();
     this->sequence->Concat(list);
     return this;
+}
+
+template<class T>
+Sequence<T>* AdaptiveSequence<T>::Map(T (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    AdaptiveSequence<T>* result = new AdaptiveSequence<T>();
+
+    if (dynamic_cast<MutableListSequence<T>*>(this->sequence) != nullptr) {
+        result->SwitchToListSequence();
+    }
+
+    try {
+        int length = this->GetLength();
+
+        for (int index = 0; index < length; ++index) {
+            result->sequence->Append(Function(this->sequence->Get(index)));
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+Sequence<T>* AdaptiveSequence<T>::Where(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    AdaptiveSequence<T>* result = new AdaptiveSequence<T>();
+
+    if (dynamic_cast<MutableListSequence<T>*>(this->sequence) != nullptr) {
+        result->SwitchToListSequence();
+    }
+
+    try {
+        int length = this->GetLength();
+
+        for (int index = 0; index < length; ++index) {
+            T value = this->sequence->Get(index);
+
+            if (Function(value)) {
+                result->sequence->Append(value);
+            }
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+T AdaptiveSequence<T>::Reduce(T (*Function)(T, T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
+
+    T result = this->sequence->Get(0);
+    int length = this->GetLength();
+
+    for (int index = 1; index < length; ++index) {
+        result = Function(result, this->sequence->Get(index));
+    }
+
+    return result;
 }

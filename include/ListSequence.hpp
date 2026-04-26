@@ -36,6 +36,10 @@ class ListSequence : public Sequence<T>
         Sequence<T>* Prepend(T item) override;
         Sequence<T>* InsertAt(T item, int index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
+
+        Sequence<T>* Map(T (*)(T)) override;
+        Sequence<T>* Where(bool (*)(T)) override;
+        T Reduce(T (*)(T, T)) override;
 };
 
 template<class T>

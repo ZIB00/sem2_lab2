@@ -47,41 +47,23 @@ void ArraySequence<T>::CopyItems(const ArraySequence<T>& sequence)
 template<class T>
 void ArraySequence<T>::ValidateNotEmpty()
 {
-    if (this->GetLength() == 0) {
-        throw OutOfRange("Sequence is empty");
-    }
+    if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
 }
 
 template<class T>
 void ArraySequence<T>::ValidateSubsequenceRange(int startIndex, int endIndex)
 {
-    if (startIndex < 0) {
-        throw InvalidArgument("Start index cannot be negative");
-    }
-
-    if (endIndex < 0) {
-        throw InvalidArgument("End index cannot be negative");
-    }
-
-    if (startIndex > endIndex) {
-        throw InvalidArgument("Start index cannot be greater than end index");
-    }
-
-    if (endIndex >= this->GetLength()) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (startIndex < 0) throw InvalidArgument("Start index cannot be negative");
+    if (endIndex < 0) throw InvalidArgument("End index cannot be negative");
+    if (startIndex > endIndex) throw InvalidArgument("Start index cannot be greater than end index");
+    if (endIndex >= this->GetLength()) throw OutOfRange("Index is out of range");
 }
 
 template<class T>
 void ArraySequence<T>::ValidateInsertIndex(int index)
 {
-    if (index < 0) {
-        throw InvalidArgument("Index cannot be negative");
-    }
-
-    if (index > this->GetLength()) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (index < 0) throw InvalidArgument("Index cannot be negative");
+    if (index > this->GetLength()) throw OutOfRange("Index is out of range");
 }
 
 template<class T>
@@ -110,9 +92,7 @@ void ArraySequence<T>::InsertAtInternal(T item, int index)
 template<class T>
 void ArraySequence<T>::ConcatInternal(Sequence<T>* list)
 {
-    if (list == nullptr) {
-        throw InvalidArgument("Sequence cannot be null");
-    }
+    if (list == nullptr) throw InvalidArgument("Sequence cannot be null");
 
     int listLength = list->GetLength();
 
@@ -194,6 +174,81 @@ Sequence<T>* ArraySequence<T>::Concat(Sequence<T>* list)
 {
     ArraySequence<T>* result = this->Instance();
     result->ConcatInternal(list);
+    return result;
+}
+
+template<class T>
+Sequence<T>* ArraySequence<T>::Map(T (*transform)(T))
+{
+    if (transform == nullptr) throw InvalidArgument("Transform function cannot be null");
+
+    Sequence<T>* result = nullptr;
+
+    if (dynamic_cast<ImmutableArraySequence<T>*>(this) != nullptr) {
+        result = new ImmutableArraySequence<T>();
+    }
+    else {
+        result = new MutableArraySequence<T>();
+    }
+
+    try {
+        int length = this->GetLength();
+
+        for (int index = 0; index < length; ++index) {
+            Sequence<T>* updated = result->Append(transform(this->items->Get(index)));
+            if (updated != result) {
+                delete result;
+                result = updated;
+            }
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+Sequence<T>* ArraySequence<T>::Where(bool (*predicate)(T))
+{
+    if (predicate == nullptr) throw InvalidArgument("Predicate function cannot be null");
+
+    ArraySequence<T>* result = this->CreateEmpty();
+
+    try {
+        int length = this->GetLength();
+
+        for (int index = 0; index < length; ++index) {
+            T value = this->items->Get(index);
+
+            if (predicate(value)) {
+                result->AppendInternal(value);
+            }
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+T ArraySequence<T>::Reduce(T (*reducer)(T, T))
+{
+    if (reducer == nullptr) throw InvalidArgument("Reducer function cannot be null");
+
+    this->ValidateNotEmpty();
+    T result = this->items->Get(0);
+    int length = this->GetLength();
+
+    for (int index = 1; index < length; ++index) {
+        result = reducer(result, this->items->Get(index));
+    }
+
     return result;
 }
 

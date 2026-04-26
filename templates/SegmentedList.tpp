@@ -31,13 +31,8 @@ SegmentedList<T>::SegmentedList(T* items, int count)
     this->tail = nullptr;
     this->length = 0;
 
-    if (count < 0) {
-        throw InvalidArgument("Count cannot be negative");
-    }
-
-    if (count > 0 && items == nullptr) {
-        throw InvalidArgument("Items cannot be null when count is positive");
-    }
+    if (count < 0) throw InvalidArgument("Count cannot be negative");
+    if (count > 0 && items == nullptr) throw InvalidArgument("Items cannot be null when count is positive");
 
     try {
         for (int index = 0; index < count; ++index) {
@@ -131,13 +126,8 @@ void SegmentedList<T>::ValidateNotEmpty()
 template<class T>
 typename SegmentedList<T>::Node* SegmentedList<T>::FindNode(int index, int& localIndex)
 {
-    if (index < 0) {
-        throw InvalidArgument("Index cannot be negative");
-    }
-
-    if (index >= this->length) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (index < 0) throw InvalidArgument("Index cannot be negative");
+    if (index >= this->length) throw OutOfRange("Index is out of range");
 
     Node* current = this->head;
     int remaining = index;
@@ -188,21 +178,10 @@ T SegmentedList<T>::Get(int index)
 template<class T>
 Sequence<T>* SegmentedList<T>::GetSubsequence(int startIndex, int endIndex)
 {
-    if (startIndex < 0) {
-        throw InvalidArgument("Start index cannot be negative");
-    }
-
-    if (endIndex < 0) {
-        throw InvalidArgument("End index cannot be negative");
-    }
-
-    if (startIndex > endIndex) {
-        throw InvalidArgument("Start index cannot be greater than end index");
-    }
-
-    if (endIndex >= this->length) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (startIndex < 0) throw InvalidArgument("Start index cannot be negative");
+    if (endIndex < 0) throw InvalidArgument("End index cannot be negative");
+    if (startIndex > endIndex) throw InvalidArgument("Start index cannot be greater than end index");
+    if (endIndex >= this->length) throw OutOfRange("Index is out of range");
 
     SegmentedList<T>* result = new SegmentedList<T>();
 
@@ -275,13 +254,9 @@ Sequence<T>* SegmentedList<T>::Prepend(T item)
 template<class T>
 Sequence<T>* SegmentedList<T>::InsertAt(T item, int index)
 {
-    if (index < 0) {
-        throw InvalidArgument("Index cannot be negative");
-    }
+    if (index < 0) throw InvalidArgument("Index cannot be negative");
 
-    if (index > this->length) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (index > this->length) throw OutOfRange("Index is out of range");
 
     if (index == 0) {
         return this->Prepend(item);
@@ -305,13 +280,70 @@ Sequence<T>* SegmentedList<T>::InsertAt(T item, int index)
 template<class T>
 Sequence<T>* SegmentedList<T>::Concat(Sequence<T>* list)
 {
-    if (list == nullptr) {
-        throw InvalidArgument("Sequence cannot be null");
-    }
+    if (list == nullptr) throw InvalidArgument("Sequence cannot be null");
 
     for (int index = 0; index < list->GetLength(); ++index) {
         this->Append(list->Get(index));
     }
 
     return this;
+}
+
+template<class T>
+Sequence<T>* SegmentedList<T>::Map(T (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    SegmentedList<T>* result = new SegmentedList<T>();
+
+    try {
+        for (int index = 0; index < this->length; ++index) {
+            result->Append(Function(this->Get(index)));
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+Sequence<T>* SegmentedList<T>::Where(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    SegmentedList<T>* result = new SegmentedList<T>();
+
+    try {
+        for (int index = 0; index < this->length; ++index) {
+            T value = this->Get(index);
+
+            if (Function(value)) {
+                result->Append(value);
+            }
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+T SegmentedList<T>::Reduce(T (*Function)(T, T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    this->ValidateNotEmpty();
+    T result = this->Get(0);
+
+    for (int index = 1; index < this->length; ++index) {
+        result = Function(result, this->Get(index));
+    }
+
+    return result;
 }

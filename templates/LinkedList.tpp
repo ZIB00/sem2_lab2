@@ -27,13 +27,8 @@ void LinkedList<T>::Clear()
 template<class T>
 LinkedList<T>::LinkedList(T* items, int count)
 {
-    if (count < 0) {
-        throw InvalidArgument("Count cannot be negative");
-    }
-
-    if (count > 0 && items == nullptr) {
-        throw InvalidArgument("Items cannot be null when count is positive");
-    }
+    if (count < 0) throw InvalidArgument("Count cannot be negative");
+    if (count > 0 && items == nullptr) throw InvalidArgument("Items cannot be null when count is positive");
 
     this->head = nullptr;
     this->tail = nullptr;
@@ -104,9 +99,7 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& list)
 template<class T>
 T LinkedList<T>::GetFirst()
 {
-    if (this->head == nullptr) {
-        throw OutOfRange("List is empty");
-    }
+    if (this->head == nullptr) throw OutOfRange("List is empty");
 
     return this->head->value;
 }
@@ -114,9 +107,7 @@ T LinkedList<T>::GetFirst()
 template<class T>
 T LinkedList<T>::GetLast()
 {
-    if (this->tail == nullptr) {
-        throw OutOfRange("List is empty");
-    }
+    if (this->tail == nullptr) throw OutOfRange("List is empty");
 
     return this->tail->value;
 }
@@ -124,9 +115,7 @@ T LinkedList<T>::GetLast()
 template<class T>
 T LinkedList<T>::Get(int index)
 {
-    if (index < 0) {
-        throw InvalidArgument("Index cannot be negative");
-    }
+    if (index < 0) throw InvalidArgument("Index cannot be negative");
 
     Node* current = this->head;
     int currentIndex = 0;
@@ -146,17 +135,9 @@ T LinkedList<T>::Get(int index)
 template<class T>
 LinkedList<T>* LinkedList<T>::GetSubList(int startIndex, int endIndex)
 {
-    if (startIndex < 0) {
-        throw InvalidArgument("Start index cannot be negative");
-    }
-
-    if (endIndex < 0) {
-        throw InvalidArgument("End index cannot be negative");
-    }
-
-    if (startIndex > endIndex) {
-        throw InvalidArgument("Start index cannot be bigger than end index");
-    }
+    if (startIndex < 0) throw InvalidArgument("Start index cannot be negative");
+    if (endIndex < 0) throw InvalidArgument("End index cannot be negative");
+    if (startIndex > endIndex) throw InvalidArgument("Start index cannot be bigger than end index");
 
     LinkedList<T>* result = new LinkedList<T>();
     Node* current = this->head;
@@ -228,9 +209,7 @@ void LinkedList<T>::Prepend(T item)
 template<class T>
 void LinkedList<T>::InsertAt(T item, int index)
 {
-    if (index < 0) {
-        throw InvalidArgument("Index cannot be negative");
-    }
+    if (index < 0) throw InvalidArgument("Index cannot be negative");
 
     if (index == 0) {
         this->Prepend(item);
@@ -245,9 +224,7 @@ void LinkedList<T>::InsertAt(T item, int index)
         previousIndex++;
     }
 
-    if (previous == nullptr) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (previous == nullptr) throw OutOfRange("Index is out of range");
 
     Node* node = new Node(item, previous->next);
     previous->next = node;
@@ -260,9 +237,7 @@ void LinkedList<T>::InsertAt(T item, int index)
 template<class T>
 LinkedList<T>* LinkedList<T>::Concat(const LinkedList<T>* list)
 {
-    if (list == nullptr) {
-        throw InvalidArgument("List cannot be null");
-    }
+    if (list == nullptr) throw InvalidArgument("List cannot be null");
 
     LinkedList<T>* result = new LinkedList<T>(*this);
     Node* current = list->head;
