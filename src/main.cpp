@@ -69,10 +69,16 @@ namespace
         int* rawItems = count == 0 ? nullptr : items.data();
 
         if (type == 1) {
-            sequence.reset(new ArraySequence<int>(rawItems, count));
+            sequence.reset(new MutableArraySequence<int>(rawItems, count));
         }
         else if (type == 2) {
-            sequence.reset(new ListSequence<int>(rawItems, count));
+            sequence.reset(new ImmutableArraySequence<int>(rawItems, count));
+        }
+        else if (type == 3) {
+            sequence.reset(new MutableListSequence<int>(rawItems, count));
+        }
+        else if (type == 4) {
+            sequence.reset(new ImmutableListSequence<int>(rawItems, count));
         }
         else {
             throw InvalidArgument("Unknown sequence type");
@@ -81,20 +87,29 @@ namespace
         return sequence;
     }
 
+    void ReplaceIfNeeded(std::unique_ptr<Sequence<int>>& current, Sequence<int>* updated)
+    {
+        if (updated != current.get()) {
+            current.reset(updated);
+        }
+    }
+
     void PrintMenu()
     {
         std::cout << "\nSequence menu:\n";
-        std::cout << "1. Create array sequence\n";
-        std::cout << "2. Create list sequence\n";
-        std::cout << "4. Print current sequence\n";
-        std::cout << "5. Append value\n";
-        std::cout << "6. Prepend value\n";
-        std::cout << "7. Insert value by index\n";
-        std::cout << "8. Get value by index\n";
-        std::cout << "9. Get first value\n";
-        std::cout << "10. Get last value\n";
-        std::cout << "11. Get subsequence\n";
-        std::cout << "12. Concat another sequence\n";
+        std::cout << "1. Create mutable array sequence\n";
+        std::cout << "2. Create immutable array sequence\n";
+        std::cout << "3. Create mutable list sequence\n";
+        std::cout << "4. Create immutable list sequence\n";
+        std::cout << "5. Print current sequence\n";
+        std::cout << "6. Append value\n";
+        std::cout << "7. Prepend value\n";
+        std::cout << "8. Insert value by index\n";
+        std::cout << "9. Get value by index\n";
+        std::cout << "10. Get first value\n";
+        std::cout << "11. Get last value\n";
+        std::cout << "12. Get subsequence\n";
+        std::cout << "13. Concat another sequence\n";
         std::cout << "0. Exit\n";
     }
 }
@@ -112,7 +127,7 @@ int main()
                 return 0;
             }
 
-            if (action >= 1 && action <= 2) {
+            if (action >= 1 && action <= 4) {
                 current = CreateSequence(action);
                 std::cout << "Sequence created: ";
                 PrintSequence(current.get());
@@ -124,46 +139,46 @@ int main()
                 continue;
             }
 
-            if (action == 4) {
-                PrintSequence(current.get());
-            }
-            else if (action == 5) {
-                int value = ReadInt("Value: ");
-                current->Append(value);
+            if (action == 5) {
                 PrintSequence(current.get());
             }
             else if (action == 6) {
                 int value = ReadInt("Value: ");
-                current->Prepend(value);
+                ReplaceIfNeeded(current, current->Append(value));
                 PrintSequence(current.get());
             }
             else if (action == 7) {
                 int value = ReadInt("Value: ");
-                int index = ReadInt("Index: ");
-                current->InsertAt(value, index);
+                ReplaceIfNeeded(current, current->Prepend(value));
                 PrintSequence(current.get());
             }
             else if (action == 8) {
+                int value = ReadInt("Value: ");
+                int index = ReadInt("Index: ");
+                ReplaceIfNeeded(current, current->InsertAt(value, index));
+                PrintSequence(current.get());
+            }
+            else if (action == 9) {
                 int index = ReadInt("Index: ");
                 std::cout << "Value: " << current->Get(index) << "\n";
             }
-            else if (action == 9) {
+            else if (action == 10) {
                 std::cout << "First: " << current->GetFirst() << "\n";
             }
-            else if (action == 10) {
+            else if (action == 11) {
                 std::cout << "Last: " << current->GetLast() << "\n";
             }
-            else if (action == 11) {
+            else if (action == 12) {
                 int startIndex = ReadInt("Start index: ");
                 int endIndex = ReadInt("End index: ");
                 current.reset(current->GetSubsequence(startIndex, endIndex));
                 std::cout << "Current subsequence: ";
                 PrintSequence(current.get());
             }
-            else if (action == 12) {
-                int type = ReadInt("Other sequence type (1-array, 2-list): ");
+            else if (action == 13) {
+                int type = ReadInt("Other sequence type (1-mutable array, 2-immutable array, 3-mutable list, 4-immutable list): ");
                 std::unique_ptr<Sequence<int>> other = CreateSequence(type);
-                current->Concat(other.get());
+                ReplaceIfNeeded(current, current->Concat(other.get()));
                 PrintSequence(current.get());
             }
             else {

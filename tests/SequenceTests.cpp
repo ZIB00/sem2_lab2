@@ -3,19 +3,19 @@
 #include "ArraySequence.hpp"
 #include "ListSequence.hpp"
 
-TEST(ArraySequenceTests, DefaultConstructorCreatesEmptySequence)
+TEST(MutableArraySequenceTests, DefaultConstructorCreatesEmptySequence)
 {
-    ArraySequence<int> sequence;
+    MutableArraySequence<int> sequence;
 
     EXPECT_EQ(sequence.GetLength(), 0);
     EXPECT_THROW(sequence.GetFirst(), OutOfRange);
     EXPECT_THROW(sequence.GetLast(), OutOfRange);
 }
 
-TEST(ArraySequenceTests, AppendPrependAndInsertAtModifyMutableSequence)
+TEST(MutableArraySequenceTests, AppendPrependAndInsertAtModifyMutableSequence)
 {
     int items[] = {2, 3};
-    ArraySequence<int> sequence(items, 2);
+    MutableArraySequence<int> sequence(items, 2);
 
     EXPECT_EQ(sequence.Append(4), &sequence);
     EXPECT_EQ(sequence.Prepend(1), &sequence);
@@ -29,10 +29,10 @@ TEST(ArraySequenceTests, AppendPrependAndInsertAtModifyMutableSequence)
     EXPECT_EQ(sequence.Get(4), 4);
 }
 
-TEST(ArraySequenceTests, GetSubsequenceReturnsInclusiveCopy)
+TEST(MutableArraySequenceTests, GetSubsequenceReturnsInclusiveCopy)
 {
     int items[] = {1, 2, 3, 4};
-    ArraySequence<int> sequence(items, 4);
+    MutableArraySequence<int> sequence(items, 4);
 
     Sequence<int>* subsequence = sequence.GetSubsequence(1, 2);
 
@@ -43,12 +43,12 @@ TEST(ArraySequenceTests, GetSubsequenceReturnsInclusiveCopy)
     delete subsequence;
 }
 
-TEST(ArraySequenceTests, ConcatAppendsAnotherSequence)
+TEST(MutableArraySequenceTests, ConcatAppendsAnotherSequence)
 {
     int leftItems[] = {1, 2};
     int rightItems[] = {3, 4};
-    ArraySequence<int> left(leftItems, 2);
-    ListSequence<int> right(rightItems, 2);
+    MutableArraySequence<int> left(leftItems, 2);
+    MutableListSequence<int> right(rightItems, 2);
 
     left.Concat(&right);
 
@@ -59,30 +59,30 @@ TEST(ArraySequenceTests, ConcatAppendsAnotherSequence)
     EXPECT_EQ(left.Get(3), 4);
 }
 
-TEST(ArraySequenceTests, InsertAtRejectsInvalidIndex)
+TEST(MutableArraySequenceTests, InsertAtRejectsInvalidIndex)
 {
-    ArraySequence<int> sequence;
+    MutableArraySequence<int> sequence;
 
     EXPECT_THROW(sequence.InsertAt(1, -1), InvalidArgument);
     EXPECT_THROW(sequence.InsertAt(1, 1), OutOfRange);
 }
 
-TEST(ArraySequenceTests, GetSubsequenceRejectsInvalidRange)
+TEST(MutableArraySequenceTests, GetSubsequenceRejectsInvalidRange)
 {
     int items[] = {1, 2, 3};
-    ArraySequence<int> sequence(items, 3);
+    MutableArraySequence<int> sequence(items, 3);
 
     EXPECT_THROW(sequence.GetSubsequence(-1, 1), InvalidArgument);
     EXPECT_THROW(sequence.GetSubsequence(1, 0), InvalidArgument);
     EXPECT_THROW(sequence.GetSubsequence(0, 3), OutOfRange);
 }
 
-TEST(ArraySequenceTests, CopyConstructorCreatesIndependentSequence)
+TEST(MutableArraySequenceTests, CopyConstructorCreatesIndependentSequence)
 {
     int items[] = {1, 2, 3};
-    ArraySequence<int> original(items, 3);
+    MutableArraySequence<int> original(items, 3);
 
-    ArraySequence<int> copy(original);
+    MutableArraySequence<int> copy(original);
     copy.InsertAt(99, 1);
 
     EXPECT_EQ(original.GetLength(), 3);
@@ -91,9 +91,73 @@ TEST(ArraySequenceTests, CopyConstructorCreatesIndependentSequence)
     EXPECT_EQ(copy.Get(1), 99);
 }
 
-TEST(ListSequenceTests, BasicOperationsWork)
+TEST(ImmutableArraySequenceTests, AppendReturnsNewSequence)
 {
-    ListSequence<int> sequence;
+    int items[] = {1, 2, 3};
+    ImmutableArraySequence<int> original(items, 3);
+
+    Sequence<int>* changed = original.Append(4);
+
+    EXPECT_EQ(original.GetLength(), 3);
+    EXPECT_EQ(original.GetLast(), 3);
+    EXPECT_EQ(changed->GetLength(), 4);
+    EXPECT_EQ(changed->GetLast(), 4);
+
+    delete changed;
+}
+
+TEST(ImmutableArraySequenceTests, InsertAtKeepsOriginalUnchanged)
+{
+    int items[] = {1, 3};
+    ImmutableArraySequence<int> original(items, 2);
+
+    Sequence<int>* changed = original.InsertAt(2, 1);
+
+    EXPECT_EQ(original.GetLength(), 2);
+    EXPECT_EQ(original.Get(1), 3);
+    EXPECT_EQ(changed->GetLength(), 3);
+    EXPECT_EQ(changed->Get(1), 2);
+
+    delete changed;
+}
+
+TEST(ImmutableArraySequenceTests, ConcatReturnsNewSequence)
+{
+    int leftItems[] = {1, 2};
+    int rightItems[] = {3, 4};
+    ImmutableArraySequence<int> left(leftItems, 2);
+    MutableListSequence<int> right(rightItems, 2);
+
+    Sequence<int>* changed = left.Concat(&right);
+
+    EXPECT_EQ(left.GetLength(), 2);
+    EXPECT_EQ(changed->GetLength(), 4);
+    EXPECT_EQ(changed->Get(2), 3);
+    EXPECT_EQ(changed->Get(3), 4);
+
+    delete changed;
+}
+
+TEST(ImmutableArraySequenceTests, GetSubsequenceReturnsImmutableSequence)
+{
+    int items[] = {1, 2, 3, 4};
+    ImmutableArraySequence<int> sequence(items, 4);
+
+    Sequence<int>* subsequence = sequence.GetSubsequence(1, 2);
+    Sequence<int>* changed = subsequence->Append(9);
+
+    EXPECT_EQ(subsequence->GetLength(), 2);
+    EXPECT_EQ(subsequence->Get(0), 2);
+    EXPECT_EQ(changed->GetLength(), 3);
+    EXPECT_EQ(changed->Get(2), 9);
+
+    delete subsequence;
+    delete changed;
+}
+
+TEST(MutableListSequenceTests, BasicOperationsWork)
+{
+    MutableListSequence<int> sequence;
 
     sequence.Append(2)->Prepend(1)->InsertAt(3, 2);
 
@@ -102,10 +166,10 @@ TEST(ListSequenceTests, BasicOperationsWork)
     EXPECT_EQ(sequence.GetLast(), 3);
 }
 
-TEST(ListSequenceTests, GetSubsequenceReturnsListSequenceCopy)
+TEST(MutableListSequenceTests, GetSubsequenceReturnsListSequenceCopy)
 {
     int items[] = {1, 2, 3, 4};
-    ListSequence<int> sequence(items, 4);
+    MutableListSequence<int> sequence(items, 4);
 
     Sequence<int>* subsequence = sequence.GetSubsequence(1, 3);
 
@@ -116,12 +180,12 @@ TEST(ListSequenceTests, GetSubsequenceReturnsListSequenceCopy)
     delete subsequence;
 }
 
-TEST(ListSequenceTests, ConcatAppendsElementsFromAnotherSequence)
+TEST(MutableListSequenceTests, ConcatAppendsElementsFromAnotherSequence)
 {
     int leftItems[] = {1, 2};
     int rightItems[] = {3, 4};
-    ListSequence<int> left(leftItems, 2);
-    ArraySequence<int> right(rightItems, 2);
+    MutableListSequence<int> left(leftItems, 2);
+    MutableArraySequence<int> right(rightItems, 2);
 
     left.Concat(&right);
 
@@ -130,14 +194,77 @@ TEST(ListSequenceTests, ConcatAppendsElementsFromAnotherSequence)
     EXPECT_EQ(left.Get(3), 4);
 }
 
-TEST(ListSequenceTests, CopyConstructorCreatesIndependentCopy)
+TEST(MutableListSequenceTests, CopyConstructorCreatesIndependentCopy)
 {
     int items[] = {1, 2};
-    ListSequence<int> original(items, 2);
+    MutableListSequence<int> original(items, 2);
 
-    ListSequence<int> copy(original);
+    MutableListSequence<int> copy(original);
     copy.Append(3);
 
     EXPECT_EQ(original.GetLength(), 2);
     EXPECT_EQ(copy.GetLength(), 3);
+}
+
+TEST(ImmutableListSequenceTests, AppendReturnsNewSequence)
+{
+    int items[] = {1, 2};
+    ImmutableListSequence<int> original(items, 2);
+
+    Sequence<int>* changed = original.Append(3);
+
+    EXPECT_EQ(original.GetLength(), 2);
+    EXPECT_EQ(changed->GetLength(), 3);
+    EXPECT_EQ(changed->GetLast(), 3);
+
+    delete changed;
+}
+
+TEST(ImmutableListSequenceTests, InsertAtKeepsOriginalUnchanged)
+{
+    int items[] = {1, 3};
+    ImmutableListSequence<int> original(items, 2);
+
+    Sequence<int>* changed = original.InsertAt(2, 1);
+
+    EXPECT_EQ(original.GetLength(), 2);
+    EXPECT_EQ(original.Get(1), 3);
+    EXPECT_EQ(changed->GetLength(), 3);
+    EXPECT_EQ(changed->Get(1), 2);
+
+    delete changed;
+}
+
+TEST(ImmutableListSequenceTests, ConcatReturnsNewSequence)
+{
+    int leftItems[] = {1, 2};
+    int rightItems[] = {3, 4};
+    ImmutableListSequence<int> left(leftItems, 2);
+    MutableArraySequence<int> right(rightItems, 2);
+
+    Sequence<int>* changed = left.Concat(&right);
+
+    EXPECT_EQ(left.GetLength(), 2);
+    EXPECT_EQ(changed->GetLength(), 4);
+    EXPECT_EQ(changed->Get(2), 3);
+    EXPECT_EQ(changed->Get(3), 4);
+
+    delete changed;
+}
+
+TEST(ImmutableListSequenceTests, GetSubsequenceReturnsImmutableSequence)
+{
+    int items[] = {1, 2, 3, 4};
+    ImmutableListSequence<int> sequence(items, 4);
+
+    Sequence<int>* subsequence = sequence.GetSubsequence(1, 2);
+    Sequence<int>* changed = subsequence->Append(9);
+
+    EXPECT_EQ(subsequence->GetLength(), 2);
+    EXPECT_EQ(subsequence->Get(0), 2);
+    EXPECT_EQ(changed->GetLength(), 3);
+    EXPECT_EQ(changed->Get(2), 9);
+
+    delete subsequence;
+    delete changed;
 }

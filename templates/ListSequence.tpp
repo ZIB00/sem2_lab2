@@ -9,18 +9,6 @@ ListSequence<T>::ListSequence()
 }
 
 template<class T>
-ListSequence<T>::ListSequence(T* items, int count)
-{
-    this->items = new LinkedList<T>(items, count);
-}
-
-template<class T>
-ListSequence<T>::ListSequence(const ListSequence<T>& sequence)
-{
-    this->items = new LinkedList<T>(*sequence.items);
-}
-
-template<class T>
 ListSequence<T>::~ListSequence()
 {
     delete this->items;
@@ -33,10 +21,58 @@ ListSequence<T>& ListSequence<T>::operator=(const ListSequence<T>& sequence)
         return *this;
     }
 
-    LinkedList<T>* newItems = new LinkedList<T>(*sequence.items);
+    LinkedList<T>* copiedItems = new LinkedList<T>(*sequence.items);
+    delete this->items;
+    this->items = copiedItems;
+    return *this;
+}
+
+template<class T>
+void ListSequence<T>::SetItems(T* items, int count)
+{
+    LinkedList<T>* newItems = new LinkedList<T>(items, count);
     delete this->items;
     this->items = newItems;
-    return *this;
+}
+
+template<class T>
+void ListSequence<T>::CopyItems(const ListSequence<T>& sequence)
+{
+    LinkedList<T>* copiedItems = new LinkedList<T>(*sequence.items);
+    delete this->items;
+    this->items = copiedItems;
+}
+
+template<class T>
+void ListSequence<T>::AppendInternal(T item)
+{
+    this->items->Append(item);
+}
+
+template<class T>
+void ListSequence<T>::PrependInternal(T item)
+{
+    this->items->Prepend(item);
+}
+
+template<class T>
+void ListSequence<T>::InsertAtInternal(T item, int index)
+{
+    this->items->InsertAt(item, index);
+}
+
+template<class T>
+void ListSequence<T>::ConcatInternal(Sequence<T>* list)
+{
+    if (list == nullptr) {
+        throw InvalidArgument("Sequence cannot be null");
+    }
+
+    int length = list->GetLength();
+
+    for (int index = 0; index < length; ++index) {
+        this->AppendInternal(list->Get(index));
+    }
 }
 
 template<class T>
@@ -61,11 +97,11 @@ template<class T>
 Sequence<T>* ListSequence<T>::GetSubsequence(int startIndex, int endIndex)
 {
     LinkedList<T>* subList = this->items->GetSubList(startIndex, endIndex);
-    ListSequence<T>* result = new ListSequence<T>();
+    ListSequence<T>* result = this->CreateEmpty();
 
     try {
         for (int index = 0; index < subList->GetLength(); ++index) {
-            result->Append(subList->Get(index));
+            result->AppendInternal(subList->Get(index));
         }
 
         delete subList;
@@ -85,38 +121,105 @@ int ListSequence<T>::GetLength()
 }
 
 template<class T>
-ListSequence<T>* ListSequence<T>::Append(T item)
+Sequence<T>* ListSequence<T>::Append(T item)
 {
-    this->items->Append(item);
+    ListSequence<T>* result = this->Instance();
+    result->AppendInternal(item);
+    return result;
+}
+
+template<class T>
+Sequence<T>* ListSequence<T>::Prepend(T item)
+{
+    ListSequence<T>* result = this->Instance();
+    result->PrependInternal(item);
+    return result;
+}
+
+template<class T>
+Sequence<T>* ListSequence<T>::InsertAt(T item, int index)
+{
+    ListSequence<T>* result = this->Instance();
+    result->InsertAtInternal(item, index);
+    return result;
+}
+
+template<class T>
+Sequence<T>* ListSequence<T>::Concat(Sequence<T>* list)
+{
+    ListSequence<T>* result = this->Instance();
+    result->ConcatInternal(list);
+    return result;
+}
+
+template<class T>
+MutableListSequence<T>::MutableListSequence()
+{
+}
+
+template<class T>
+MutableListSequence<T>::MutableListSequence(T* items, int count)
+{
+    this->SetItems(items, count);
+}
+
+template<class T>
+MutableListSequence<T>::MutableListSequence(const MutableListSequence<T>& sequence)
+{
+    this->CopyItems(sequence);
+}
+
+template<class T>
+MutableListSequence<T>& MutableListSequence<T>::operator=(const MutableListSequence<T>& sequence)
+{
+    this->ListSequence<T>::operator=(sequence);
+    return *this;
+}
+
+template<class T>
+ListSequence<T>* MutableListSequence<T>::Instance()
+{
     return this;
 }
 
 template<class T>
-ListSequence<T>* ListSequence<T>::Prepend(T item)
+ListSequence<T>* MutableListSequence<T>::CreateEmpty()
 {
-    this->items->Prepend(item);
-    return this;
+    return new MutableListSequence<T>();
 }
 
 template<class T>
-ListSequence<T>* ListSequence<T>::InsertAt(T item, int index)
+ImmutableListSequence<T>::ImmutableListSequence()
 {
-    this->items->InsertAt(item, index);
-    return this;
 }
 
 template<class T>
-ListSequence<T>* ListSequence<T>::Concat(Sequence<T>* list)
+ImmutableListSequence<T>::ImmutableListSequence(T* items, int count)
 {
-    if (list == nullptr) {
-        throw InvalidArgument("Sequence cannot be null");
-    }
+    this->SetItems(items, count);
+}
 
-    int length = list->GetLength();
+template<class T>
+ImmutableListSequence<T>::ImmutableListSequence(const ImmutableListSequence<T>& sequence)
+{
+    this->CopyItems(sequence);
+}
 
-    for (int index = 0; index < length; ++index) {
-        this->items->Append(list->Get(index));
-    }
+template<class T>
+ImmutableListSequence<T>& ImmutableListSequence<T>::operator=(const ImmutableListSequence<T>& sequence)
+{
+    this->ListSequence<T>::operator=(sequence);
+    return *this;
+}
 
-    return this;
+template<class T>
+ListSequence<T>* ImmutableListSequence<T>::Instance()
+{
+    return new ImmutableListSequence<T>(*this);
+}
+
+template<class T>
+ListSequence<T>* ImmutableListSequence<T>::CreateEmpty()
+{
+    return new ImmutableListSequence<T>();
 }
