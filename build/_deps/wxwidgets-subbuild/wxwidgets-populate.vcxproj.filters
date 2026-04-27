@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\06377948aa2950bbbe9e49674b073f8b\wxwidgets-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\06377948aa2950bbbe9e49674b073f8b\wxwidgets-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\06377948aa2950bbbe9e49674b073f8b\wxwidgets-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\06377948aa2950bbbe9e49674b073f8b\wxwidgets-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\06377948aa2950bbbe9e49674b073f8b\wxwidgets-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\06377948aa2950bbbe9e49674b073f8b\wxwidgets-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\06377948aa2950bbbe9e49674b073f8b\wxwidgets-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\06377948aa2950bbbe9e49674b073f8b\wxwidgets-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\8d61cd9efd1b1e4f01d5f33a8aa28d2c\wxwidgets-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\c230a70f3597b49d6785b9ab8b22ffa0\wxwidgets-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Program\my_projects\sem2_lab2\build\_deps\wxwidgets-subbuild\CMakeFiles\wxwidgets-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{79F17468-57A5-3A21-8F19-E35E6963770C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

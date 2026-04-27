@@ -1,0 +1,15 @@
+D:/Program/my_projects/sem2_lab2/build/CMakeFiles/main.dir
+D:/Program/my_projects/sem2_lab2/build/CMakeFiles/tests.dir
+D:/Program/my_projects/sem2_lab2/build/CMakeFiles/INSTALL.dir
+D:/Program/my_projects/sem2_lab2/build/CMakeFiles/ALL_BUILD.dir
+D:/Program/my_projects/sem2_lab2/build/CMakeFiles/ZERO_CHECK.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/CMakeFiles/INSTALL.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/CMakeFiles/ALL_BUILD.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/gmock.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/gmock_main.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/INSTALL.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/ALL_BUILD.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googletest/CMakeFiles/gtest.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googletest/CMakeFiles/gtest_main.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googletest/CMakeFiles/INSTALL.dir
+D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googletest/CMakeFiles/ALL_BUILD.dir
