@@ -39,11 +39,16 @@ class ListSequence : public Sequence<T>
 
         template<class T2>
         Sequence<T>* Map(T2 (*)(T)) override;
-        
+
         Sequence<T>* Where(bool (*)(T)) override;
 
         template<class T2>
         T Reduce(T2 (*)(T2, T)) override;
+
+        Option<T> TryGetFirst(bool (*predicate)(T)) override;
+        Option<T> TryGetLast(bool (*predicate)(T)) override;
+        
+        Sequence<T>* FlatMap(Sequence<T>* (*transform)(T)) override;
 };
 
 template<class T>

@@ -19,9 +19,14 @@ class Sequence
 
         template<class T2>
         virtual Sequence<T>* Map(T2 (*)(T)) = 0;
-        
+
         virtual Sequence<T>* Where(bool (*)(T)) = 0;
 
         template<class T2>
         virtual T Reduce(T2 (*)(T2, T)) = 0;
+
+        virtual Option<T> TryGetFirst(bool (*)(T)) = 0;
+        virtual Option<T> TryGetLast(bool (*)(T)) = 0;
+
+        virtual Sequence<T>* FlatMap(Sequence<T>* (*)(T)) = 0;
 };

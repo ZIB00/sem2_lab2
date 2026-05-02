@@ -152,9 +152,9 @@ Sequence<T>* ListSequence<T>::Concat(Sequence<T>* list)
 
 template<class T>
 template<class T2>
-Sequence<T>* ListSequence<T>::Map(T2 (*function)(T))
+Sequence<T>* ListSequence<T>::Map(T2 (*Function)(T))
 {
-    if (function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
     Sequence<T>* result = nullptr;
 
@@ -169,7 +169,7 @@ Sequence<T>* ListSequence<T>::Map(T2 (*function)(T))
         size_t length = this->GetLength();
 
         for (size_t index = 0; index < length; ++index) {
-            Sequence<T>* updated = result->Append(function(this->items->Get(index)));
+            Sequence<T>* updated = result->Append(Function(this->items->Get(index)));
             if (updated != result) {
                 delete result;
                 result = updated;
@@ -212,20 +212,79 @@ Sequence<T>* ListSequence<T>::Where(bool (*Function)(T))
 
 template<class T>
 template<class T2>
-T ListSequence<T>::Reduce(T2 (*function)(T2, T))
+T ListSequence<T>::Reduce(T2 (*Function)(T2, T))
 {
-    if (function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
 
     T result = this->items->Get(0);
     size_t length = this->GetLength();
 
     for (size_t index = 1; index < length; ++index) {
-        result = function(result, this->items->Get(index));
+        result = Function(result, this->items->Get(index));
     }
 
     return result;
 }
+
+template<class T>
+Option<T> ListSequence<T>::TryGetFirst(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    
+    size_t length = this->GetLength();
+    for (size_t index = 0; index < length; ++index) {
+        T value = this->items->Get(index);
+        if (Function(value)) {
+            return Option<T>(value);
+        }
+    }
+    return Option<T>();
+}
+
+template<class T>
+Option<T> ListSequence<T>::TryGetLast(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    
+    size_t length = this->GetLength();
+    for (size_t index = length; index > 0; --index) {
+        T value = this->items->Get(index - 1);
+        if (Function(value)) {
+            return Option<T>(value);
+        }
+    }
+    return Option<T>();
+}
+
+template<class T>
+Sequence<T>* ListSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    ListSequence<T>* result = this->CreateEmpty();
+
+    try {
+        size_t length = this->GetLength();
+        for (size_t index = 0; index < length; ++index) {
+            Sequence<T>* subSequence = Function(this->items->Get(index)); 
+            
+            for (size_t subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
+                result->AppendInternal(subSequence->Get(subIndex));
+            }
+            
+            delete subSequence;
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+#pragma region Mutable/Immutable
 
 template<class T>
 MutableListSequence<T>::MutableListSequence()
@@ -298,3 +357,5 @@ ListSequence<T>* ImmutableListSequence<T>::CreateEmpty()
 {
     return new ImmutableListSequence<T>();
 }
+
+#pragma endregion

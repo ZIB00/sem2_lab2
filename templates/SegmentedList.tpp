@@ -291,15 +291,15 @@ Sequence<T>* SegmentedList<T>::Concat(Sequence<T>* list)
 
 template<class T>
 template<class T2>
-Sequence<T>* SegmentedList<T>::Map(T2 (*function)(T))
+Sequence<T>* SegmentedList<T>::Map(T2 (*Function)(T))
 {
-    if (function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
     SegmentedList<T>* result = new SegmentedList<T>();
 
     try {
         for (size_t index = 0; index < this->length; ++index) {
-            result->Append(function(this->Get(index)));
+            result->Append(Function(this->Get(index)));
         }
     }
     catch (...) {
@@ -336,15 +336,15 @@ Sequence<T>* SegmentedList<T>::Where(bool (*Function)(T))
 
 template<class T>
 template<class T2>
-T SegmentedList<T>::Reduce(T2 (*function)(T2, T))
+T SegmentedList<T>::Reduce(T2 (*Function)(T2, T))
 {
-    if (function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
     this->ValidateNotEmpty();
     T result = this->Get(0);
 
     for (size_t index = 1; index < this->length; ++index) {
-        result = function(result, this->Get(index));
+        result = Function(result, this->Get(index));
     }
 
     return result;

@@ -2,6 +2,7 @@
 
 #include "DynamicArray.hpp"
 #include "Sequence.hpp"
+#include "Option.hpp"
 
 template<class T>
 class ArraySequence : public Sequence<T>
@@ -46,6 +47,11 @@ class ArraySequence : public Sequence<T>
 
         template<class T2>
         T Reduce(T2 (*)(T2, T)) override;
+
+        Option<T> TryGetFirst(bool (*)(T)) override;
+        Option<T> TryGetLast(bool (*)(T)) override;
+
+        Sequence<T>* FlatMap(Sequence<T>* (*)(T)) override;
 };
 
 template<class T>

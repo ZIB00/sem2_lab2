@@ -173,13 +173,13 @@ Sequence<T>* BitSequence<T>::Concat(Sequence<T>* list)
 
 template<class T>
 template<class T2>
-Sequence<T>* BitSequence<T>::Map(T2 (*function)(T))
+Sequence<T>* BitSequence<T>::Map(T2 (*Function)(T))
 {
-    if (function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
     BitSequence<T>* result = new BitSequence<T>();
     for (size_t i = 0; i < this->bitCount; ++i) {
-        result->Append(function(this->Get(i)));
+        result->Append(Function(this->Get(i)));
     }
 
     return result;
@@ -203,14 +203,14 @@ Sequence<T>* BitSequence<T>::Where(bool (*Function)(T))
 
 template<class T>
 template<class T2>
-T BitSequence<T>::Reduce(T2 (*function)(T2, T))
+T BitSequence<T>::Reduce(T2 (*Function)(T2, T))
 {
-    if (function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     if (this->bitCount == 0) throw OutOfRange("Sequence is empty");
 
     T result = this->Get(0);
     for (size_t i = 1; i < this->bitCount; ++i) {
-        result = function(result, this->Get(i));
+        result = Function(result, this->Get(i));
     }
 
     return result;

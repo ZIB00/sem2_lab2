@@ -43,20 +43,20 @@ T Option<T>::ValueOr(T defaultValue)
 
 template<class T>
 template<class R>
-Option<R> Option<T>::Map(R (*function)(T))
+Option<R> Option<T>::Map(R (*Function)(T))
 {
     if (!hasValue) {
         return Option<R>();
     }
-    return Option<R>(function(this->value));
+    return Option<R>(Function(this->value));
 }
 
 template<class T>
 template<class R>
-Option<R> Option<T>::FlatMap(Option<R> (*transform)(T))
+Option<R> Option<T>::FlatMap(Option<R> (*Function)(T))
 {
     if (!hasValue) {
         return Option<R>();
     }
-    return transform(value);
+    return Function(value);
 }

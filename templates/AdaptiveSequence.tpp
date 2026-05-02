@@ -222,9 +222,9 @@ Sequence<T>* AdaptiveSequence<T>::Concat(Sequence<T>* list)
 
 template<class T>
 template<class T2>
-Sequence<T>* AdaptiveSequence<T>::Map(T2 (*function)(T))
+Sequence<T>* AdaptiveSequence<T>::Map(T2 (*Function)(T))
 {
-    if (function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
     AdaptiveSequence<T>* result = new AdaptiveSequence<T>();
 
@@ -236,7 +236,7 @@ Sequence<T>* AdaptiveSequence<T>::Map(T2 (*function)(T))
         size_t length = this->GetLength();
 
         for (size_t index = 0; index < length; ++index) {
-            result->sequence->Append(function(this->sequence->Get(index)));
+            result->sequence->Append(Function(this->sequence->Get(index)));
         }
     }
     catch (...) {
@@ -279,16 +279,16 @@ Sequence<T>* AdaptiveSequence<T>::Where(bool (*Function)(T))
 
 template<class T>
 template<class T2>
-T AdaptiveSequence<T>::Reduce(T2 (*function)(T2, T))
+T AdaptiveSequence<T>::Reduce(T2 (*Function)(T2, T))
 {
-    if (function == nullptr) throw InvalidArgument("Function cannot be null");
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
 
     T result = this->sequence->Get(0);
     size_t length = this->GetLength();
 
     for (size_t index = 1; index < length; ++index) {
-        result = function(result, this->sequence->Get(index));
+        result = Function(result, this->sequence->Get(index));
     }
 
     return result;
