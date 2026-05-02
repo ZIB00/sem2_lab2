@@ -1,6 +1,6 @@
-^D:\PROGRAM\MY_PROJECTS\SEM2_LAB2\BUILD\CMAKEFILES\DD14B0AB7C44253CB60E61200495E378\GENERATE.STAMP.RULE
+^D:\PROGRAM\MY_PROJECTS\MY_PROGRAMS_CPP\SEM2_LAB2\BUILD\CMAKEFILES\D025528BCDC3AFFA68E73BFC80E93AD6\GENERATE.STAMP.RULE
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/sem2_lab2 -BD:/Program/my_projects/sem2_lab2/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Program/my_projects/sem2_lab2/build/Sequences.sln
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/my_programs_CPP/sem2_lab2 -BD:/Program/my_projects/my_programs_CPP/sem2_lab2/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/Sequences.sln
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

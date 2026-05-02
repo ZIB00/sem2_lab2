@@ -25,7 +25,7 @@ SegmentedList<T>::SegmentedList()
 }
 
 template<class T>
-SegmentedList<T>::SegmentedList(T* items, int count)
+SegmentedList<T>::SegmentedList(T* items, size_t count)
 {
     this->head = nullptr;
     this->tail = nullptr;
@@ -35,7 +35,7 @@ SegmentedList<T>::SegmentedList(T* items, int count)
     if (count > 0 && items == nullptr) throw InvalidArgument("Items cannot be null when count is positive");
 
     try {
-        for (int index = 0; index < count; ++index) {
+        for (size_t index = 0; index < count; ++index) {
             this->Append(items[index]);
         }
     }
@@ -56,7 +56,7 @@ SegmentedList<T>::SegmentedList(const SegmentedList<T>& list)
         Node* current = list.head;
 
         while (current != nullptr) {
-            for (int index = 0; index < current->count; ++index) {
+            for (size_t index = 0; index < current->count; ++index) {
                 this->Append(current->elements->Get(index));
             }
 
@@ -102,7 +102,7 @@ SegmentedList<T>& SegmentedList<T>::operator=(const SegmentedList<T>& list)
 
     Node* oldHead = this->head;
     Node* oldTail = this->tail;
-    int oldLength = this->length;
+    size_t oldLength = this->length;
 
     this->head = copy.head;
     this->tail = copy.tail;
@@ -124,13 +124,13 @@ void SegmentedList<T>::ValidateNotEmpty()
 }
 
 template<class T>
-typename SegmentedList<T>::Node* SegmentedList<T>::FindNode(int index, int& localIndex)
+typename SegmentedList<T>::Node* SegmentedList<T>::FindNode(size_t index, size_t& localIndex)
 {
     if (index < 0) throw InvalidArgument("Index cannot be negative");
     if (index >= this->length) throw OutOfRange("Index is out of range");
 
     Node* current = this->head;
-    int remaining = index;
+    size_t remaining = index;
 
     while (current != nullptr) {
         if (remaining < current->count) {
@@ -146,9 +146,9 @@ typename SegmentedList<T>::Node* SegmentedList<T>::FindNode(int index, int& loca
 }
 
 template<class T>
-void SegmentedList<T>::Set(int index, T value)
+void SegmentedList<T>::Set(size_t index, T value)
 {
-    int localIndex = 0;
+    size_t localIndex = 0;
     Node* node = this->FindNode(index, localIndex);
     node->elements->Set(localIndex, value);
 }
@@ -168,15 +168,15 @@ T SegmentedList<T>::GetLast()
 }
 
 template<class T>
-T SegmentedList<T>::Get(int index)
+T SegmentedList<T>::Get(size_t index)
 {
-    int localIndex = 0;
+    size_t localIndex = 0;
     Node* node = this->FindNode(index, localIndex);
     return node->elements->Get(localIndex);
 }
 
 template<class T>
-Sequence<T>* SegmentedList<T>::GetSubsequence(int startIndex, int endIndex)
+Sequence<T>* SegmentedList<T>::GetSubsequence(size_t startIndex, size_t endIndex)
 {
     if (startIndex < 0) throw InvalidArgument("Start index cannot be negative");
     if (endIndex < 0) throw InvalidArgument("End index cannot be negative");
@@ -186,7 +186,7 @@ Sequence<T>* SegmentedList<T>::GetSubsequence(int startIndex, int endIndex)
     SegmentedList<T>* result = new SegmentedList<T>();
 
     try {
-        for (int index = startIndex; index <= endIndex; ++index) {
+        for (size_t index = startIndex; index <= endIndex; ++index) {
             result->Append(this->Get(index));
         }
     }
@@ -199,7 +199,7 @@ Sequence<T>* SegmentedList<T>::GetSubsequence(int startIndex, int endIndex)
 }
 
 template<class T>
-int SegmentedList<T>::GetLength()
+size_t SegmentedList<T>::GetLength()
 {
     return this->length;
 }
@@ -240,7 +240,7 @@ Sequence<T>* SegmentedList<T>::Prepend(T item)
         }
     }
     else {
-        for (int index = this->head->count; index > 0; --index) {
+        for (size_t index = this->head->count; index > 0; --index) {
             this->head->elements->Set(index, this->head->elements->Get(index - 1));
         }
     }
@@ -252,7 +252,7 @@ Sequence<T>* SegmentedList<T>::Prepend(T item)
 }
 
 template<class T>
-Sequence<T>* SegmentedList<T>::InsertAt(T item, int index)
+Sequence<T>* SegmentedList<T>::InsertAt(T item, size_t index)
 {
     if (index < 0) throw InvalidArgument("Index cannot be negative");
 
@@ -266,10 +266,10 @@ Sequence<T>* SegmentedList<T>::InsertAt(T item, int index)
         return this->Append(item);
     }
 
-    int oldLength = this->length;
+    size_t oldLength = this->length;
     this->Append(item);
 
-    for (int currentIndex = oldLength; currentIndex > index; --currentIndex) {
+    for (size_t currentIndex = oldLength; currentIndex > index; --currentIndex) {
         this->Set(currentIndex, this->Get(currentIndex - 1));
     }
 
@@ -282,7 +282,7 @@ Sequence<T>* SegmentedList<T>::Concat(Sequence<T>* list)
 {
     if (list == nullptr) throw InvalidArgument("Sequence cannot be null");
 
-    for (int index = 0; index < list->GetLength(); ++index) {
+    for (size_t index = 0; index < list->GetLength(); ++index) {
         this->Append(list->Get(index));
     }
 
@@ -297,7 +297,7 @@ Sequence<T>* SegmentedList<T>::Map(T (*Function)(T))
     SegmentedList<T>* result = new SegmentedList<T>();
 
     try {
-        for (int index = 0; index < this->length; ++index) {
+        for (size_t index = 0; index < this->length; ++index) {
             result->Append(Function(this->Get(index)));
         }
     }
@@ -317,7 +317,7 @@ Sequence<T>* SegmentedList<T>::Where(bool (*Function)(T))
     SegmentedList<T>* result = new SegmentedList<T>();
 
     try {
-        for (int index = 0; index < this->length; ++index) {
+        for (size_t index = 0; index < this->length; ++index) {
             T value = this->Get(index);
 
             if (Function(value)) {
@@ -341,7 +341,7 @@ T SegmentedList<T>::Reduce(T (*Function)(T, T))
     this->ValidateNotEmpty();
     T result = this->Get(0);
 
-    for (int index = 1; index < this->length; ++index) {
+    for (size_t index = 1; index < this->length; ++index) {
         result = Function(result, this->Get(index));
     }
 

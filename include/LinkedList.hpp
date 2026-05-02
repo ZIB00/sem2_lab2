@@ -20,7 +20,7 @@ class LinkedList
         void Clear();
 
     public:
-        LinkedList(T* items, int count);
+        LinkedList(T* items, size_t count);
         LinkedList();
         LinkedList(const LinkedList<T>& list);
         ~LinkedList();
@@ -29,13 +29,13 @@ class LinkedList
 
         T GetFirst();
         T GetLast();
-        T Get(int index);
-        LinkedList<T>* GetSubList(int startIndex, int endIndex);
-        int GetLength();
+        T Get(size_t index);
+        LinkedList<T>* GetSubList(size_t startIndex, size_t endIndex);
+        size_t GetLength();
 
         void Append(T item);
         void Prepend(T item);
-        void InsertAt(T item, int index);
+        void InsertAt(T item, size_t index);
         LinkedList<T>* Concat(const LinkedList<T>* list);
 };
 

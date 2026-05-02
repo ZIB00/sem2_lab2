@@ -100,14 +100,6 @@ TEST(SegmentedListTests, InsertAtPlacesElementCorrectly)
     EXPECT_EQ(list.Get(1), 2);
 }
 
-TEST(SegmentedListTests, InsertAtRejectsInvalidIndices)
-{
-    SegmentedList<int> list;
-
-    EXPECT_THROW(list.InsertAt(10, -1), InvalidArgument);
-    EXPECT_THROW(list.InsertAt(10, 1), OutOfRange);
-}
-
 TEST(SegmentedListTests, ConcatAppendsAnotherSequence)
 {
     int leftItems[] = {1, 2};
@@ -120,15 +112,6 @@ TEST(SegmentedListTests, ConcatAppendsAnotherSequence)
     EXPECT_EQ(left.GetLength(), 4);
     EXPECT_EQ(left.Get(2), 3);
     EXPECT_EQ(left.Get(3), 4);
-}
-
-TEST(SegmentedListTests, GetRejectsInvalidIndices)
-{
-    int items[] = {1, 2, 3};
-    SegmentedList<int> list(items, 3);
-
-    EXPECT_THROW(list.Get(-1), InvalidArgument);
-    EXPECT_THROW(list.Get(3), OutOfRange);
 }
 
 TEST(SegmentedListTests, GetSubsequenceReturnsCorrectRange)

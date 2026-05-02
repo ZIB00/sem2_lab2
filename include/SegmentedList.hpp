@@ -3,7 +3,7 @@
 #include "DynamicArray.hpp"
 #include "Sequence.hpp"
 
-constexpr int SEGMENT_SIZE = 10;
+constexpr size_t SEGMENT_SIZE = 10;
 
 template<class T>
 class SegmentedList : public Sequence<T>
@@ -12,7 +12,7 @@ class SegmentedList : public Sequence<T>
         struct Node
         {
             DynamicArray<T>* elements;
-            int count;
+            size_t count;
             Node* next;
 
             Node();
@@ -21,16 +21,16 @@ class SegmentedList : public Sequence<T>
 
         Node* head;
         Node* tail;
-        int length;
+        size_t length;
 
         void Clear();
         void ValidateNotEmpty();
-        Node* FindNode(int index, int& localIndex);
-        void Set(int index, T value);
+        Node* FindNode(size_t index, size_t& localIndex);
+        void Set(size_t index, T value);
 
     public:
         SegmentedList();
-        SegmentedList(T* items, int count);
+        SegmentedList(T* items, size_t count);
         SegmentedList(const SegmentedList<T>& list);
         ~SegmentedList() override;
 
@@ -38,13 +38,13 @@ class SegmentedList : public Sequence<T>
 
         T GetFirst() override;
         T GetLast() override;
-        T Get(int index) override;
-        Sequence<T>* GetSubsequence(int startIndex, int endIndex) override;
-        int GetLength() override;
+        T Get(size_t index) override;
+        Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) override;
+        size_t GetLength() override;
 
         Sequence<T>* Append(T item) override;
         Sequence<T>* Prepend(T item) override;
-        Sequence<T>* InsertAt(T item, int index) override;
+        Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
         Sequence<T>* Map(T (*)(T)) override;

@@ -1,3 +1,0 @@
-D:/Program/my_projects/sem2_lab2/build/_deps/wxwidgets-subbuild/CMakeFiles/wxwidgets-populate.dir
-D:/Program/my_projects/sem2_lab2/build/_deps/wxwidgets-subbuild/CMakeFiles/ALL_BUILD.dir
-D:/Program/my_projects/sem2_lab2/build/_deps/wxwidgets-subbuild/CMakeFiles/ZERO_CHECK.dir

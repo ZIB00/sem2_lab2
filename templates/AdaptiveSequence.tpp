@@ -11,7 +11,7 @@ AdaptiveSequence<T>::AdaptiveSequence()
 }
 
 template<class T>
-AdaptiveSequence<T>::AdaptiveSequence(T* items, int count)
+AdaptiveSequence<T>::AdaptiveSequence(T* items, size_t count)
 {
     this->sequence = new MutableArraySequence<T>(items, count);
     this->getCount = 0;
@@ -55,7 +55,7 @@ void AdaptiveSequence<T>::CopyFrom(const AdaptiveSequence<T>& other)
     }
 
     try {
-        for (int index = 0; index < other.sequence->GetLength(); ++index) {
+        for (size_t index = 0; index < other.sequence->GetLength(); ++index) {
             copiedSequence->Append(other.sequence->Get(index));
         }
     }
@@ -80,7 +80,7 @@ void AdaptiveSequence<T>::SwitchToArraySequence()
     Sequence<T>* newSequence = new MutableArraySequence<T>();
 
     try {
-        for (int index = 0; index < this->sequence->GetLength(); ++index) {
+        for (size_t index = 0; index < this->sequence->GetLength(); ++index) {
             newSequence->Append(this->sequence->Get(index));
         }
     }
@@ -103,7 +103,7 @@ void AdaptiveSequence<T>::SwitchToListSequence()
     Sequence<T>* newSequence = new MutableListSequence<T>();
 
     try {
-        for (int index = 0; index < this->sequence->GetLength(); ++index) {
+        for (size_t index = 0; index < this->sequence->GetLength(); ++index) {
             newSequence->Append(this->sequence->Get(index));
         }
     }
@@ -144,7 +144,7 @@ T AdaptiveSequence<T>::GetLast()
 }
 
 template<class T>
-T AdaptiveSequence<T>::Get(int index)
+T AdaptiveSequence<T>::Get(size_t index)
 {
     this->getCount++;
     this->UpdateStrategy();
@@ -152,7 +152,7 @@ T AdaptiveSequence<T>::Get(int index)
 }
 
 template<class T>
-Sequence<T>* AdaptiveSequence<T>::GetSubsequence(int startIndex, int endIndex)
+Sequence<T>* AdaptiveSequence<T>::GetSubsequence(size_t startIndex, size_t endIndex)
 {
     if (startIndex < 0) throw InvalidArgument("Start index cannot be negative");
     if (endIndex < 0) throw InvalidArgument("End index cannot be negative");
@@ -166,7 +166,7 @@ Sequence<T>* AdaptiveSequence<T>::GetSubsequence(int startIndex, int endIndex)
     }
 
     try {
-        for (int index = startIndex; index <= endIndex; ++index) {
+        for (size_t index = startIndex; index <= endIndex; ++index) {
             result->sequence->Append(this->sequence->Get(index));
         }
     }
@@ -179,7 +179,7 @@ Sequence<T>* AdaptiveSequence<T>::GetSubsequence(int startIndex, int endIndex)
 }
 
 template<class T>
-int AdaptiveSequence<T>::GetLength()
+size_t AdaptiveSequence<T>::GetLength()
 {
     return this->sequence->GetLength();
 }
@@ -203,7 +203,7 @@ Sequence<T>* AdaptiveSequence<T>::Prepend(T item)
 }
 
 template<class T>
-Sequence<T>* AdaptiveSequence<T>::InsertAt(T item, int index)
+Sequence<T>* AdaptiveSequence<T>::InsertAt(T item, size_t index)
 {
     this->insertCount++;
     this->UpdateStrategy();
@@ -232,9 +232,9 @@ Sequence<T>* AdaptiveSequence<T>::Map(T (*Function)(T))
     }
 
     try {
-        int length = this->GetLength();
+        size_t length = this->GetLength();
 
-        for (int index = 0; index < length; ++index) {
+        for (size_t index = 0; index < length; ++index) {
             result->sequence->Append(Function(this->sequence->Get(index)));
         }
     }
@@ -258,9 +258,9 @@ Sequence<T>* AdaptiveSequence<T>::Where(bool (*Function)(T))
     }
 
     try {
-        int length = this->GetLength();
+        size_t length = this->GetLength();
 
-        for (int index = 0; index < length; ++index) {
+        for (size_t index = 0; index < length; ++index) {
             T value = this->sequence->Get(index);
 
             if (Function(value)) {
@@ -283,9 +283,9 @@ T AdaptiveSequence<T>::Reduce(T (*Function)(T, T))
     if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
 
     T result = this->sequence->Get(0);
-    int length = this->GetLength();
+    size_t length = this->GetLength();
 
-    for (int index = 1; index < length; ++index) {
+    for (size_t index = 1; index < length; ++index) {
         result = Function(result, this->sequence->Get(index));
     }
 

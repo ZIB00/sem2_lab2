@@ -25,7 +25,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{08C8F315-EEB3-31D8-8CA8-8EED173F760A}</ProjectGuid>
+    <ProjectGuid>{C643DA79-83E9-3E64-976C-5A53F4CB2FF6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
     <Platform>x64</Platform>
@@ -69,7 +69,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\include;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googletest\include;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\include;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googletest\include;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -79,7 +79,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\include;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googletest\include;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\include;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googletest\include;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -89,7 +89,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\include;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googletest\include;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\include;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googletest\include;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -99,7 +99,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\include;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googletest\include;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\include;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googletest\include;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -108,11 +108,11 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\CMakeLists.txt">
+    <CustomBuild Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Program/my_projects/sem2_lab2/tests/googletest-1.17.0/googlemock/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googlemock/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/sem2_lab2 -BD:/Program/my_projects/sem2_lab2/build --check-stamp-file D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/my_programs_CPP/sem2_lab2 -BD:/Program/my_projects/my_programs_CPP/sem2_lab2/build --check-stamp-file D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -120,12 +120,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindThreads.cmake;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock.pc.in;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock_main.pc.in;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Program\my_projects\sem2_lab2\build\tests\googletest-1.17.0\googlemock\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindThreads.cmake;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock.pc.in;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock_main.pc.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\tests\googletest-1.17.0\googlemock\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Program/my_projects/sem2_lab2/tests/googletest-1.17.0/googlemock/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googlemock/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/sem2_lab2 -BD:/Program/my_projects/sem2_lab2/build --check-stamp-file D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/my_programs_CPP/sem2_lab2 -BD:/Program/my_projects/my_programs_CPP/sem2_lab2/build --check-stamp-file D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -133,12 +133,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindThreads.cmake;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock.pc.in;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock_main.pc.in;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Program\my_projects\sem2_lab2\build\tests\googletest-1.17.0\googlemock\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindThreads.cmake;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock.pc.in;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock_main.pc.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\tests\googletest-1.17.0\googlemock\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Program/my_projects/sem2_lab2/tests/googletest-1.17.0/googlemock/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googlemock/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/sem2_lab2 -BD:/Program/my_projects/sem2_lab2/build --check-stamp-file D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/my_programs_CPP/sem2_lab2 -BD:/Program/my_projects/my_programs_CPP/sem2_lab2/build --check-stamp-file D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -146,12 +146,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindThreads.cmake;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock.pc.in;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock_main.pc.in;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Program\my_projects\sem2_lab2\build\tests\googletest-1.17.0\googlemock\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindThreads.cmake;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock.pc.in;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock_main.pc.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\tests\googletest-1.17.0\googlemock\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Program/my_projects/sem2_lab2/tests/googletest-1.17.0/googlemock/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googlemock/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/sem2_lab2 -BD:/Program/my_projects/sem2_lab2/build --check-stamp-file D:/Program/my_projects/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/my_programs_CPP/sem2_lab2 -BD:/Program/my_projects/my_programs_CPP/sem2_lab2/build --check-stamp-file D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/tests/googletest-1.17.0/googlemock/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -159,8 +159,8 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindThreads.cmake;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock.pc.in;D:\Program\my_projects\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock_main.pc.in;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Program\my_projects\sem2_lab2\build\tests\googletest-1.17.0\googlemock\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\FindThreads.cmake;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock.pc.in;D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\cmake\gmock_main.pc.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\tests\googletest-1.17.0\googlemock\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
@@ -168,26 +168,26 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="D:\Program\my_projects\sem2_lab2\build\ZERO_CHECK.vcxproj">
-      <Project>{D8DFF734-ECDE-3189-A729-2139DD5D2775}</Project>
+    <ProjectReference Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\ZERO_CHECK.vcxproj">
+      <Project>{E45E386D-D5BF-37DF-8F1F-074D5B98515B}</Project>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="D:\Program\my_projects\sem2_lab2\build\tests\googletest-1.17.0\googlemock\gmock.vcxproj">
-      <Project>{2043F7EC-3D6A-3CD1-BBED-77707AB6275B}</Project>
+    <ProjectReference Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\tests\googletest-1.17.0\googlemock\gmock.vcxproj">
+      <Project>{F8987F62-224C-355C-830D-EA32600B5894}</Project>
       <Name>gmock</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Program\my_projects\sem2_lab2\build\tests\googletest-1.17.0\googlemock\gmock_main.vcxproj">
-      <Project>{B0728FA2-8F85-3954-8D54-1E27555881C5}</Project>
+    <ProjectReference Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\tests\googletest-1.17.0\googlemock\gmock_main.vcxproj">
+      <Project>{ED2192CB-B770-3ADC-8685-9DF6DCCDA19B}</Project>
       <Name>gmock_main</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Program\my_projects\sem2_lab2\build\tests\googletest-1.17.0\googletest\gtest.vcxproj">
-      <Project>{41BC3561-CB7A-35EF-B65B-0647836DF108}</Project>
+    <ProjectReference Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\tests\googletest-1.17.0\googletest\gtest.vcxproj">
+      <Project>{19783FD9-679A-3CE2-A478-CC8856AF2466}</Project>
       <Name>gtest</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Program\my_projects\sem2_lab2\build\tests\googletest-1.17.0\googletest\gtest_main.vcxproj">
-      <Project>{201C06D8-2734-3011-BF7E-A6C4615286EB}</Project>
+    <ProjectReference Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\tests\googletest-1.17.0\googletest\gtest_main.vcxproj">
+      <Project>{B0B4AB4B-E640-39BE-B8DD-0BBBB6CAD1C5}</Project>
       <Name>gtest_main</Name>
     </ProjectReference>
   </ItemGroup>

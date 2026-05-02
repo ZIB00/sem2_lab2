@@ -7,21 +7,21 @@ class DynamicArray
 {
     private:
         T* data;
-        int size;
+        size_t size;
 
     public:
-        DynamicArray(T* items, int count);
-        DynamicArray(int size);
+        DynamicArray(T* items, size_t count);
+        DynamicArray(size_t size);
         DynamicArray(const DynamicArray<T>& dynamicArray);
         ~DynamicArray();
 
         DynamicArray<T>& operator=(const DynamicArray<T>& dynamicArray);
 
-        T Get(int index);
-        int GetSize();
+        T Get(size_t index);
+        size_t GetSize();
 
-        void Set(int index, T value);
-        void Resize(int newSize);
+        void Set(size_t index, T value);
+        void Resize(size_t newSize);
 };
 
 #include "DynamicArray.tpp"

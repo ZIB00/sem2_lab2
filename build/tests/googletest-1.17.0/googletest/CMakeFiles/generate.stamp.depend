@@ -9,8 +9,8 @@ C:/Program Files/CMake/share/cmake-4.3/Modules/FindPackageMessage.cmake
 C:/Program Files/CMake/share/cmake-4.3/Modules/FindThreads.cmake
 C:/Program Files/CMake/share/cmake-4.3/Modules/Internal/CheckSourceCompiles.cmake
 C:/Program Files/CMake/share/cmake-4.3/Modules/WriteBasicConfigVersionFile.cmake
-D:/Program/my_projects/sem2_lab2/tests/googletest-1.17.0/googletest/CMakeLists.txt
-D:/Program/my_projects/sem2_lab2/tests/googletest-1.17.0/googletest/cmake/Config.cmake.in
-D:/Program/my_projects/sem2_lab2/tests/googletest-1.17.0/googletest/cmake/gtest.pc.in
-D:/Program/my_projects/sem2_lab2/tests/googletest-1.17.0/googletest/cmake/gtest_main.pc.in
-D:/Program/my_projects/sem2_lab2/tests/googletest-1.17.0/googletest/cmake/internal_utils.cmake
+D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googletest/CMakeLists.txt
+D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googletest/cmake/Config.cmake.in
+D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googletest/cmake/gtest.pc.in
+D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googletest/cmake/gtest_main.pc.in
+D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googletest/cmake/internal_utils.cmake

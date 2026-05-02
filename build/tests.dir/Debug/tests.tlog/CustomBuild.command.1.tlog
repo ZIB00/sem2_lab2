@@ -1,6 +1,6 @@
-^D:\PROGRAM\MY_PROJECTS\SEM2_LAB2\CMAKELISTS.TXT
+^D:\PROGRAM\MY_PROJECTS\MY_PROGRAMS_CPP\SEM2_LAB2\CMAKELISTS.TXT
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/sem2_lab2 -BD:/Program/my_projects/sem2_lab2/build --check-stamp-file D:/Program/my_projects/sem2_lab2/build/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Program/my_projects/my_programs_CPP/sem2_lab2 -BD:/Program/my_projects/my_programs_CPP/sem2_lab2/build --check-stamp-file D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

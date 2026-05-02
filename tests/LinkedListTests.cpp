@@ -70,13 +70,6 @@ TEST(LinkedListTests, ItemsConstructorAllowsZeroCountWithNonNullItems)
     EXPECT_EQ(list.GetLength(), 0);
 }
 
-TEST(LinkedListTests, ItemsConstructorRejectsNegativeCount)
-{
-    int items[] = {1, 2, 3};
-
-    EXPECT_THROW(LinkedList<int> list(items, -1), InvalidArgument);
-}
-
 TEST(LinkedListTests, ItemsConstructorRejectsNullItemsWhenCountIsPositive)
 {
     EXPECT_THROW(LinkedList<int> list(nullptr, 1), InvalidArgument);
@@ -106,13 +99,6 @@ TEST(LinkedListTests, GetReturnsElementByIndex)
     EXPECT_EQ(list.Get(0), 10);
     EXPECT_EQ(list.Get(1), 20);
     EXPECT_EQ(list.Get(2), 30);
-}
-
-TEST(LinkedListTests, GetRejectsNegativeIndex)
-{
-    LinkedList<int> list;
-
-    EXPECT_THROW(list.Get(-1), InvalidArgument);
 }
 
 TEST(LinkedListTests, GetRejectsIndexEqualToLength)
@@ -221,13 +207,6 @@ TEST(LinkedListTests, InsertAtLengthAppends)
     EXPECT_EQ(list.GetLast(), 3);
 }
 
-TEST(LinkedListTests, InsertAtRejectsNegativeIndex)
-{
-    LinkedList<int> list;
-
-    EXPECT_THROW(list.InsertAt(10, -1), InvalidArgument);
-}
-
 TEST(LinkedListTests, InsertAtRejectsIndexGreaterThanLength)
 {
     int items[] = {1, 2};
@@ -298,22 +277,6 @@ TEST(LinkedListTests, GetSubListReturnsIndependentList)
     EXPECT_EQ(subList->Get(0), 100);
 
     delete subList;
-}
-
-TEST(LinkedListTests, GetSubListRejectsNegativeStartIndex)
-{
-    int items[] = {1, 2, 3};
-    LinkedList<int> list(items, 3);
-
-    EXPECT_THROW(list.GetSubList(-1, 1), InvalidArgument);
-}
-
-TEST(LinkedListTests, GetSubListRejectsNegativeEndIndex)
-{
-    int items[] = {1, 2, 3};
-    LinkedList<int> list(items, 3);
-
-    EXPECT_THROW(list.GetSubList(0, -1), InvalidArgument);
 }
 
 TEST(LinkedListTests, GetSubListRejectsStartGreaterThanEnd)

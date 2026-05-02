@@ -9,14 +9,14 @@ class ListSequence : public Sequence<T>
     private:
         LinkedList<T>* items;
 
-        void AppendInternal(T item);
-        void PrependInternal(T item);
-        void InsertAtInternal(T item, int index);
-        void ConcatInternal(Sequence<T>* list);
+        void Appendsize_ternal(T item);
+        void Prependsize_ternal(T item);
+        void InsertAtsize_ternal(T item, size_t index);
+        void Concatsize_ternal(Sequence<T>* list);
 
     protected:
         ListSequence();
-        void SetItems(T* items, int count);
+        void SetItems(T* items, size_t count);
         void CopyItems(const ListSequence<T>& sequence);
         virtual ListSequence<T>* Instance() = 0;
         virtual ListSequence<T>* CreateEmpty() = 0;
@@ -28,13 +28,13 @@ class ListSequence : public Sequence<T>
 
         T GetFirst() override;
         T GetLast() override;
-        T Get(int index) override;
-        Sequence<T>* GetSubsequence(int startIndex, int endIndex) override;
-        int GetLength() override;
+        T Get(size_t index) override;
+        Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) override;
+        size_t GetLength() override;
 
         Sequence<T>* Append(T item) override;
         Sequence<T>* Prepend(T item) override;
-        Sequence<T>* InsertAt(T item, int index) override;
+        Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
         Sequence<T>* Map(T (*)(T)) override;
@@ -51,7 +51,7 @@ class MutableListSequence : public ListSequence<T>
 
     public:
         MutableListSequence();
-        MutableListSequence(T* items, int count);
+        MutableListSequence(T* items, size_t count);
         MutableListSequence(const MutableListSequence<T>& sequence);
 
         MutableListSequence<T>& operator=(const MutableListSequence<T>& sequence);
@@ -66,7 +66,7 @@ class ImmutableListSequence : public ListSequence<T>
 
     public:
         ImmutableListSequence();
-        ImmutableListSequence(T* items, int count);
+        ImmutableListSequence(T* items, size_t count);
         ImmutableListSequence(const ImmutableListSequence<T>& sequence);
 
         ImmutableListSequence<T>& operator=(const ImmutableListSequence<T>& sequence);

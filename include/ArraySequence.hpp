@@ -10,15 +10,15 @@ class ArraySequence : public Sequence<T>
         DynamicArray<T>* items;
 
         void ValidateNotEmpty();
-        void ValidateSubsequenceRange(int startIndex, int endIndex);
-        void ValidateInsertIndex(int index);
-        void AppendInternal(T item);
-        void InsertAtInternal(T item, int index);
-        void ConcatInternal(Sequence<T>* list);
+        void ValidateSubsequenceRange(size_t startIndex, size_t endIndex);
+        void ValidateInsertIndex(size_t index);
+        void Appendsize_ternal(T item);
+        void InsertAtsize_ternal(T item, size_t index);
+        void Concatsize_ternal(Sequence<T>* list);
 
     protected:
         ArraySequence();
-        void SetItems(T* items, int count);
+        void SetItems(T* items, size_t count);
         void CopyItems(const ArraySequence<T>& sequence);
         virtual ArraySequence<T>* Instance() = 0;
         virtual ArraySequence<T>* CreateEmpty() = 0;
@@ -30,13 +30,13 @@ class ArraySequence : public Sequence<T>
 
         T GetFirst() override;
         T GetLast() override;
-        T Get(int index) override;
-        Sequence<T>* GetSubsequence(int startIndex, int endIndex) override;
-        int GetLength() override;
+        T Get(size_t index) override;
+        Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) override;
+        size_t GetLength() override;
 
         Sequence<T>* Append(T item) override;
         Sequence<T>* Prepend(T item) override;
-        Sequence<T>* InsertAt(T item, int index) override;
+        Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
         Sequence<T>* Map(T (*)(T)) override;
@@ -53,7 +53,7 @@ class MutableArraySequence : public ArraySequence<T>
 
     public:
         MutableArraySequence();
-        MutableArraySequence(T* items, int count);
+        MutableArraySequence(T* items, size_t count);
         MutableArraySequence(const MutableArraySequence<T>& sequence);
 
         MutableArraySequence<T>& operator=(const MutableArraySequence<T>& sequence);
@@ -68,7 +68,7 @@ class ImmutableArraySequence : public ArraySequence<T>
 
     public:
         ImmutableArraySequence();
-        ImmutableArraySequence(T* items, int count);
+        ImmutableArraySequence(T* items, size_t count);
         ImmutableArraySequence(const ImmutableArraySequence<T>& sequence);
 
         ImmutableArraySequence<T>& operator=(const ImmutableArraySequence<T>& sequence);

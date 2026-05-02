@@ -3,10 +3,10 @@
 #include "BitSequence.hpp"
 
 template<class T>
-void BitSequence<T>::SetBit(int index, bool value)
+void BitSequence<T>::SetBit(size_t index, bool value)
 {
-    int byteIndex = index / 8;
-    int bitOffset = index % 8;
+    size_t byteIndex = index / 8;
+    size_t bitOffset = index % 8;
 
     unsigned char theByte = this->bytes->Get(byteIndex);
 
@@ -27,11 +27,11 @@ BitSequence<T>::BitSequence()
 }
 
 template<class T>
-BitSequence<T>::BitSequence(T* items, int count) : BitSequence()
+BitSequence<T>::BitSequence(T* items, size_t count) : BitSequence()
 {
     if (count < 0) throw InvalidArgument("Count cannot be negative");
 
-    for (int i = 0; i < count; ++i) {
+    for (size_t i = 0; i < count; ++i) {
         this->Append(items[i]);
     }
 }
@@ -65,14 +65,14 @@ BitSequence<T>& BitSequence<T>::operator=(const BitSequence<T>& other)
 }
 
 template<class T>
-T BitSequence<T>::Get(int index)
+T BitSequence<T>::Get(size_t index)
 {
     if (index < 0 || index >= this->bitCount) {
         throw OutOfRange("Index is out of range");
     }
 
-    int byteIndex = index / 8;
-    int bitOffset = index % 8;
+    size_t byteIndex = index / 8;
+    size_t bitOffset = index % 8;
 
     unsigned char theByte = this->bytes->Get(byteIndex);
     bool bitValue = (theByte >> bitOffset) & 1;
@@ -97,20 +97,20 @@ T BitSequence<T>::GetLast()
 }
 
 template<class T>
-int BitSequence<T>::GetLength()
+size_t BitSequence<T>::GetLength()
 {
     return this->bitCount;
 }
 
 template<class T>
-Sequence<T>* BitSequence<T>::GetSubsequence(int startIndex, int endIndex)
+Sequence<T>* BitSequence<T>::GetSubsequence(size_t startIndex, size_t endIndex)
 {
     if (startIndex < 0 || endIndex < 0 || startIndex > endIndex || endIndex >= this->bitCount) {
         throw OutOfRange("Invalid sequence range");
     }
 
     BitSequence<T>* result = new BitSequence<T>();
-    for (int i = startIndex; i <= endIndex; ++i) {
+    for (size_t i = startIndex; i <= endIndex; ++i) {
         result->Append(this->Get(i));
     }
     return result;
@@ -120,7 +120,7 @@ template<class T>
 Sequence<T>* BitSequence<T>::Append(T item)
 {
     if (this->bitCount % 8 == 0) {
-        int currentBytes = this->bytes->GetSize();
+        size_t currentBytes = this->bytes->GetSize();
         this->bytes->Resize(currentBytes + 1);
         this->bytes->Set(currentBytes, 0);
     }
@@ -132,7 +132,7 @@ Sequence<T>* BitSequence<T>::Append(T item)
 }
 
 template<class T>
-Sequence<T>* BitSequence<T>::InsertAt(T item, int index)
+Sequence<T>* BitSequence<T>::InsertAt(T item, size_t index)
 {
     if (index < 0) throw InvalidArgument("Index cannot be negative");
     if (index > this->bitCount) throw OutOfRange("Index is out of range");
@@ -143,7 +143,7 @@ Sequence<T>* BitSequence<T>::InsertAt(T item, int index)
 
     this->Append(static_cast<T>(false)); 
 
-    for (int i = this->bitCount - 1; i > index; i--) {
+    for (size_t i = this->bitCount - 1; i > index; i--) {
         bool previousBit = static_cast<bool>(this->Get(i - 1));
         this->SetBit(i, previousBit);
     }
@@ -164,7 +164,7 @@ Sequence<T>* BitSequence<T>::Concat(Sequence<T>* list)
 {
     if (list == nullptr) throw InvalidArgument("Sequence cannot be null");
 
-    for (int i = 0; i < list->GetLength(); ++i) {
+    for (size_t i = 0; i < list->GetLength(); ++i) {
         this->Append(list->Get(i));
     }
 
@@ -177,7 +177,7 @@ Sequence<T>* BitSequence<T>::Map(T (*Function)(T))
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
     BitSequence<T>* result = new BitSequence<T>();
-    for (int i = 0; i < this->bitCount; ++i) {
+    for (size_t i = 0; i < this->bitCount; ++i) {
         result->Append(Function(this->Get(i)));
     }
 
@@ -190,7 +190,7 @@ Sequence<T>* BitSequence<T>::Where(bool (*Function)(T))
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
     BitSequence<T>* result = new BitSequence<T>();
-    for (int i = 0; i < this->bitCount; ++i) {
+    for (size_t i = 0; i < this->bitCount; ++i) {
         T value = this->Get(i);
         if (Function(value)) {
             result->Append(value);
@@ -207,7 +207,7 @@ T BitSequence<T>::Reduce(T (*Function)(T, T))
     if (this->bitCount == 0) throw OutOfRange("Sequence is empty");
 
     T result = this->Get(0);
-    for (int i = 1; i < this->bitCount; ++i) {
+    for (size_t i = 1; i < this->bitCount; ++i) {
         result = Function(result, this->Get(i));
     }
 
@@ -218,12 +218,12 @@ template<class T>
 BitSequence<T>* BitSequence<T>::NOT()
 {
     BitSequence<T>* result = new BitSequence<T>();
-    int byteSize = this->bytes->GetSize();
+    size_t byteSize = this->bytes->GetSize();
     
     result->bytes->Resize(byteSize);
     result->bitCount = this->bitCount;
 
-    for (int i = 0; i < byteSize; ++i) {
+    for (size_t i = 0; i < byteSize; ++i) {
         result->bytes->Set(i, ~this->bytes->Get(i));
     }
 
@@ -236,12 +236,12 @@ BitSequence<T>* BitSequence<T>::AND(const BitSequence<T>* other)
     if (other == nullptr) throw InvalidArgument("Other sequence cannot be null");
 
     BitSequence<T>* result = new BitSequence<T>();
-    int maxBytes = std::max(this->bytes->GetSize(), other->bytes->GetSize());
+    size_t maxBytes = std::max(this->bytes->GetSize(), other->bytes->GetSize());
     
     result->bytes->Resize(maxBytes);
     result->bitCount = std::max(this->bitCount, other->bitCount);
 
-    for (int i = 0; i < maxBytes; ++i) {
+    for (size_t i = 0; i < maxBytes; ++i) {
         unsigned char byteA = 0;
         if (i < this->bytes->GetSize()) {
             byteA = this->bytes->Get(i);
@@ -264,12 +264,12 @@ BitSequence<T>* BitSequence<T>::OR(const BitSequence<T>* other)
     if (other == nullptr) throw InvalidArgument("Other sequence cannot be null");
 
     BitSequence<T>* result = new BitSequence<T>();
-    int maxBytes = std::max(this->bytes->GetSize(), other->bytes->GetSize());
+    size_t maxBytes = std::max(this->bytes->GetSize(), other->bytes->GetSize());
     
     result->bytes->Resize(maxBytes);
     result->bitCount = std::max(this->bitCount, other->bitCount);
 
-    for (int i = 0; i < maxBytes; ++i) {
+    for (size_t i = 0; i < maxBytes; ++i) {
         unsigned char byteA = 0;
         if (i < this->bytes->GetSize()) {
             byteA = this->bytes->Get(i);
@@ -292,12 +292,12 @@ BitSequence<T>* BitSequence<T>::XOR(const BitSequence<T>* other)
     if (other == nullptr) throw InvalidArgument("Other sequence cannot be null");
 
     BitSequence<T>* result = new BitSequence<T>();
-    int maxBytes = std::max(this->bytes->GetSize(), other->bytes->GetSize());
+    size_t maxBytes = std::max(this->bytes->GetSize(), other->bytes->GetSize());
     
     result->bytes->Resize(maxBytes);
     result->bitCount = std::max(this->bitCount, other->bitCount);
 
-    for (int i = 0; i < maxBytes; ++i) {
+    for (size_t i = 0; i < maxBytes; ++i) {
         unsigned char byteA = 0;
         if (i < this->bytes->GetSize()) {
             byteA = this->bytes->Get(i);

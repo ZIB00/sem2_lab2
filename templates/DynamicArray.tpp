@@ -3,7 +3,7 @@
 #include "DynamicArray.hpp"
 
 template<class T>
-DynamicArray<T>::DynamicArray(T* items, int count)
+DynamicArray<T>::DynamicArray(T* items, size_t count)
 {
     if (count < 0) throw InvalidArgument("Count cannot be negative");
 
@@ -18,13 +18,13 @@ DynamicArray<T>::DynamicArray(T* items, int count)
     this->data = new T[count];
     this->size = count;
 
-    for (int i = 0; i < this->size; i++) {
+    for (size_t i = 0; i < this->size; i++) {
         this->data[i] = items[i];
     }
 }
 
 template<class T>
-DynamicArray<T>::DynamicArray(int size)
+DynamicArray<T>::DynamicArray(size_t size)
 {
     if (size < 0) throw InvalidArgument("Size cannot be negative");
 
@@ -50,7 +50,7 @@ DynamicArray<T>::DynamicArray(const DynamicArray<T>& dynamicArray)
 
     this->data = new T[this->size];
 
-    for (int i = 0; i < this->size; i++) {
+    for (size_t i = 0; i < this->size; i++) {
         this->data[i] = dynamicArray.data[i];
     }
 }
@@ -73,7 +73,7 @@ DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T>& dynamicArray)
     if (dynamicArray.size > 0) {
         newData = new T[dynamicArray.size];
 
-        for (int i = 0; i < dynamicArray.size; i++) {
+        for (size_t i = 0; i < dynamicArray.size; i++) {
             newData[i] = dynamicArray.data[i];
         }
     }
@@ -87,7 +87,7 @@ DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T>& dynamicArray)
 }
 
 template<class T>
-T DynamicArray<T>::Get(int index)
+T DynamicArray<T>::Get(size_t index)
 {
     if (index < 0) throw InvalidArgument("Index cannot be negative");
     if (index >= this->size) throw OutOfRange("Index is out of range");
@@ -96,13 +96,13 @@ T DynamicArray<T>::Get(int index)
 }
 
 template<class T>
-int DynamicArray<T>::GetSize()
+size_t DynamicArray<T>::GetSize()
 {
     return this->size;
 }
 
 template<class T>
-void DynamicArray<T>::Set(int index, T value)
+void DynamicArray<T>::Set(size_t index, T value)
 {
     if (index < 0) throw InvalidArgument("Index cannot be negative");
     if (index >= this->size) throw OutOfRange("Index is out of range");
@@ -111,7 +111,7 @@ void DynamicArray<T>::Set(int index, T value)
 }
 
 template<class T>
-void DynamicArray<T>::Resize(int newSize)
+void DynamicArray<T>::Resize(size_t newSize)
 {
     if (newSize < 0) throw InvalidArgument("Size cannot be negative");
 
@@ -124,9 +124,9 @@ void DynamicArray<T>::Resize(int newSize)
 
     T* newData = new T[newSize];
 
-    int elementsToCopy = this->size < newSize ? this->size : newSize;
+    size_t elementsToCopy = this->size < newSize ? this->size : newSize;
 
-    for (int i = 0; i < elementsToCopy; i++) {
+    for (size_t i = 0; i < elementsToCopy; i++) {
         newData[i] = this->data[i];
     }
 

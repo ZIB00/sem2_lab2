@@ -100,14 +100,6 @@ TEST(MutableListSequenceTests, InsertAtPlacesElementCorrectly)
     EXPECT_EQ(sequence.Get(1), 2);
 }
 
-TEST(MutableListSequenceTests, InsertAtRejectsInvalidIndices)
-{
-    MutableListSequence<int> sequence;
-
-    EXPECT_THROW(sequence.InsertAt(10, -1), InvalidArgument);
-    EXPECT_THROW(sequence.InsertAt(10, 1), OutOfRange);
-}
-
 TEST(MutableListSequenceTests, ConcatAppendsAnotherSequence)
 {
     int leftItems[] = {1, 2};
@@ -120,15 +112,6 @@ TEST(MutableListSequenceTests, ConcatAppendsAnotherSequence)
     EXPECT_EQ(left.GetLength(), 4);
     EXPECT_EQ(left.Get(2), 3);
     EXPECT_EQ(left.Get(3), 4);
-}
-
-TEST(MutableListSequenceTests, GetRejectsInvalidIndices)
-{
-    int items[] = {1, 2, 3};
-    MutableListSequence<int> sequence(items, 3);
-
-    EXPECT_THROW(sequence.Get(-1), InvalidArgument);
-    EXPECT_THROW(sequence.Get(3), OutOfRange);
 }
 
 TEST(MutableListSequenceTests, GetSubsequenceReturnsCorrectRange)

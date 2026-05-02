@@ -29,7 +29,7 @@ ArraySequence<T>& ArraySequence<T>::operator=(const ArraySequence<T>& sequence)
 }
 
 template<class T>
-void ArraySequence<T>::SetItems(T* items, int count)
+void ArraySequence<T>::SetItems(T* items, size_t count)
 {
     DynamicArray<T>* newItems = new DynamicArray<T>(items, count);
     delete this->items;
@@ -51,7 +51,7 @@ void ArraySequence<T>::ValidateNotEmpty()
 }
 
 template<class T>
-void ArraySequence<T>::ValidateSubsequenceRange(int startIndex, int endIndex)
+void ArraySequence<T>::ValidateSubsequenceRange(size_t startIndex, size_t endIndex)
 {
     if (startIndex < 0) throw InvalidArgument("Start index cannot be negative");
     if (endIndex < 0) throw InvalidArgument("End index cannot be negative");
@@ -60,29 +60,29 @@ void ArraySequence<T>::ValidateSubsequenceRange(int startIndex, int endIndex)
 }
 
 template<class T>
-void ArraySequence<T>::ValidateInsertIndex(int index)
+void ArraySequence<T>::ValidateInsertIndex(size_t index)
 {
     if (index < 0) throw InvalidArgument("Index cannot be negative");
     if (index > this->GetLength()) throw OutOfRange("Index is out of range");
 }
 
 template<class T>
-void ArraySequence<T>::AppendInternal(T item)
+void ArraySequence<T>::Appendsize_ternal(T item)
 {
-    int length = this->GetLength();
+    size_t length = this->GetLength();
     this->items->Resize(length + 1);
     this->items->Set(length, item);
 }
 
 template<class T>
-void ArraySequence<T>::InsertAtInternal(T item, int index)
+void ArraySequence<T>::InsertAtsize_ternal(T item, size_t index)
 {
     this->ValidateInsertIndex(index);
 
-    int length = this->GetLength();
+    size_t length = this->GetLength();
     this->items->Resize(length + 1);
 
-    for (int currentIndex = length; currentIndex > index; --currentIndex) {
+    for (size_t currentIndex = length; currentIndex > index; --currentIndex) {
         this->items->Set(currentIndex, this->items->Get(currentIndex - 1));
     }
 
@@ -90,14 +90,14 @@ void ArraySequence<T>::InsertAtInternal(T item, int index)
 }
 
 template<class T>
-void ArraySequence<T>::ConcatInternal(Sequence<T>* list)
+void ArraySequence<T>::Concatsize_ternal(Sequence<T>* list)
 {
     if (list == nullptr) throw InvalidArgument("Sequence cannot be null");
 
-    int listLength = list->GetLength();
+    size_t listLength = list->GetLength();
 
-    for (int index = 0; index < listLength; ++index) {
-        this->AppendInternal(list->Get(index));
+    for (size_t index = 0; index < listLength; ++index) {
+        this->Appendsize_ternal(list->Get(index));
     }
 }
 
@@ -116,21 +116,21 @@ T ArraySequence<T>::GetLast()
 }
 
 template<class T>
-T ArraySequence<T>::Get(int index)
+T ArraySequence<T>::Get(size_t index)
 {
     return this->items->Get(index);
 }
 
 template<class T>
-Sequence<T>* ArraySequence<T>::GetSubsequence(int startIndex, int endIndex)
+Sequence<T>* ArraySequence<T>::GetSubsequence(size_t startIndex, size_t endIndex)
 {
     this->ValidateSubsequenceRange(startIndex, endIndex);
 
     ArraySequence<T>* result = this->CreateEmpty();
 
     try {
-        for (int index = startIndex; index <= endIndex; ++index) {
-            result->AppendInternal(this->items->Get(index));
+        for (size_t index = startIndex; index <= endIndex; ++index) {
+            result->Appendsize_ternal(this->items->Get(index));
         }
     }
     catch (...) {
@@ -142,7 +142,7 @@ Sequence<T>* ArraySequence<T>::GetSubsequence(int startIndex, int endIndex)
 }
 
 template<class T>
-int ArraySequence<T>::GetLength()
+size_t ArraySequence<T>::GetLength()
 {
     return this->items->GetSize();
 }
@@ -151,7 +151,7 @@ template<class T>
 Sequence<T>* ArraySequence<T>::Append(T item)
 {
     ArraySequence<T>* result = this->Instance();
-    result->AppendInternal(item);
+    result->Appendsize_ternal(item);
     return result;
 }
 
@@ -162,10 +162,10 @@ Sequence<T>* ArraySequence<T>::Prepend(T item)
 }
 
 template<class T>
-Sequence<T>* ArraySequence<T>::InsertAt(T item, int index)
+Sequence<T>* ArraySequence<T>::InsertAt(T item, size_t index)
 {
     ArraySequence<T>* result = this->Instance();
-    result->InsertAtInternal(item, index);
+    result->InsertAtsize_ternal(item, index);
     return result;
 }
 
@@ -173,7 +173,7 @@ template<class T>
 Sequence<T>* ArraySequence<T>::Concat(Sequence<T>* list)
 {
     ArraySequence<T>* result = this->Instance();
-    result->ConcatInternal(list);
+    result->Concatsize_ternal(list);
     return result;
 }
 
@@ -192,9 +192,9 @@ Sequence<T>* ArraySequence<T>::Map(T (*transform)(T))
     }
 
     try {
-        int length = this->GetLength();
+        size_t length = this->GetLength();
 
-        for (int index = 0; index < length; ++index) {
+        for (size_t index = 0; index < length; ++index) {
             Sequence<T>* updated = result->Append(transform(this->items->Get(index)));
             if (updated != result) {
                 delete result;
@@ -218,13 +218,13 @@ Sequence<T>* ArraySequence<T>::Where(bool (*predicate)(T))
     ArraySequence<T>* result = this->CreateEmpty();
 
     try {
-        int length = this->GetLength();
+        size_t length = this->GetLength();
 
-        for (int index = 0; index < length; ++index) {
+        for (size_t index = 0; index < length; ++index) {
             T value = this->items->Get(index);
 
             if (predicate(value)) {
-                result->AppendInternal(value);
+                result->Appendsize_ternal(value);
             }
         }
     }
@@ -243,9 +243,9 @@ T ArraySequence<T>::Reduce(T (*reducer)(T, T))
 
     this->ValidateNotEmpty();
     T result = this->items->Get(0);
-    int length = this->GetLength();
+    size_t length = this->GetLength();
 
-    for (int index = 1; index < length; ++index) {
+    for (size_t index = 1; index < length; ++index) {
         result = reducer(result, this->items->Get(index));
     }
 
@@ -256,7 +256,7 @@ template<class T>
 MutableArraySequence<T>::MutableArraySequence() {}
 
 template<class T>
-MutableArraySequence<T>::MutableArraySequence(T* items, int count)
+MutableArraySequence<T>::MutableArraySequence(T* items, size_t count)
 {
     this->SetItems(items, count);
 }
@@ -290,7 +290,7 @@ template<class T>
 ImmutableArraySequence<T>::ImmutableArraySequence() {}
 
 template<class T>
-ImmutableArraySequence<T>::ImmutableArraySequence(T* items, int count)
+ImmutableArraySequence<T>::ImmutableArraySequence(T* items, size_t count)
 {
     this->SetItems(items, count);
 }

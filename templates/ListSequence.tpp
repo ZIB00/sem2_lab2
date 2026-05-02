@@ -28,7 +28,7 @@ ListSequence<T>& ListSequence<T>::operator=(const ListSequence<T>& sequence)
 }
 
 template<class T>
-void ListSequence<T>::SetItems(T* items, int count)
+void ListSequence<T>::SetItems(T* items, size_t count)
 {
     LinkedList<T>* newItems = new LinkedList<T>(items, count);
     delete this->items;
@@ -44,32 +44,32 @@ void ListSequence<T>::CopyItems(const ListSequence<T>& sequence)
 }
 
 template<class T>
-void ListSequence<T>::AppendInternal(T item)
+void ListSequence<T>::Appendsize_ternal(T item)
 {
     this->items->Append(item);
 }
 
 template<class T>
-void ListSequence<T>::PrependInternal(T item)
+void ListSequence<T>::Prependsize_ternal(T item)
 {
     this->items->Prepend(item);
 }
 
 template<class T>
-void ListSequence<T>::InsertAtInternal(T item, int index)
+void ListSequence<T>::InsertAtsize_ternal(T item, size_t index)
 {
     this->items->InsertAt(item, index);
 }
 
 template<class T>
-void ListSequence<T>::ConcatInternal(Sequence<T>* list)
+void ListSequence<T>::Concatsize_ternal(Sequence<T>* list)
 {
     if (list == nullptr) throw InvalidArgument("Sequence cannot be null");
 
-    int length = list->GetLength();
+    size_t length = list->GetLength();
 
-    for (int index = 0; index < length; ++index) {
-        this->AppendInternal(list->Get(index));
+    for (size_t index = 0; index < length; ++index) {
+        this->Appendsize_ternal(list->Get(index));
     }
 }
 
@@ -86,20 +86,20 @@ T ListSequence<T>::GetLast()
 }
 
 template<class T>
-T ListSequence<T>::Get(int index)
+T ListSequence<T>::Get(size_t index)
 {
     return this->items->Get(index);
 }
 
 template<class T>
-Sequence<T>* ListSequence<T>::GetSubsequence(int startIndex, int endIndex)
+Sequence<T>* ListSequence<T>::GetSubsequence(size_t startIndex, size_t endIndex)
 {
     LinkedList<T>* subList = this->items->GetSubList(startIndex, endIndex);
     ListSequence<T>* result = this->CreateEmpty();
 
     try {
-        for (int index = 0; index < subList->GetLength(); ++index) {
-            result->AppendInternal(subList->Get(index));
+        for (size_t index = 0; index < subList->GetLength(); ++index) {
+            result->Appendsize_ternal(subList->Get(index));
         }
 
         delete subList;
@@ -113,7 +113,7 @@ Sequence<T>* ListSequence<T>::GetSubsequence(int startIndex, int endIndex)
 }
 
 template<class T>
-int ListSequence<T>::GetLength()
+size_t ListSequence<T>::GetLength()
 {
     return this->items->GetLength();
 }
@@ -122,7 +122,7 @@ template<class T>
 Sequence<T>* ListSequence<T>::Append(T item)
 {
     ListSequence<T>* result = this->Instance();
-    result->AppendInternal(item);
+    result->Appendsize_ternal(item);
     return result;
 }
 
@@ -130,15 +130,15 @@ template<class T>
 Sequence<T>* ListSequence<T>::Prepend(T item)
 {
     ListSequence<T>* result = this->Instance();
-    result->PrependInternal(item);
+    result->Prependsize_ternal(item);
     return result;
 }
 
 template<class T>
-Sequence<T>* ListSequence<T>::InsertAt(T item, int index)
+Sequence<T>* ListSequence<T>::InsertAt(T item, size_t index)
 {
     ListSequence<T>* result = this->Instance();
-    result->InsertAtInternal(item, index);
+    result->InsertAtsize_ternal(item, index);
     return result;
 }
 
@@ -146,7 +146,7 @@ template<class T>
 Sequence<T>* ListSequence<T>::Concat(Sequence<T>* list)
 {
     ListSequence<T>* result = this->Instance();
-    result->ConcatInternal(list);
+    result->Concatsize_ternal(list);
     return result;
 }
 
@@ -165,9 +165,9 @@ Sequence<T>* ListSequence<T>::Map(T (*Function)(T))
     }
 
     try {
-        int length = this->GetLength();
+        size_t length = this->GetLength();
 
-        for (int index = 0; index < length; ++index) {
+        for (size_t index = 0; index < length; ++index) {
             Sequence<T>* updated = result->Append(Function(this->items->Get(index)));
             if (updated != result) {
                 delete result;
@@ -191,13 +191,13 @@ Sequence<T>* ListSequence<T>::Where(bool (*Function)(T))
     ListSequence<T>* result = this->CreateEmpty();
 
     try {
-        int length = this->GetLength();
+        size_t length = this->GetLength();
 
-        for (int index = 0; index < length; ++index) {
+        for (size_t index = 0; index < length; ++index) {
             T value = this->items->Get(index);
 
             if (Function(value)) {
-                result->AppendInternal(value);
+                result->Appendsize_ternal(value);
             }
         }
     }
@@ -216,9 +216,9 @@ T ListSequence<T>::Reduce(T (*Function)(T, T))
     if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
 
     T result = this->items->Get(0);
-    int length = this->GetLength();
+    size_t length = this->GetLength();
 
-    for (int index = 1; index < length; ++index) {
+    for (size_t index = 1; index < length; ++index) {
         result = Function(result, this->items->Get(index));
     }
 
@@ -231,7 +231,7 @@ MutableListSequence<T>::MutableListSequence()
 }
 
 template<class T>
-MutableListSequence<T>::MutableListSequence(T* items, int count)
+MutableListSequence<T>::MutableListSequence(T* items, size_t count)
 {
     this->SetItems(items, count);
 }
@@ -267,7 +267,7 @@ ImmutableListSequence<T>::ImmutableListSequence()
 }
 
 template<class T>
-ImmutableListSequence<T>::ImmutableListSequence(T* items, int count)
+ImmutableListSequence<T>::ImmutableListSequence(T* items, size_t count)
 {
     this->SetItems(items, count);
 }

@@ -99,14 +99,6 @@ TEST(AdaptiveSequenceTests, InsertAtPlacesElementCorrectly)
     EXPECT_EQ(sequence.Get(1), 2);
 }
 
-TEST(AdaptiveSequenceTests, InsertAtRejectsInvalidIndices)
-{
-    AdaptiveSequence<int> sequence;
-
-    EXPECT_THROW(sequence.InsertAt(10, -1), InvalidArgument);
-    EXPECT_THROW(sequence.InsertAt(10, 1), OutOfRange);
-}
-
 TEST(AdaptiveSequenceTests, ConcatAppendsAnotherSequence)
 {
     int leftItems[] = {1, 2};
@@ -119,15 +111,6 @@ TEST(AdaptiveSequenceTests, ConcatAppendsAnotherSequence)
     EXPECT_EQ(left.GetLength(), 4);
     EXPECT_EQ(left.Get(2), 3);
     EXPECT_EQ(left.Get(3), 4);
-}
-
-TEST(AdaptiveSequenceTests, GetRejectsInvalidIndices)
-{
-    int items[] = {1, 2, 3};
-    AdaptiveSequence<int> sequence(items, 3);
-
-    EXPECT_THROW(sequence.Get(-1), InvalidArgument);
-    EXPECT_THROW(sequence.Get(3), OutOfRange);
 }
 
 TEST(AdaptiveSequenceTests, GetSubsequenceReturnsCorrectRange)

@@ -10,13 +10,13 @@ class BitSequence : public Sequence<T>
 {
     private:
         DynamicArray<unsigned char>* bytes;
-        int bitCount;
+        size_t bitCount;
 
-        void SetBit(int index, bool value);
+        void SetBit(size_t index, bool value);
 
     public:
         BitSequence();
-        BitSequence(T* items, int count);
+        BitSequence(T* items, size_t count);
         BitSequence(const BitSequence<T>& other);
         ~BitSequence() override;
 
@@ -24,13 +24,13 @@ class BitSequence : public Sequence<T>
 
         T GetFirst() override;
         T GetLast() override;
-        T Get(int index) override;
-        Sequence<T>* GetSubsequence(int startIndex, int endIndex) override;
-        int GetLength() override;
+        T Get(size_t index) override;
+        Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) override;
+        size_t GetLength() override;
 
         Sequence<T>* Append(T item) override;
         Sequence<T>* Prepend(T item) override;
-        Sequence<T>* InsertAt(T item, int index) override;
+        Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
         Sequence<T>* Map(T (*)(T)) override;

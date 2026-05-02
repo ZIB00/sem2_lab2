@@ -25,7 +25,7 @@ void LinkedList<T>::Clear()
 }
 
 template<class T>
-LinkedList<T>::LinkedList(T* items, int count)
+LinkedList<T>::LinkedList(T* items, size_t count)
 {
     if (count < 0) throw InvalidArgument("Count cannot be negative");
     if (count > 0 && items == nullptr) throw InvalidArgument("Items cannot be null when count is positive");
@@ -34,7 +34,7 @@ LinkedList<T>::LinkedList(T* items, int count)
     this->tail = nullptr;
 
     try {
-        for (int i = 0; i < count; i++) {
+        for (size_t i = 0; i < count; i++) {
             this->Append(items[i]);
         }
     }
@@ -113,12 +113,12 @@ T LinkedList<T>::GetLast()
 }
 
 template<class T>
-T LinkedList<T>::Get(int index)
+T LinkedList<T>::Get(size_t index)
 {
     if (index < 0) throw InvalidArgument("Index cannot be negative");
 
     Node* current = this->head;
-    int currentIndex = 0;
+    size_t currentIndex = 0;
 
     while (current != nullptr) {
         if (currentIndex == index) {
@@ -133,7 +133,7 @@ T LinkedList<T>::Get(int index)
 }
 
 template<class T>
-LinkedList<T>* LinkedList<T>::GetSubList(int startIndex, int endIndex)
+LinkedList<T>* LinkedList<T>::GetSubList(size_t startIndex, size_t endIndex)
 {
     if (startIndex < 0) throw InvalidArgument("Start index cannot be negative");
     if (endIndex < 0) throw InvalidArgument("End index cannot be negative");
@@ -141,7 +141,7 @@ LinkedList<T>* LinkedList<T>::GetSubList(int startIndex, int endIndex)
 
     LinkedList<T>* result = new LinkedList<T>();
     Node* current = this->head;
-    int currentIndex = 0;
+    size_t currentIndex = 0;
 
     try {
         while (current != nullptr && currentIndex <= endIndex) {
@@ -166,9 +166,9 @@ LinkedList<T>* LinkedList<T>::GetSubList(int startIndex, int endIndex)
 }
 
 template<class T>
-int LinkedList<T>::GetLength()
+size_t LinkedList<T>::GetLength()
 {
-    int length = 0;
+    size_t length = 0;
     Node* current = this->head;
 
     while (current != nullptr) {
@@ -207,7 +207,7 @@ void LinkedList<T>::Prepend(T item)
 }
 
 template<class T>
-void LinkedList<T>::InsertAt(T item, int index)
+void LinkedList<T>::InsertAt(T item, size_t index)
 {
     if (index < 0) throw InvalidArgument("Index cannot be negative");
 
@@ -217,7 +217,7 @@ void LinkedList<T>::InsertAt(T item, int index)
     }
 
     Node* previous = this->head;
-    int previousIndex = 0;
+    size_t previousIndex = 0;
 
     while (previous != nullptr && previousIndex < index - 1) {
         previous = previous->next;

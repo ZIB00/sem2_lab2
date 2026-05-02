@@ -110,14 +110,6 @@ TEST(BitSequenceTests, InsertAtPlacesElementCorrectlyWithoutDataLoss)
     EXPECT_EQ(sequence.Get(3), 1);
 }
 
-TEST(BitSequenceTests, InsertAtRejectsInvalidIndices)
-{
-    BitSequence<int> sequence;
-
-    EXPECT_THROW(sequence.InsertAt(1, -1), InvalidArgument);
-    EXPECT_THROW(sequence.InsertAt(1, 1), OutOfRange);
-}
-
 TEST(BitSequenceTests, ConcatAppendsAnotherSequence)
 {
     int leftItems[] = {1, 0};

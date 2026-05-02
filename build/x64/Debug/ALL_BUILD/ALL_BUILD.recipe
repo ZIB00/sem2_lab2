@@ -2,16 +2,16 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\Program\my_projects\sem2_lab2\build\x64\Debug\ZERO_CHECK</FullPath>
+      <FullPath>D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\x64\Debug\ZERO_CHECK</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>D:\Program\my_projects\sem2_lab2\build\Debug\main.exe</FullPath>
+      <FullPath>D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\Debug\main.exe</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>D:\Program\my_projects\sem2_lab2\build\Debug\tests.exe</FullPath>
+      <FullPath>D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\Debug\tests.exe</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>D:\Program\my_projects\sem2_lab2\build\x64\Debug\ALL_BUILD</FullPath>
+      <FullPath>D:\Program\my_projects\my_programs_CPP\sem2_lab2\build\x64\Debug\ALL_BUILD</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

@@ -8,8 +8,8 @@ class AdaptiveSequence : public Sequence<T>
 {
     private:
         Sequence<T>* sequence;
-        int getCount;
-        int insertCount;
+        size_t getCount;
+        size_t insertCount;
 
         void SwitchToArraySequence();
         void SwitchToListSequence();
@@ -18,7 +18,7 @@ class AdaptiveSequence : public Sequence<T>
 
     public:
         AdaptiveSequence();
-        AdaptiveSequence(T* items, int count);
+        AdaptiveSequence(T* items, size_t count);
         AdaptiveSequence(const AdaptiveSequence<T>& other);
         ~AdaptiveSequence() override;
 
@@ -26,12 +26,12 @@ class AdaptiveSequence : public Sequence<T>
 
         T GetFirst() override;
         T GetLast() override;
-        T Get(int index) override;
-        Sequence<T>* GetSubsequence(int startIndex, int endIndex) override;
-        int GetLength() override;
+        T Get(size_t index) override;
+        Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) override;
+        size_t GetLength() override;
         Sequence<T>* Append(T item) override;
         Sequence<T>* Prepend(T item) override;
-        Sequence<T>* InsertAt(T item, int index) override;
+        Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
         Sequence<T>* Map(T (*)(T)) override;

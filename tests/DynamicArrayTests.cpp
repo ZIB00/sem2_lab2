@@ -28,11 +28,6 @@ TEST(DynamicArrayTests, SizeConstructorRequestedSize)
     EXPECT_EQ(array.GetSize(), 3);
 }
 
-TEST(DynamicArrayTests, SizeConstructorNegativeSize)
-{
-    EXPECT_THROW(DynamicArray<int> array(-1), InvalidArgument);
-}
-
 TEST(DynamicArrayTests, ItemsConstructorMakesIndependentCopy)
 {
     int items[] = {1, 2, 3};
@@ -59,13 +54,6 @@ TEST(DynamicArrayTests, ItemsConstructorAllowsZeroCountWithNonNullItems)
     EXPECT_EQ(array.GetSize(), 0);
 }
 
-TEST(DynamicArrayTests, ItemsConstructorRejectsNegativeCount)
-{
-    int items[] = {1, 2, 3};
-
-    EXPECT_THROW(DynamicArray<int> array(items, -1), InvalidArgument);
-}
-
 TEST(DynamicArrayTests, ItemsConstructorRejectsNullItemsWhenCountIsPositive)
 {
     EXPECT_THROW(DynamicArray<int> array(nullptr, 1), InvalidArgument);
@@ -82,13 +70,6 @@ TEST(DynamicArrayTests, GetReturnsValuesSetBySet)
     EXPECT_EQ(array.Get(0), 10);
     EXPECT_EQ(array.Get(1), 20);
     EXPECT_EQ(array.Get(2), 30);
-}
-
-TEST(DynamicArrayTests, GetRejectsNegativeIndex)
-{
-    DynamicArray<int> array(3);
-
-    EXPECT_THROW(array.Get(-1), InvalidArgument);
 }
 
 TEST(DynamicArrayTests, GetRejectsIndexEqualToSize)
@@ -122,13 +103,6 @@ TEST(DynamicArrayTests, SetChangesElement)
     EXPECT_EQ(array.Get(0), 1);
     EXPECT_EQ(array.Get(1), 200);
     EXPECT_EQ(array.Get(2), 3);
-}
-
-TEST(DynamicArrayTests, SetRejectsNegativeIndex)
-{
-    DynamicArray<int> array(3);
-
-    EXPECT_THROW(array.Set(-1, 10), InvalidArgument);
 }
 
 TEST(DynamicArrayTests, SetRejectsIndexEqualToSize)
@@ -227,13 +201,6 @@ TEST(DynamicArrayTests, ResizeCanGrowAfterClear)
 
     EXPECT_EQ(array.GetSize(), 1);
     EXPECT_EQ(array.Get(0), 42);
-}
-
-TEST(DynamicArrayTests, ResizeRejectsNegativeSize)
-{
-    DynamicArray<int> array(3);
-
-    EXPECT_THROW(array.Resize(-1), InvalidArgument);
 }
 
 TEST(DynamicArrayTests, CopyConstructorCopiesSizeAndElements)
