@@ -34,9 +34,13 @@ class AdaptiveSequence : public Sequence<T>
         Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
-        Sequence<T>* Map(T (*)(T)) override;
+        template<class T2>
+        Sequence<T>* Map(T2 (*)(T)) override;
+
         Sequence<T>* Where(bool (*)(T)) override;
-        T Reduce(T (*)(T, T)) override;
+
+        template<class T2>
+        T Reduce(T2 (*)(T2, T)) override;
 };
 
 #include "AdaptiveSequence.tpp"

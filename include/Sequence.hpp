@@ -17,7 +17,11 @@ class Sequence
         virtual Sequence<T>* InsertAt(T item, size_t index) = 0;
         virtual Sequence<T>* Concat(Sequence<T>* list) = 0;
 
-        virtual Sequence<T>* Map(T (*)(T)) = 0;
+        template<class T2>
+        virtual Sequence<T>* Map(T2 (*)(T)) = 0;
+        
         virtual Sequence<T>* Where(bool (*)(T)) = 0;
-        virtual T Reduce(T (*)(T, T)) = 0;
+
+        template<class T2>
+        virtual T Reduce(T2 (*)(T2, T)) = 0;
 };

@@ -178,9 +178,10 @@ Sequence<T>* ArraySequence<T>::Concat(Sequence<T>* list)
 }
 
 template<class T>
-Sequence<T>* ArraySequence<T>::Map(T (*transform)(T))
+template<class T2>
+Sequence<T>* ArraySequence<T>::Map(T2 (*function)(T))
 {
-    if (transform == nullptr) throw InvalidArgument("Transform function cannot be null");
+    if (function == nullptr) throw InvalidArgument("Function function cannot be null");
 
     Sequence<T>* result = nullptr;
 
@@ -195,7 +196,7 @@ Sequence<T>* ArraySequence<T>::Map(T (*transform)(T))
         size_t length = this->GetLength();
 
         for (size_t index = 0; index < length; ++index) {
-            Sequence<T>* updated = result->Append(transform(this->items->Get(index)));
+            Sequence<T>* updated = result->Append(function(this->items->Get(index)));
             if (updated != result) {
                 delete result;
                 result = updated;
@@ -237,16 +238,17 @@ Sequence<T>* ArraySequence<T>::Where(bool (*predicate)(T))
 }
 
 template<class T>
-T ArraySequence<T>::Reduce(T (*reducer)(T, T))
+template<class T2>
+T ArraySequence<T>::Reduce(T2 (*function)(T2, T))
 {
-    if (reducer == nullptr) throw InvalidArgument("Reducer function cannot be null");
+    if (function == nullptr) throw InvalidArgument("Function function cannot be null");
 
     this->ValidateNotEmpty();
     T result = this->items->Get(0);
     size_t length = this->GetLength();
 
     for (size_t index = 1; index < length; ++index) {
-        result = reducer(result, this->items->Get(index));
+        result = function(result, this->items->Get(index));
     }
 
     return result;
