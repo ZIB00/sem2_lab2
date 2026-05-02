@@ -47,13 +47,14 @@ class SegmentedList : public Sequence<T>
         Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
-        template<class T2>
-        Sequence<T>* Map(T2 (*)(T)) override;
-        
+        Sequence<T>* Map(T (*)(T)) override;
         Sequence<T>* Where(bool (*)(T)) override;
+        T Reduce(T (*)(T, T)) override;
 
-        template<class T2>
-        T Reduce(T2 (*)(T2, T)) override;
+        Option<T> TryGetFirst(bool (*)(T)) override;
+        Option<T> TryGetLast(bool (*)(T)) override;
+        Sequence<T>* FlatMap(Sequence<T>* (*)(T)) override;
+        IEnumerator<T>* GetEnumerator() override;
 };
 
 #include "SegmentedList.tpp"

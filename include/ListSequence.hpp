@@ -9,10 +9,10 @@ class ListSequence : public Sequence<T>
     private:
         LinkedList<T>* items;
 
-        void Appendsize_ternal(T item);
-        void Prependsize_ternal(T item);
-        void InsertAtsize_ternal(T item, size_t index);
-        void Concatsize_ternal(Sequence<T>* list);
+        void AppendInternal(T item);
+        void PrependInternal(T item);
+        void InsertAtInternal(T item, size_t index);
+        void ConcatInternal(Sequence<T>* list);
 
     protected:
         ListSequence();
@@ -37,18 +37,31 @@ class ListSequence : public Sequence<T>
         Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
-        template<class T2>
-        Sequence<T>* Map(T2 (*)(T)) override;
-
+        Sequence<T>* Map(T (*)(T)) override;
         Sequence<T>* Where(bool (*)(T)) override;
+        T Reduce(T (*)(T, T)) override;
 
-        template<class T2>
-        T Reduce(T2 (*)(T2, T)) override;
+        Option<T> TryGetFirst(bool (*)(T)) override;
+        Option<T> TryGetLast(bool (*)(T)) override;
 
-        Option<T> TryGetFirst(bool (*predicate)(T)) override;
-        Option<T> TryGetLast(bool (*predicate)(T)) override;
-        
-        Sequence<T>* FlatMap(Sequence<T>* (*transform)(T)) override;
+        Sequence<T>* FlatMap(Sequence<T>* (*)(T)) override;
+
+        IEnumerator<T>* GetEnumerator() override;
+};
+
+template<class T>
+class ListSequenceEnumerator : public IEnumerator<T>
+{
+    private:
+        ListSequence<T>* sequence;
+        int position;
+    
+    public:
+        ListSequenceEnumerator(ListSequence<T>* sequence);
+
+        T GetCurrent() override;
+        bool MoveNext() override;
+        void Reset() override;
 };
 
 template<class T>

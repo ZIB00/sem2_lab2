@@ -2,7 +2,6 @@
 
 #include "DynamicArray.hpp"
 #include "Sequence.hpp"
-#include "Option.hpp"
 
 template<class T>
 class ArraySequence : public Sequence<T>
@@ -13,9 +12,9 @@ class ArraySequence : public Sequence<T>
         void ValidateNotEmpty();
         void ValidateSubsequenceRange(size_t startIndex, size_t endIndex);
         void ValidateInsertIndex(size_t index);
-        void Appendsize_ternal(T item);
-        void InsertAtsize_ternal(T item, size_t index);
-        void Concatsize_ternal(Sequence<T>* list);
+        void AppendInternal(T item);
+        void InsertAtInternal(T item, size_t index);
+        void ConcatInternal(Sequence<T>* list);
 
     protected:
         ArraySequence();
@@ -40,18 +39,31 @@ class ArraySequence : public Sequence<T>
         Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
-        template<class T2>
-        Sequence<T>* Map(T2 (*)(T)) override;
-
+        Sequence<T>* Map(T (*)(T)) override;
         Sequence<T>* Where(bool (*)(T)) override;
-
-        template<class T2>
-        T Reduce(T2 (*)(T2, T)) override;
+        T Reduce(T (*)(T, T)) override;
 
         Option<T> TryGetFirst(bool (*)(T)) override;
         Option<T> TryGetLast(bool (*)(T)) override;
 
         Sequence<T>* FlatMap(Sequence<T>* (*)(T)) override;
+
+        IEnumerator<T>* GetEnumerator() override;
+};
+
+template<class T>
+class ArraySequenceEnumerator : public IEnumerator<T>
+{
+private:
+    ArraySequence<T>* sequence;
+    int position;
+
+public:
+    ArraySequenceEnumerator(ArraySequence<T>* sequence);
+
+    T GetCurrent() override;
+    bool MoveNext() override;
+    void Reset() override;
 };
 
 template<class T>

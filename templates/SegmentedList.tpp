@@ -290,8 +290,7 @@ Sequence<T>* SegmentedList<T>::Concat(Sequence<T>* list)
 }
 
 template<class T>
-template<class T2>
-Sequence<T>* SegmentedList<T>::Map(T2 (*Function)(T))
+Sequence<T>* SegmentedList<T>::Map(T (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
@@ -335,8 +334,7 @@ Sequence<T>* SegmentedList<T>::Where(bool (*Function)(T))
 }
 
 template<class T>
-template<class T2>
-T SegmentedList<T>::Reduce(T2 (*Function)(T2, T))
+T SegmentedList<T>::Reduce(T (*Function)(T, T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
@@ -348,4 +346,55 @@ T SegmentedList<T>::Reduce(T2 (*Function)(T2, T))
     }
 
     return result;
+}
+
+template<class T>
+Option<T> SegmentedList<T>::TryGetFirst(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    
+    for (size_t index = 0; index < this->length; ++index) {
+        T value = this->Get(index);
+        if (Function(value)) return Option<T>(value);
+    }
+    return Option<T>();
+}
+
+template<class T>
+Option<T> SegmentedList<T>::TryGetLast(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    
+    for (size_t index = this->length; index > 0; --index) {
+        T value = this->Get(index - 1);
+        if (Function(value)) return Option<T>(value);
+    }
+    return Option<T>();
+}
+
+template<class T>
+Sequence<T>* SegmentedList<T>::FlatMap(Sequence<T>* (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    SegmentedList<T>* result = new SegmentedList<T>();
+    
+    try {
+        for (size_t index = 0; index < this->length; ++index) {
+            Sequence<T>* subSequence = Function(this->Get(index)); 
+            for (size_t subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
+                result->Append(subSequence->Get(subIndex));
+            }
+            delete subSequence;
+        }
+    } catch (...) {
+        delete result;
+        throw;
+    }
+    return result;
+}
+
+template<class T>
+IEnumerator<T>* SegmentedList<T>::GetEnumerator()
+{
+    throw std::logic_error("Enumerator for SegmentedList is not implemented yet");
 }

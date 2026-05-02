@@ -172,8 +172,7 @@ Sequence<T>* BitSequence<T>::Concat(Sequence<T>* list)
 }
 
 template<class T>
-template<class T2>
-Sequence<T>* BitSequence<T>::Map(T2 (*Function)(T))
+Sequence<T>* BitSequence<T>::Map(T (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
@@ -202,8 +201,7 @@ Sequence<T>* BitSequence<T>::Where(bool (*Function)(T))
 }
 
 template<class T>
-template<class T2>
-T BitSequence<T>::Reduce(T2 (*Function)(T2, T))
+T BitSequence<T>::Reduce(T (*Function)(T, T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     if (this->bitCount == 0) throw OutOfRange("Sequence is empty");
@@ -214,6 +212,62 @@ T BitSequence<T>::Reduce(T2 (*Function)(T2, T))
     }
 
     return result;
+}
+
+template<class T>
+Option<T> BitSequence<T>::TryGetFirst(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    
+    for (size_t index = 0; index < this->GetLength(); ++index) {
+        T value = this->Get(index);
+        if (Function(value)) return Option<T>(value);
+    }
+    return Option<T>();
+}
+
+template<class T>
+Option<T> BitSequence<T>::TryGetLast(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    
+    for (size_t index = this->GetLength(); index > 0; --index) {
+        T value = this->Get(index - 1);
+        if (Function(value)) return Option<T>(value);
+    }
+    return Option<T>();
+}
+
+template<class T>
+Sequence<T>* BitSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+    
+    BitSequence<T>* result = new BitSequence<T>();
+    
+    try {
+        for (size_t index = 0; index < this->GetLength(); ++index) {
+            Sequence<T>* subSequence = Function(this->Get(index)); 
+            
+            for (size_t subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
+                // Добавляем биты из подпоследовательности
+                result->Append(subSequence->Get(subIndex));
+            }
+            
+            delete subSequence;
+        }
+    } catch (...) {
+        delete result;
+        throw;
+    }
+    
+    return result;
+}
+
+template<class T>
+IEnumerator<T>* BitSequence<T>::GetEnumerator()
+{
+    throw std::logic_error("Enumerator for BitSequence is not implemented yet");
 }
 
 template<class T>

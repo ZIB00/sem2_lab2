@@ -1,7 +1,11 @@
 #pragma once
 
+#include "ICollection.hpp"
+#include "IEnumerable.hpp"
+#include "Option.hpp"
+
 template<class T>
-class Sequence
+class Sequence : public ICollection<T>, public IEnumerable<T>
 {
     public:
         virtual ~Sequence() = default;
@@ -17,16 +21,14 @@ class Sequence
         virtual Sequence<T>* InsertAt(T item, size_t index) = 0;
         virtual Sequence<T>* Concat(Sequence<T>* list) = 0;
 
-        template<class T2>
-        virtual Sequence<T>* Map(T2 (*)(T)) = 0;
-
+        virtual Sequence<T>* Map(T (*)(T)) = 0;
         virtual Sequence<T>* Where(bool (*)(T)) = 0;
-
-        template<class T2>
-        virtual T Reduce(T2 (*)(T2, T)) = 0;
+        virtual T Reduce(T (*)(T, T)) = 0;
 
         virtual Option<T> TryGetFirst(bool (*)(T)) = 0;
         virtual Option<T> TryGetLast(bool (*)(T)) = 0;
 
         virtual Sequence<T>* FlatMap(Sequence<T>* (*)(T)) = 0;
+
+        virtual IEnumerator<T>* GetEnumerator() = 0;
 };

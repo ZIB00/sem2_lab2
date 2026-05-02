@@ -44,32 +44,32 @@ void ListSequence<T>::CopyItems(const ListSequence<T>& sequence)
 }
 
 template<class T>
-void ListSequence<T>::Appendsize_ternal(T item)
+void ListSequence<T>::AppendInternal(T item)
 {
     this->items->Append(item);
 }
 
 template<class T>
-void ListSequence<T>::Prependsize_ternal(T item)
+void ListSequence<T>::PrependInternal(T item)
 {
     this->items->Prepend(item);
 }
 
 template<class T>
-void ListSequence<T>::InsertAtsize_ternal(T item, size_t index)
+void ListSequence<T>::InsertAtInternal(T item, size_t index)
 {
     this->items->InsertAt(item, index);
 }
 
 template<class T>
-void ListSequence<T>::Concatsize_ternal(Sequence<T>* list)
+void ListSequence<T>::ConcatInternal(Sequence<T>* list)
 {
     if (list == nullptr) throw InvalidArgument("Sequence cannot be null");
 
     size_t length = list->GetLength();
 
     for (size_t index = 0; index < length; ++index) {
-        this->Appendsize_ternal(list->Get(index));
+        this->AppendInternal(list->Get(index));
     }
 }
 
@@ -99,7 +99,7 @@ Sequence<T>* ListSequence<T>::GetSubsequence(size_t startIndex, size_t endIndex)
 
     try {
         for (size_t index = 0; index < subList->GetLength(); ++index) {
-            result->Appendsize_ternal(subList->Get(index));
+            result->AppendInternal(subList->Get(index));
         }
 
         delete subList;
@@ -122,7 +122,7 @@ template<class T>
 Sequence<T>* ListSequence<T>::Append(T item)
 {
     ListSequence<T>* result = this->Instance();
-    result->Appendsize_ternal(item);
+    result->AppendInternal(item);
     return result;
 }
 
@@ -130,7 +130,7 @@ template<class T>
 Sequence<T>* ListSequence<T>::Prepend(T item)
 {
     ListSequence<T>* result = this->Instance();
-    result->Prependsize_ternal(item);
+    result->PrependInternal(item);
     return result;
 }
 
@@ -138,7 +138,7 @@ template<class T>
 Sequence<T>* ListSequence<T>::InsertAt(T item, size_t index)
 {
     ListSequence<T>* result = this->Instance();
-    result->InsertAtsize_ternal(item, index);
+    result->InsertAtInternal(item, index);
     return result;
 }
 
@@ -146,13 +146,12 @@ template<class T>
 Sequence<T>* ListSequence<T>::Concat(Sequence<T>* list)
 {
     ListSequence<T>* result = this->Instance();
-    result->Concatsize_ternal(list);
+    result->ConcatInternal(list);
     return result;
 }
 
 template<class T>
-template<class T2>
-Sequence<T>* ListSequence<T>::Map(T2 (*Function)(T))
+Sequence<T>* ListSequence<T>::Map(T (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
@@ -198,7 +197,7 @@ Sequence<T>* ListSequence<T>::Where(bool (*Function)(T))
             T value = this->items->Get(index);
 
             if (Function(value)) {
-                result->Appendsize_ternal(value);
+                result->AppendInternal(value);
             }
         }
     }
@@ -211,8 +210,7 @@ Sequence<T>* ListSequence<T>::Where(bool (*Function)(T))
 }
 
 template<class T>
-template<class T2>
-T ListSequence<T>::Reduce(T2 (*Function)(T2, T))
+T ListSequence<T>::Reduce(T (*Function)(T, T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
@@ -283,6 +281,48 @@ Sequence<T>* ListSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
 
     return result;
 }
+
+template<class T>
+IEnumerator<T>* ListSequence<T>::GetEnumerator()
+{
+    return new ListSequenceEnumerator<T>(this);
+}
+
+#pragma region IEnumerator
+
+template<class T>
+ListSequenceEnumerator<T>::ListSequenceEnumerator(ListSequence<T>* sequence)
+{
+    this->sequence = sequence;
+    this->position = -1;
+}
+
+template<class T>
+T ListSequenceEnumerator<T>::GetCurrent()
+{
+    if (position < 0 || position >= sequence->GetLength()) throw OutOfRange("Enumerator is out of bounds");
+
+    return sequence->Get(position);
+}
+
+template<class T>
+bool ListSequenceEnumerator<T>::MoveNext()
+{
+    if (position + 1 < sequence->GetLength()) {
+        position++;
+        return true;
+    }
+
+    return false;
+}
+
+template<class T>
+void ListSequenceEnumerator<T>::Reset()
+{
+    this->position = -1;
+}
+
+#pragma endregion
 
 #pragma region Mutable/Immutable
 

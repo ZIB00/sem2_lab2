@@ -68,7 +68,7 @@ void ArraySequence<T>::ValidateInsertIndex(size_t index)
 }
 
 template<class T>
-void ArraySequence<T>::Appendsize_ternal(T item)
+void ArraySequence<T>::AppendInternal(T item)
 {
     size_t length = this->GetLength();
     this->items->Resize(length + 1);
@@ -76,7 +76,7 @@ void ArraySequence<T>::Appendsize_ternal(T item)
 }
 
 template<class T>
-void ArraySequence<T>::InsertAtsize_ternal(T item, size_t index)
+void ArraySequence<T>::InsertAtInternal(T item, size_t index)
 {
     this->ValidateInsertIndex(index);
 
@@ -91,14 +91,14 @@ void ArraySequence<T>::InsertAtsize_ternal(T item, size_t index)
 }
 
 template<class T>
-void ArraySequence<T>::Concatsize_ternal(Sequence<T>* list)
+void ArraySequence<T>::ConcatInternal(Sequence<T>* list)
 {
     if (list == nullptr) throw InvalidArgument("Sequence cannot be null");
 
     size_t listLength = list->GetLength();
 
     for (size_t index = 0; index < listLength; ++index) {
-        this->Appendsize_ternal(list->Get(index));
+        this->AppendInternal(list->Get(index));
     }
 }
 
@@ -131,7 +131,7 @@ Sequence<T>* ArraySequence<T>::GetSubsequence(size_t startIndex, size_t endIndex
 
     try {
         for (size_t index = startIndex; index <= endIndex; ++index) {
-            result->Appendsize_ternal(this->items->Get(index));
+            result->AppendInternal(this->items->Get(index));
         }
     }
     catch (...) {
@@ -152,7 +152,7 @@ template<class T>
 Sequence<T>* ArraySequence<T>::Append(T item)
 {
     ArraySequence<T>* result = this->Instance();
-    result->Appendsize_ternal(item);
+    result->AppendInternal(item);
     return result;
 }
 
@@ -166,7 +166,7 @@ template<class T>
 Sequence<T>* ArraySequence<T>::InsertAt(T item, size_t index)
 {
     ArraySequence<T>* result = this->Instance();
-    result->InsertAtsize_ternal(item, index);
+    result->InsertAtInternal(item, index);
     return result;
 }
 
@@ -174,13 +174,12 @@ template<class T>
 Sequence<T>* ArraySequence<T>::Concat(Sequence<T>* list)
 {
     ArraySequence<T>* result = this->Instance();
-    result->Concatsize_ternal(list);
+    result->ConcatInternal(list);
     return result;
 }
 
 template<class T>
-template<class T2>
-Sequence<T>* ArraySequence<T>::Map(T2 (*Function)(T))
+Sequence<T>* ArraySequence<T>::Map(T (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
@@ -226,7 +225,7 @@ Sequence<T>* ArraySequence<T>::Where(bool (*Function)(T))
             T value = this->items->Get(index);
 
             if (Function(value)) {
-                result->Appendsize_ternal(value);
+                result->AppendInternal(value);
             }
         }
     }
@@ -239,8 +238,7 @@ Sequence<T>* ArraySequence<T>::Where(bool (*Function)(T))
 }
 
 template<class T>
-template<class T2>
-T ArraySequence<T>::Reduce(T2 (*Function)(T2, T))
+T ArraySequence<T>::Reduce(T (*Function)(T, T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
@@ -260,7 +258,7 @@ Option<T> ArraySequence<T>::TryGetFirst(bool (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
-    size_t length = this->GetLenght();
+    size_t length = this->GetLength();
     for (size_t index = 0; index < length; ++index) {
         T value = this->items->Get(index);
         if (Function(value)) {
@@ -314,6 +312,47 @@ Sequence<T>* ArraySequence<T>::FlatMap(Sequence<T>* (*Function)(T))
 
     return result;
 }
+
+template<class T>
+IEnumerator<T>* ArraySequence<T>::GetEnumerator()
+{
+    return new ArraySequenceEnumerator<T>(this);
+}
+
+#pragma region IEnumerator
+
+template<class T>
+ArraySequenceEnumerator<T>::ArraySequenceEnumerator(ArraySequence<T>* sequence)
+{
+    this->sequence = sequence;
+    this->position = -1;
+}
+
+template<class T>
+T ArraySequenceEnumerator<T>::GetCurrent()
+{
+    if (this->position < 0 || this->position >= sequence->GetLength()) throw OutOfRange("Enumerator is out of bounds");
+
+    return sequence->Get(position);
+}
+
+template<class T>
+bool ArraySequenceEnumerator<T>::MoveNext()
+{
+    if (position + 1 < sequence->GetLength()) {
+        position++;
+        return true;
+    }
+    return false;
+}
+
+template<class T>
+void ArraySequenceEnumerator<T>::Reset()
+{
+    this->position = -1;
+}
+
+#pragma endregion
 
 #pragma region Mutable/Immutable
 

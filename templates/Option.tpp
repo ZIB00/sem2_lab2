@@ -4,7 +4,7 @@ template<class T>
 Option<T>::Option()
 {
     this->hasValue = false;
-    this->value = nullptr;
+    this->value = T();
 }
 
 template<class T>

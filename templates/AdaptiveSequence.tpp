@@ -221,8 +221,7 @@ Sequence<T>* AdaptiveSequence<T>::Concat(Sequence<T>* list)
 }
 
 template<class T>
-template<class T2>
-Sequence<T>* AdaptiveSequence<T>::Map(T2 (*Function)(T))
+Sequence<T>* AdaptiveSequence<T>::Map(T (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
 
@@ -278,8 +277,7 @@ Sequence<T>* AdaptiveSequence<T>::Where(bool (*Function)(T))
 }
 
 template<class T>
-template<class T2>
-T AdaptiveSequence<T>::Reduce(T2 (*Function)(T2, T))
+T AdaptiveSequence<T>::Reduce(T (*Function)(T, T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
@@ -292,4 +290,44 @@ T AdaptiveSequence<T>::Reduce(T2 (*Function)(T2, T))
     }
 
     return result;
+}
+
+template<class T>
+Option<T> AdaptiveSequence<T>::TryGetFirst(bool (*Function)(T))
+{
+    this->UpdateStrategy();
+    return this->sequence->TryGetFirst(Function);
+}
+
+template<class T>
+Option<T> AdaptiveSequence<T>::TryGetLast(bool (*Function)(T))
+{
+    this->UpdateStrategy();
+    return this->sequence->TryGetLast(Function);
+}
+
+template<class T>
+Sequence<T>* AdaptiveSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
+{
+    // Оставляем базовую логику через цикл
+    AdaptiveSequence<T>* result = new AdaptiveSequence<T>();
+    try {
+        for (int index = 0; index < this->GetLength(); ++index) {
+            Sequence<T>* subSequence = Function(this->Get(index)); 
+            for (int subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
+                result->Append(subSequence->Get(subIndex));
+            }
+            delete subSequence;
+        }
+    } catch (...) {
+        delete result;
+        throw;
+    }
+    return result;
+}
+
+template<class T>
+IEnumerator<T>* AdaptiveSequence<T>::GetEnumerator()
+{
+    return this->sequence->GetEnumerator();
 }
