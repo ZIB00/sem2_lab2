@@ -16,6 +16,8 @@ class DynamicArray
         ~DynamicArray();
 
         DynamicArray<T>& operator=(const DynamicArray<T>& dynamicArray);
+        T& operator[](size_t index);
+        const T& operator[](size_t index) const;
 
         T Get(size_t index);
         size_t GetSize();

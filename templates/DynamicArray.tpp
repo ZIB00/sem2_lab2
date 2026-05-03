@@ -87,6 +87,20 @@ DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T>& dynamicArray)
 }
 
 template<class T>
+T& DynamicArray<T>::operator[](size_t index)
+{
+    if (index >= size) throw OutOfRange("Index out of bounds");
+    return data[index];
+}
+
+template<class T>
+const T& DynamicArray<T>::operator[](size_t index) const
+{
+    if (index >= size) throw OutOfRange("Index out of bounds");
+    return data[index];
+}
+
+template<class T>
 T DynamicArray<T>::Get(size_t index)
 {
     if (index < 0) throw InvalidArgument("Index cannot be negative");

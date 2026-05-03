@@ -97,6 +97,32 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& list)
 }
 
 template<class T>
+T& LinkedList<T>::operator[](size_t index)
+{
+    Node* current = head;
+    for (size_t i = 0; i < index; ++i) {
+        if (current == nullptr) throw OutOfRange("Index out of bounds");
+        current = current->next;
+    }
+    if (current == nullptr) throw OutOfRange("Index out of bounds");
+    
+    return current->value;
+}
+
+template<class T>
+const T& LinkedList<T>::operator[](size_t index) const
+{
+    Node* current = head;
+    for (size_t i = 0; i < index; ++i) {
+        if (current == nullptr) throw OutOfRange("Index out of bounds");
+        current = current->next;
+    }
+    if (current == nullptr) throw OutOfRange("Index out of bounds");
+    
+    return current->value;
+}
+
+template<class T>
 T LinkedList<T>::GetFirst()
 {
     if (this->head == nullptr) throw OutOfRange("List is empty");

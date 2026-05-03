@@ -17,10 +17,10 @@ class Option
         T ValueOr(T defaultValue);
 
         template<class R>
-        Option<R> Map(R (*)(T));
+        Option<R> Map(R (*Function)(T));
 
         template<class R>
-        Option<R> FlatMap(Option<R> (*)(T));
+        Option<R> FlatMap(Option<R> (*Function)(T));
 };
 
 #include "Option.tpp"

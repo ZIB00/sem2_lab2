@@ -2,6 +2,8 @@
 
 #include "BitSequence.hpp"
 
+#pragma region sequence main functions
+
 template<class T>
 void BitSequence<T>::SetBit(size_t index, bool value)
 {
@@ -47,21 +49,6 @@ template<class T>
 BitSequence<T>::~BitSequence()
 {
     delete this->bytes;
-}
-
-template<class T>
-BitSequence<T>& BitSequence<T>::operator=(const BitSequence<T>& other)
-{
-    if (this == &other) {
-        return *this;
-    }
-
-    DynamicArray<unsigned char>* newBytes = new DynamicArray<unsigned char>(*other.bytes);
-    delete this->bytes;
-    this->bytes = newBytes;
-    this->bitCount = other.bitCount;
-
-    return *this;
 }
 
 template<class T>
@@ -171,6 +158,92 @@ Sequence<T>* BitSequence<T>::Concat(Sequence<T>* list)
     return this;
 }
 
+#pragma endregion
+
+#pragma region operators (=, [], const [], +, ==, !=)
+
+template<class T>
+BitSequence<T>& BitSequence<T>::operator=(const BitSequence<T>& other)
+{
+    if (this == &other) {
+        return *this;
+    }
+
+    DynamicArray<unsigned char>* newBytes = new DynamicArray<unsigned char>(*other.bytes);
+    delete this->bytes;
+    this->bytes = newBytes;
+    this->bitCount = other.bitCount;
+
+    return *this;
+}
+
+template<class T>
+T& BitSequence<T>::operator[](size_t index)
+{
+    if (index >= this->bitCount) throw OutOfRange("Index out of bounds");
+    
+    static T temp;
+    temp = this->Get(index);
+    return temp;
+}
+
+template<class T>
+const T& BitSequence<T>::operator[](size_t index) const
+{
+    if (index >= this->bitCount) throw OutOfRange("Index out of bounds");
+
+    static T temp;
+    temp = this->Get(index);
+    return temp;
+}
+
+template<class T>
+Sequence<T>* BitSequence<T>::operator+(Sequence<T>* other)
+{
+    if (other == nullptr) throw InvalidArgument("Cannot add null sequence");
+
+    auto result = new BitSequence<T>();
+
+    try {
+        for (size_t i = 0; i < this->GetLength(); ++i) {
+            result->Append((*this)[i]);
+        }
+        for (size_t i = 0; i < other->GetLength(); ++i) {
+            result->Append(other->Get(i));
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+bool BitSequence<T>::operator==(Sequence<T>* other)
+{
+    if (this == other) return true;
+    if (other == nullptr || this->GetLength() != other->GetLength()) return false;
+
+    for (size_t i = 0; i < this->GetLength(); ++i) {
+        if ((*this)[i] != other->Get(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template<class T>
+bool BitSequence<T>::operator!=(Sequence<T>* other)
+{
+    return !(*this == other);
+}
+
+#pragma endregion
+
+#pragma region Mar/Where/Reduce
+
 template<class T>
 Sequence<T>* BitSequence<T>::Map(T (*Function)(T))
 {
@@ -214,8 +287,12 @@ T BitSequence<T>::Reduce(T (*Function)(T, T))
     return result;
 }
 
+#pragma endregion
+
+#pragma region Option
+
 template<class T>
-Option<T> BitSequence<T>::TryGetFirst(bool (*Function)(T))
+Option<T> BitSequence<T>::GetFirst(bool (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     
@@ -227,7 +304,7 @@ Option<T> BitSequence<T>::TryGetFirst(bool (*Function)(T))
 }
 
 template<class T>
-Option<T> BitSequence<T>::TryGetLast(bool (*Function)(T))
+Option<T> BitSequence<T>::GetLast(bool (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     
@@ -238,31 +315,130 @@ Option<T> BitSequence<T>::TryGetLast(bool (*Function)(T))
     return Option<T>();
 }
 
+#pragma endregion
+
+#pragma region Zip/Skip/Split/Splice/FlatMap
+
 template<class T>
-Sequence<T>* BitSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
+Sequence<T>* BitSequence<T>::Skip(size_t count)
+{
+    if (count >= this->GetLength()) {
+        return new BitSequence<T>();
+    }
+    return this->GetSubsequence(count, this->GetLength() - 1);
+}
+
+template<class T>
+Sequence<Sequence<T>*>* BitSequence<T>::Split(bool (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
-    
-    BitSequence<T>* result = new BitSequence<T>();
-    
+
+    auto result = new BitSequence<Sequence<T>*>();
+    Sequence<T>* currentPart = new BitSequence<T>();
+
     try {
-        for (size_t index = 0; index < this->GetLength(); ++index) {
-            Sequence<T>* subSequence = Function(this->Get(index)); 
-            
-            for (size_t subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
-                // Добавляем биты из подпоследовательности
-                result->Append(subSequence->Get(subIndex));
+        for (size_t i = 0; i < this->GetLength(); ++i) {
+            T value = this->Get(i);
+            if (Function(value)) {
+                result->Append(currentPart);
+                currentPart = new BitSequence<T>();
+            } else {
+                currentPart->Append(value);
             }
-            
-            delete subSequence;
         }
-    } catch (...) {
+        result->Append(currentPart);
+    }
+    catch (...) {
         delete result;
+        delete currentPart;
         throw;
     }
     
     return result;
 }
+
+template<class T>
+Sequence<T>* BitSequence<T>::Splice(size_t index, size_t count, Sequence<T>* insertSequence)
+{
+    if (index > this->GetLength()) throw OutOfRange("Index out of bounds");
+
+    size_t realCount = (count <= this->GetLength() - index) ? count : this->GetLength() - index;
+
+    auto result = new BitSequence<T>();
+
+    try {
+        for (size_t i = 0; i < index; ++i) {
+            result->Append(this->Get(i));
+        }
+
+        if (insertSequence != nullptr) {
+            for (size_t i = 0; i < insertSequence->GetLength(); ++i) {
+                result->Append(insertSequence->Get(i));
+            }
+        }
+
+        for (size_t i = index + realCount; i < this->GetLength(); ++i) {
+            result->Append(this->Get(i));
+        }
+    } 
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+Sequence<T>* BitSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    auto result = new BitSequence<T>();
+
+    try {
+        size_t length = this->GetLength();
+        for (size_t index = 0; index < length; ++index) {
+            Sequence<T>* subSequence = Function(this->Get(index)); 
+            
+            for (size_t subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
+                result->Append(subSequence->Get(subIndex));
+            }
+            
+            delete subSequence;
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+Sequence<Pair<T, T>>* BitSequence<T>::Zip(Sequence<T>* other)
+{
+    if (other == nullptr) throw InvalidArgument("Other sequence cannot be null");
+
+    auto result = new BitSequence<Pair<T, T>>();
+    
+    size_t minLen = (this->GetLength() < other->GetLength()) ? this->GetLength() : other->GetLength();
+
+    try {
+        for (size_t i = 0; i < minLen; ++i) {
+            result->Append(Pair<T, T>(this->Get(i), other->Get(i)));
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+#pragma endregion
 
 template<class T>
 IEnumerator<T>* BitSequence<T>::GetEnumerator()

@@ -23,6 +23,11 @@ class AdaptiveSequence : public Sequence<T>
         ~AdaptiveSequence() override;
 
         AdaptiveSequence<T>& operator=(const AdaptiveSequence<T>& other);
+        T& operator[](size_t index) override;
+        const T& operator[](size_t index) const override;
+        Sequence<T>* operator+(Sequence<T>* other) override;
+        bool operator==(Sequence<T>* other) override;
+        bool operator!=(Sequence<T>* other) override;
 
         T GetFirst() override;
         T GetLast() override;
@@ -35,14 +40,20 @@ class AdaptiveSequence : public Sequence<T>
         Sequence<T>* Concat(Sequence<T>* list) override;
 
 
-        Sequence<T>* Map(T (*)(T)) override;
-        Sequence<T>* Where(bool (*)(T)) override;
-        T Reduce(T (*)(T, T)) override;
+        Sequence<T>* Map(T (*Function)(T)) override;
+        Sequence<T>* Where(bool (*Function)(T)) override;
+        T Reduce(T (*Function)(T, T)) override;
 
-        Option<T> TryGetFirst(bool (*)(T)) override;
-        Option<T> TryGetLast(bool (*)(T)) override;
-        Sequence<T>* FlatMap(Sequence<T>* (*)(T)) override;
+        Option<T> GetFirst(bool (*Function)(T)) override;
+        Option<T> GetLast(bool (*Function)(T)) override;
+
         IEnumerator<T>* GetEnumerator() override;
+
+        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T)) override;
+        Sequence<T>* Skip(size_t count) override;
+        Sequence<Sequence<T>*>* Split(bool (*Function)(T)) override;
+        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr) override;
+        Sequence<Pair<T, T>>* Zip(Sequence<T>* other) override;
 };
 
 #include "AdaptiveSequence.tpp"

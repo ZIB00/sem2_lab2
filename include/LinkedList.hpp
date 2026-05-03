@@ -26,6 +26,8 @@ class LinkedList
         ~LinkedList();
 
         LinkedList<T>& operator=(const LinkedList<T>& list);
+        T& operator[](size_t index);
+        const T& operator[](size_t index) const;
 
         T GetFirst();
         T GetLast();

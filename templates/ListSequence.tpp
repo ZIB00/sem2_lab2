@@ -2,6 +2,8 @@
 
 #include "ListSequence.hpp"
 
+#pragma region sequence main functions
+
 template<class T>
 ListSequence<T>::ListSequence()
 {
@@ -12,19 +14,6 @@ template<class T>
 ListSequence<T>::~ListSequence()
 {
     delete this->items;
-}
-
-template<class T>
-ListSequence<T>& ListSequence<T>::operator=(const ListSequence<T>& sequence)
-{
-    if (this == &sequence) {
-        return *this;
-    }
-
-    LinkedList<T>* copiedItems = new LinkedList<T>(*sequence.items);
-    delete this->items;
-    this->items = copiedItems;
-    return *this;
 }
 
 template<class T>
@@ -150,6 +139,82 @@ Sequence<T>* ListSequence<T>::Concat(Sequence<T>* list)
     return result;
 }
 
+#pragma endregion
+
+#pragma region operators (=, [], const [], +, ==, !=)
+
+template<class T>
+ListSequence<T>& ListSequence<T>::operator=(const ListSequence<T>& sequence)
+{
+    if (this == &sequence) {
+        return *this;
+    }
+
+    LinkedList<T>* copiedItems = new LinkedList<T>(*sequence.items);
+    delete this->items;
+    this->items = copiedItems;
+    return *this;
+}
+
+template<class T>
+T& ListSequence<T>::operator[](size_t index)
+{
+    return (*this->items)[index]; 
+}
+
+template<class T>
+const T& ListSequence<T>::operator[](size_t index) const
+{
+    return (*this->items)[index]; 
+}
+
+template<class T>
+Sequence<T>* ListSequence<T>::operator+(Sequence<T>* other)
+{
+    if (other == nullptr) throw InvalidArgument("Cannot add null sequence");
+
+    Sequence<T>* result = this->CreateEmpty();
+
+    try {
+        for (size_t i = 0; i < this->GetLength(); ++i) {
+            result->AppendInternal((*this)[i]);
+        }
+        for (size_t i = 0; i < other->GetLength(); ++i) {
+            result->AppendInternal(other->Get(i));
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+bool ListSequence<T>::operator==(Sequence<T>* other)
+{
+    if (this == other) return true;
+    if (other == nullptr || this->GetLength() != other->GetLength()) return false;
+
+    for (size_t i = 0; i < this->GetLength(); ++i) {
+        if ((*this)[i] != other->Get(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template<class T>
+bool ListSequence<T>::operator!=(Sequence<T>* other)
+{
+    return !(*this == other);
+}
+
+#pragma endregion
+
+#pragma region Mar/Where/Reduce
+
 template<class T>
 Sequence<T>* ListSequence<T>::Map(T (*Function)(T))
 {
@@ -225,8 +290,12 @@ T ListSequence<T>::Reduce(T (*Function)(T, T))
     return result;
 }
 
+#pragma endregion
+
+#pragma region Option
+
 template<class T>
-Option<T> ListSequence<T>::TryGetFirst(bool (*Function)(T))
+Option<T> ListSequence<T>::GetFirst(bool (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     
@@ -241,7 +310,7 @@ Option<T> ListSequence<T>::TryGetFirst(bool (*Function)(T))
 }
 
 template<class T>
-Option<T> ListSequence<T>::TryGetLast(bool (*Function)(T))
+Option<T> ListSequence<T>::GetLast(bool (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     
@@ -255,32 +324,7 @@ Option<T> ListSequence<T>::TryGetLast(bool (*Function)(T))
     return Option<T>();
 }
 
-template<class T>
-Sequence<T>* ListSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
-{
-    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
-
-    ListSequence<T>* result = this->CreateEmpty();
-
-    try {
-        size_t length = this->GetLength();
-        for (size_t index = 0; index < length; ++index) {
-            Sequence<T>* subSequence = Function(this->items->Get(index)); 
-            
-            for (size_t subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
-                result->AppendInternal(subSequence->Get(subIndex));
-            }
-            
-            delete subSequence;
-        }
-    }
-    catch (...) {
-        delete result;
-        throw;
-    }
-
-    return result;
-}
+#pragma endregion
 
 template<class T>
 IEnumerator<T>* ListSequence<T>::GetEnumerator()
@@ -320,6 +364,140 @@ template<class T>
 void ListSequenceEnumerator<T>::Reset()
 {
     this->position = -1;
+}
+
+#pragma endregion
+
+#pragma region Zip/Skip/Split/Splice/FlatMap
+
+template<class T>
+Sequence<T>* ListSequence<T>::Skip(size_t count)
+{
+    if (count >= this->GetLength()) {
+        return this->CreateEmpty();
+    }
+    return this->GetSubsequence(count, this->GetLength() - 1);
+}
+
+template<class T>
+Sequence<Sequence<T>*>* ListSequence<T>::Split(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    Sequence<Sequence<T>*>* result = nullptr;
+    if (dynamic_cast<ImmutableListSequence<T>*>(this) != nullptr) {
+        result = new ImmutableListSequence<Sequence<T>*>();
+    } else {
+        result = new MutableListSequence<Sequence<T>*>();
+    }
+
+    Sequence<T>* currentPart = this->CreateEmpty();
+
+    try {
+        for (size_t i = 0; i < this->GetLength(); ++i) {
+            T value = this->Get(i);
+            if (Function(value)) {
+                result->AppendInternal(currentPart);
+                currentPart = this->CreateEmpty();
+            } else {
+                currentPart->AppendInternal(value);
+            }
+        }
+        result->AppendInternal(currentPart);
+    }
+    catch (...) {
+        delete result;
+        delete currentPart;
+        throw;
+    }
+    
+    return result;
+}
+
+template<class T>
+Sequence<T>* ListSequence<T>::Splice(size_t index, size_t count, Sequence<T>* insertSequence)
+{
+    if (index > this->GetLength()) throw OutOfRange("Index out of bounds");
+
+    size_t realCount = (count <= this->GetLength() - index) ? count : this->GetLength() - index;
+
+    Sequence<T>* result = this->CreateEmpty();
+
+    try {
+        for (size_t i = 0; i < index; ++i) {
+            result->AppendInternal(this->Get(i));
+        }
+
+        if (insertSequence != nullptr) {
+            for (size_t i = 0; i < insertSequence->GetLength(); ++i) {
+                result->AppendInternal(insertSequence->Get(i));
+            }
+        }
+
+        for (size_t i = index + realCount; i < this->GetLength(); ++i) {
+            result->AppendInternal(this->Get(i));
+        }
+    } 
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+Sequence<T>* ListSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    Sequence<T>* result = this->CreateEmpty();
+
+    try {
+        size_t length = this->GetLength();
+        for (size_t index = 0; index < length; ++index) {
+            Sequence<T>* subSequence = Function(this->Get(index)); 
+            
+            for (size_t subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
+                result->AppendInternal(subSequence->Get(subIndex));
+            }
+            
+            delete subSequence;
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+Sequence<Pair<T, T>>* ListSequence<T>::Zip(Sequence<T>* other)
+{
+    if (other == nullptr) throw InvalidArgument("Other sequence cannot be null");
+
+    Sequence<Pair<T, T>>* result = nullptr;
+    if (dynamic_cast<ImmutableListSequence<T>*>(this) != nullptr) {
+        result = new ImmutableListSequence<Pair<T, T>>();
+    } else {
+        result = new MutableListSequence<Pair<T, T>>();
+    }
+    
+    size_t minLen = (this->GetLength() < other->GetLength()) ? this->GetLength() : other->GetLength();
+
+    try {
+        for (size_t i = 0; i < minLen; ++i) {
+            result->AppendInternal(Pair<T, T>(this->Get(i), other->Get(i)));
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
 }
 
 #pragma endregion

@@ -2,6 +2,8 @@
 
 #include "SegmentedList.hpp"
 
+#pragma region sequence main functions
+
 template<class T>
 SegmentedList<T>::Node::Node()
 {
@@ -89,30 +91,6 @@ void SegmentedList<T>::Clear()
     this->head = nullptr;
     this->tail = nullptr;
     this->length = 0;
-}
-
-template<class T>
-SegmentedList<T>& SegmentedList<T>::operator=(const SegmentedList<T>& list)
-{
-    if (this == &list) {
-        return *this;
-    }
-
-    SegmentedList<T> copy(list);
-
-    Node* oldHead = this->head;
-    Node* oldTail = this->tail;
-    size_t oldLength = this->length;
-
-    this->head = copy.head;
-    this->tail = copy.tail;
-    this->length = copy.length;
-
-    copy.head = oldHead;
-    copy.tail = oldTail;
-    copy.length = oldLength;
-
-    return *this;
 }
 
 template<class T>
@@ -289,6 +267,97 @@ Sequence<T>* SegmentedList<T>::Concat(Sequence<T>* list)
     return this;
 }
 
+#pragma endregion
+
+#pragma region operators (=, [], const [], +, ==, !=)
+
+template<class T>
+SegmentedList<T>& SegmentedList<T>::operator=(const SegmentedList<T>& list)
+{
+    if (this == &list) {
+        return *this;
+    }
+
+    SegmentedList<T> copy(list);
+
+    Node* oldHead = this->head;
+    Node* oldTail = this->tail;
+    size_t oldLength = this->length;
+
+    this->head = copy.head;
+    this->tail = copy.tail;
+    this->length = copy.length;
+
+    copy.head = oldHead;
+    copy.tail = oldTail;
+    copy.length = oldLength;
+
+    return *this;
+}
+
+template<class T>
+T& SegmentedList<T>::operator[](size_t index)
+{
+    size_t localIndex = 0;
+    Node* node = this->FindNode(index, localIndex);
+    return (*node->elements)[localIndex]; 
+}
+
+template<class T>
+const T& SegmentedList<T>::operator[](size_t index) const
+{
+    size_t localIndex = 0;
+    Node* node = const_cast<SegmentedList<T>*>(this)->FindNode(index, localIndex);
+    return (*node->elements)[localIndex]; 
+}
+
+template<class T>
+Sequence<T>* SegmentedList<T>::operator+(Sequence<T>* other)
+{
+    if (other == nullptr) throw InvalidArgument("Cannot add null sequence");
+
+    auto result = new SegmentedList<T>();
+
+    try {
+        for (size_t i = 0; i < this->GetLength(); ++i) {
+            result->Append((*this)[i]);
+        }
+        for (size_t i = 0; i < other->GetLength(); ++i) {
+            result->Append(other->Get(i));
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+template<class T>
+bool SegmentedList<T>::operator==(Sequence<T>* other)
+{
+    if (this == other) return true;
+    if (other == nullptr || this->GetLength() != other->GetLength()) return false;
+
+    for (size_t i = 0; i < this->GetLength(); ++i) {
+        if ((*this)[i] != other->Get(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template<class T>
+bool SegmentedList<T>::operator!=(Sequence<T>* other)
+{
+    return !(*this == other);
+}
+
+#pragma endregion
+
+#pragma region Mar/Where/Reduce
+
 template<class T>
 Sequence<T>* SegmentedList<T>::Map(T (*Function)(T))
 {
@@ -348,8 +417,12 @@ T SegmentedList<T>::Reduce(T (*Function)(T, T))
     return result;
 }
 
+#pragma endregion
+
+#pragma region Option
+
 template<class T>
-Option<T> SegmentedList<T>::TryGetFirst(bool (*Function)(T))
+Option<T> SegmentedList<T>::GetFirst(bool (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     
@@ -361,7 +434,7 @@ Option<T> SegmentedList<T>::TryGetFirst(bool (*Function)(T))
 }
 
 template<class T>
-Option<T> SegmentedList<T>::TryGetLast(bool (*Function)(T))
+Option<T> SegmentedList<T>::GetLast(bool (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
     
@@ -372,26 +445,130 @@ Option<T> SegmentedList<T>::TryGetLast(bool (*Function)(T))
     return Option<T>();
 }
 
+#pragma endregion
+
+#pragma region Zip/Skip/Split/Splice/FlatMap
+
+template<class T>
+Sequence<T>* SegmentedList<T>::Skip(size_t count)
+{
+    if (count >= this->GetLength()) {
+        return new SegmentedList<T>();
+    }
+    return this->GetSubsequence(count, this->GetLength() - 1);
+}
+
+template<class T>
+Sequence<Sequence<T>*>* SegmentedList<T>::Split(bool (*Function)(T))
+{
+    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
+
+    auto result = new SegmentedList<Sequence<T>*>();
+    Sequence<T>* currentPart = new SegmentedList<T>();
+
+    try {
+        for (size_t i = 0; i < this->GetLength(); ++i) {
+            T value = this->Get(i);
+            if (Function(value)) {
+                result->Append(currentPart);
+                currentPart = new SegmentedList<T>();
+            } else {
+                currentPart->Append(value);
+            }
+        }
+        result->Append(currentPart);
+    }
+    catch (...) {
+        delete result;
+        delete currentPart;
+        throw;
+    }
+    
+    return result;
+}
+
+template<class T>
+Sequence<T>* SegmentedList<T>::Splice(size_t index, size_t count, Sequence<T>* insertSequence)
+{
+    if (index > this->GetLength()) throw OutOfRange("Index out of bounds");
+
+    size_t realCount = (count <= this->GetLength() - index) ? count : this->GetLength() - index;
+
+    auto result = new SegmentedList<T>();
+
+    try {
+        for (size_t i = 0; i < index; ++i) {
+            result->Append(this->Get(i));
+        }
+
+        if (insertSequence != nullptr) {
+            for (size_t i = 0; i < insertSequence->GetLength(); ++i) {
+                result->Append(insertSequence->Get(i));
+            }
+        }
+
+        for (size_t i = index + realCount; i < this->GetLength(); ++i) {
+            result->Append(this->Get(i));
+        }
+    } 
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
 template<class T>
 Sequence<T>* SegmentedList<T>::FlatMap(Sequence<T>* (*Function)(T))
 {
     if (Function == nullptr) throw InvalidArgument("Function cannot be null");
-    SegmentedList<T>* result = new SegmentedList<T>();
-    
+
+    auto result = new SegmentedList<T>();
+
     try {
-        for (size_t index = 0; index < this->length; ++index) {
+        size_t length = this->GetLength();
+        for (size_t index = 0; index < length; ++index) {
             Sequence<T>* subSequence = Function(this->Get(index)); 
+            
             for (size_t subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
                 result->Append(subSequence->Get(subIndex));
             }
+            
             delete subSequence;
         }
-    } catch (...) {
+    }
+    catch (...) {
         delete result;
         throw;
     }
+
     return result;
 }
+
+template<class T>
+Sequence<Pair<T, T>>* SegmentedList<T>::Zip(Sequence<T>* other)
+{
+    if (other == nullptr) throw InvalidArgument("Other sequence cannot be null");
+
+    auto result = new SegmentedList<Pair<T, T>>();
+    
+    size_t minLen = (this->GetLength() < other->GetLength()) ? this->GetLength() : other->GetLength();
+
+    try {
+        for (size_t i = 0; i < minLen; ++i) {
+            result->Append(Pair<T, T>(this->Get(i), other->Get(i)));
+        }
+    }
+    catch (...) {
+        delete result;
+        throw;
+    }
+
+    return result;
+}
+
+#pragma endregion
 
 template<class T>
 IEnumerator<T>* SegmentedList<T>::GetEnumerator()
