@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googletest\src\gtest-all.cc">
+    <ClCompile Include="C:\Program1\my_projects\my_programs_CPP\sem2_lab2(1)\tests\googletest-1.17.0\googletest\src\gtest-all.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\src\gmock-all.cc">
+    <ClCompile Include="C:\Program1\my_projects\my_programs_CPP\sem2_lab2(1)\tests\googletest-1.17.0\googlemock\src\gmock-all.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\src\gmock_main.cc">
+    <ClCompile Include="C:\Program1\my_projects\my_programs_CPP\sem2_lab2(1)\tests\googletest-1.17.0\googlemock\src\gmock_main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="D:\Program\my_projects\my_programs_CPP\sem2_lab2\tests\googletest-1.17.0\googlemock\CMakeLists.txt" />
+    <CustomBuild Include="C:\Program1\my_projects\my_programs_CPP\sem2_lab2(1)\tests\googletest-1.17.0\googlemock\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{97770876-B6A8-3FB1-99B1-5BD3C566754B}</UniqueIdentifier>
+      <UniqueIdentifier>{537E7543-36D3-32AA-894C-B2C54B1254AC}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

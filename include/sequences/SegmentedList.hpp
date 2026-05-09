@@ -35,11 +35,11 @@ class SegmentedList : public Sequence<T>
         ~SegmentedList() override;
 
         SegmentedList<T>& operator=(const SegmentedList<T>& list);
-        T& operator[](size_t index) override;
-        const T& operator[](size_t index) const override;
-        Sequence<T>* operator+(Sequence<T>* other) override;
-        bool operator==(Sequence<T>* other) override;
-        bool operator!=(Sequence<T>* other) override;
+        T& operator[](size_t index);
+        const T& operator[](size_t index) const;
+        Sequence<T>* operator+(Sequence<T>* other);
+        bool operator==(Sequence<T>* other);
+        bool operator!=(Sequence<T>* other);
 
         T GetFirst() override;
         T GetLast() override;
@@ -61,11 +61,9 @@ class SegmentedList : public Sequence<T>
 
         IEnumerator<T>* GetEnumerator() override;
 
-        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T)) override;
-        Sequence<T>* Skip(size_t count) override;
-        Sequence<Sequence<T>*>* Split(bool (*Function)(T)) override;
-        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr) override;
-        Sequence<Pair<T, T>>* Zip(Sequence<T>* other) override;
+        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T));
+        Sequence<T>* Skip(size_t count);
+        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr);
 };
 
 #include "SegmentedList.tpp"

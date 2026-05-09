@@ -76,9 +76,9 @@ events:
       The output was:
       0
       ╨Т╨╡╤А╤Б╨╕╤П MSBuild 17.14.23+b0019275e ╨┤╨╗╤П .NET Framework
-      ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 02.05.2026 18:45:48.
+      ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 09.05.2026 19:10:55.
       
-      ╨Я╤А╨╛╨╡╨║╤В "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+      ╨Я╤А╨╛╨╡╨║╤В "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
       PrepareForBuild:
         ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "Debug\\".
         ╨б╤В╤А╤Г╨║╤В╤Г╤А╨╕╤А╨╛╨▓╨░╨╜╨╜╤Л╨╣ ╨▓╤Л╨▓╨╛╨┤ ╨▓╨║╨╗╤О╤З╨╡╨╜. ╨д╨╛╤А╨╝╨░╤В╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡ ╨┤╨╕╨░╨│╨╜╨╛╤Б╤В╨╕╨║╨╕ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А╨░ ╨▒╤Г╨┤╨╡╤В ╨╛╤В╤А╨░╨╢╨░╤В╤М ╨╕╨╡╤А╨░╤А╤Е╨╕╤О ╨╛╤И╨╕╨▒╨╛╨║. ╨Я╨╛╨┤╤А╨╛╨▒╨╜╨╡╨╡ ╤Б╨╝. https://aka.ms/cpp/structured-output.
@@ -91,7 +91,7 @@ events:
         CMakeCCompilerId.c
       Link:
         C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
-        CompilerIdC.vcxproj -> D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.exe
+        CompilerIdC.vcxproj -> C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.exe
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
         :VCEnd
@@ -99,13 +99,13 @@ events:
       FinalizeBuildStatus:
         ╨д╨░╨╣╨╗ "Debug\\CompilerIdC.tlog\\unsuccessfulbuild" ╤Г╨┤╨░╨╗╤П╨╡╤В╤Б╤П.
         ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate".
-      ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+      ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
       
       ╨б╨▒╨╛╤А╨║╨░ ╤Г╤Б╨┐╨╡╤И╨╜╨╛ ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░.
           ╨Я╤А╨╡╨┤╤Г╨┐╤А╨╡╨╢╨┤╨╡╨╜╨╕╨╣: 0
           ╨Ю╤И╨╕╨▒╨╛╨║: 0
       
-      ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.92
+      ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.75
       
       
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
@@ -113,7 +113,7 @@ events:
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
       
       The C compiler identification is MSVC, found in:
-        D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/4.3.2/CompilerIdC/CompilerIdC.exe
+        C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/4.3.2/CompilerIdC/CompilerIdC.exe
       
   -
     kind: "find-v1"
@@ -721,9 +721,9 @@ events:
       The output was:
       0
       ╨Т╨╡╤А╤Б╨╕╤П MSBuild 17.14.23+b0019275e ╨┤╨╗╤П .NET Framework
-      ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 02.05.2026 18:45:50.
+      ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 09.05.2026 19:10:56.
       
-      ╨Я╤А╨╛╨╡╨║╤В "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+      ╨Я╤А╨╛╨╡╨║╤В "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
       PrepareForBuild:
         ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "Debug\\".
         ╨б╤В╤А╤Г╨║╤В╤Г╤А╨╕╤А╨╛╨▓╨░╨╜╨╜╤Л╨╣ ╨▓╤Л╨▓╨╛╨┤ ╨▓╨║╨╗╤О╤З╨╡╨╜. ╨д╨╛╤А╨╝╨░╤В╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡ ╨┤╨╕╨░╨│╨╜╨╛╤Б╤В╨╕╨║╨╕ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А╨░ ╨▒╤Г╨┤╨╡╤В ╨╛╤В╤А╨░╨╢╨░╤В╤М ╨╕╨╡╤А╨░╤А╤Е╨╕╤О ╨╛╤И╨╕╨▒╨╛╨║. ╨Я╨╛╨┤╤А╨╛╨▒╨╜╨╡╨╡ ╤Б╨╝. https://aka.ms/cpp/structured-output.
@@ -736,7 +736,7 @@ events:
         CMakeCXXCompilerId.cpp
       Link:
         C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
-        CompilerIdCXX.vcxproj -> D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.exe
+        CompilerIdCXX.vcxproj -> C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.exe
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
         :VCEnd
@@ -744,13 +744,13 @@ events:
       FinalizeBuildStatus:
         ╨д╨░╨╣╨╗ "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" ╤Г╨┤╨░╨╗╤П╨╡╤В╤Б╤П.
         ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
-      ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+      ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
       
       ╨б╨▒╨╛╤А╨║╨░ ╤Г╤Б╨┐╨╡╤И╨╜╨╛ ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░.
           ╨Я╤А╨╡╨┤╤Г╨┐╤А╨╡╨╢╨┤╨╡╨╜╨╕╨╣: 0
           ╨Ю╤И╨╕╨▒╨╛╨║: 0
       
-      ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.87
+      ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.90
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -758,7 +758,7 @@ events:
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
       
       The CXX compiler identification is MSVC, found in:
-        D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/4.3.2/CompilerIdCXX/CompilerIdCXX.exe
+        C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/4.3.2/CompilerIdCXX/CompilerIdCXX.exe
       
   -
     kind: "find-v1"
@@ -1130,8 +1130,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-i48ft6"
-      binary: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-i48ft6"
+      source: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-dtnm1u"
+      binary: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-dtnm1u"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
@@ -1141,39 +1141,39 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-i48ft6'
+        Change Dir: 'C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-dtnm1u'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_e2270.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_bf491.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         ╨Т╨╡╤А╤Б╨╕╤П MSBuild 17.14.23+b0019275e ╨┤╨╗╤П .NET Framework
-        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 02.05.2026 18:45:51.
+        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 09.05.2026 19:10:57.
         
-        ╨Я╤А╨╛╨╡╨║╤В "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-i48ft6\\cmTC_e2270.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+        ╨Я╤А╨╛╨╡╨║╤В "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dtnm1u\\cmTC_bf491.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
         PrepareForBuild:
           ╨б╤В╤А╤Г╨║╤В╤Г╤А╨╕╤А╨╛╨▓╨░╨╜╨╜╤Л╨╣ ╨▓╤Л╨▓╨╛╨┤ ╨▓╨║╨╗╤О╤З╨╡╨╜. ╨д╨╛╤А╨╝╨░╤В╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡ ╨┤╨╕╨░╨│╨╜╨╛╤Б╤В╨╕╨║╨╕ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А╨░ ╨▒╤Г╨┤╨╡╤В ╨╛╤В╤А╨░╨╢╨░╤В╤М ╨╕╨╡╤А╨░╤А╤Е╨╕╤О ╨╛╤И╨╕╨▒╨╛╨║. ╨Я╨╛╨┤╤А╨╛╨▒╨╜╨╡╨╡ ╤Б╨╝. https://aka.ms/cpp/structured-output.
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-i48ft6\\Debug\\".
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_e2270.dir\\Debug\\cmTC_e2270.tlog\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dtnm1u\\Debug\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_bf491.dir\\Debug\\cmTC_bf491.tlog\\".
         InitializeBuildStatus:
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_e2270.dir\\Debug\\cmTC_e2270.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
-          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_e2270.dir\\Debug\\cmTC_e2270.tlog\\unsuccessfulbuild".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_bf491.dir\\Debug\\cmTC_bf491.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
+          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_bf491.dir\\Debug\\cmTC_bf491.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_e2270.dir\\Debug\\\\" /Fd"cmTC_e2270.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCCompilerABI.c"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_bf491.dir\\Debug\\\\" /Fd"cmTC_bf491.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCCompilerABI.c"
           ╨Ю╨┐╤В╨╕╨╝╨╕╨╖╨╕╤А╤Г╤О╤Й╨╕╨╣ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А Microsoft (R) C/C++ ╨▓╨╡╤А╤Б╨╕╨╕ 19.44.35221 ╨┤╨╗╤П x64
           (C) ╨Ъ╨╛╤А╨┐╨╛╤А╨░╤Ж╨╕╤П ╨Ь╨░╨╣╨║╤А╨╛╤Б╨╛╤Д╤В (Microsoft Corporation).  ╨Т╤Б╨╡ ╨┐╤А╨░╨▓╨░ ╨╖╨░╤Й╨╕╤Й╨╡╨╜╤Л.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_e2270.dir\\Debug\\\\" /Fd"cmTC_e2270.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCCompilerABI.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_bf491.dir\\Debug\\\\" /Fd"cmTC_bf491.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCCompilerABI.c"
           CMakeCCompilerABI.c
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-i48ft6\\Debug\\cmTC_e2270.exe" /INCREMENTAL /ILK:"cmTC_e2270.dir\\Debug\\cmTC_e2270.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-i48ft6/Debug/cmTC_e2270.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-i48ft6/Debug/cmTC_e2270.lib" /MACHINE:X64  /machine:x64 cmTC_e2270.dir\\Debug\\CMakeCCompilerABI.obj
-          cmTC_e2270.vcxproj -> D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-i48ft6\\Debug\\cmTC_e2270.exe
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dtnm1u\\Debug\\cmTC_bf491.exe" /INCREMENTAL /ILK:"cmTC_bf491.dir\\Debug\\cmTC_bf491.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-dtnm1u/Debug/cmTC_bf491.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-dtnm1u/Debug/cmTC_bf491.lib" /MACHINE:X64  /machine:x64 cmTC_bf491.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_bf491.vcxproj -> C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dtnm1u\\Debug\\cmTC_bf491.exe
         FinalizeBuildStatus:
-          ╨д╨░╨╣╨╗ "cmTC_e2270.dir\\Debug\\cmTC_e2270.tlog\\unsuccessfulbuild" ╤Г╨┤╨░╨╗╤П╨╡╤В╤Б╤П.
-          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_e2270.dir\\Debug\\cmTC_e2270.tlog\\cmTC_e2270.lastbuildstate".
-        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-i48ft6\\cmTC_e2270.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+          ╨д╨░╨╣╨╗ "cmTC_bf491.dir\\Debug\\cmTC_bf491.tlog\\unsuccessfulbuild" ╤Г╨┤╨░╨╗╤П╨╡╤В╤Б╤П.
+          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_bf491.dir\\Debug\\cmTC_bf491.tlog\\cmTC_bf491.lastbuildstate".
+        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dtnm1u\\cmTC_bf491.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
         
         ╨б╨▒╨╛╤А╨║╨░ ╤Г╤Б╨┐╨╡╤И╨╜╨╛ ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░.
             ╨Я╤А╨╡╨┤╤Г╨┐╤А╨╡╨╢╨┤╨╡╨╜╨╕╨╣: 0
             ╨Ю╤И╨╕╨▒╨╛╨║: 0
         
-        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.77
+        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.79
         
       exitCode: 0
   -
@@ -1213,8 +1213,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-zq272p"
-      binary: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-zq272p"
+      source: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-3yrh76"
+      binary: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-3yrh76"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -1225,39 +1225,39 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-zq272p'
+        Change Dir: 'C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-3yrh76'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_d8562.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_bc830.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         ╨Т╨╡╤А╤Б╨╕╤П MSBuild 17.14.23+b0019275e ╨┤╨╗╤П .NET Framework
-        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 02.05.2026 18:45:52.
+        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 09.05.2026 19:10:58.
         
-        ╨Я╤А╨╛╨╡╨║╤В "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zq272p\\cmTC_d8562.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+        ╨Я╤А╨╛╨╡╨║╤В "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-3yrh76\\cmTC_bc830.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
         PrepareForBuild:
           ╨б╤В╤А╤Г╨║╤В╤Г╤А╨╕╤А╨╛╨▓╨░╨╜╨╜╤Л╨╣ ╨▓╤Л╨▓╨╛╨┤ ╨▓╨║╨╗╤О╤З╨╡╨╜. ╨д╨╛╤А╨╝╨░╤В╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡ ╨┤╨╕╨░╨│╨╜╨╛╤Б╤В╨╕╨║╨╕ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А╨░ ╨▒╤Г╨┤╨╡╤В ╨╛╤В╤А╨░╨╢╨░╤В╤М ╨╕╨╡╤А╨░╤А╤Е╨╕╤О ╨╛╤И╨╕╨▒╨╛╨║. ╨Я╨╛╨┤╤А╨╛╨▒╨╜╨╡╨╡ ╤Б╨╝. https://aka.ms/cpp/structured-output.
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zq272p\\Debug\\".
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_d8562.dir\\Debug\\cmTC_d8562.tlog\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-3yrh76\\Debug\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_bc830.dir\\Debug\\cmTC_bc830.tlog\\".
         InitializeBuildStatus:
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_d8562.dir\\Debug\\cmTC_d8562.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
-          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_d8562.dir\\Debug\\cmTC_d8562.tlog\\unsuccessfulbuild".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_bc830.dir\\Debug\\cmTC_bc830.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
+          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_bc830.dir\\Debug\\cmTC_bc830.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_d8562.dir\\Debug\\\\" /Fd"cmTC_d8562.dir\\Debug\\vc143.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_bc830.dir\\Debug\\\\" /Fd"cmTC_bc830.dir\\Debug\\vc143.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp"
           ╨Ю╨┐╤В╨╕╨╝╨╕╨╖╨╕╤А╤Г╤О╤Й╨╕╨╣ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А Microsoft (R) C/C++ ╨▓╨╡╤А╤Б╨╕╨╕ 19.44.35221 ╨┤╨╗╤П x64
           (C) ╨Ъ╨╛╤А╨┐╨╛╤А╨░╤Ж╨╕╤П ╨Ь╨░╨╣╨║╤А╨╛╤Б╨╛╤Д╤В (Microsoft Corporation).  ╨Т╤Б╨╡ ╨┐╤А╨░╨▓╨░ ╨╖╨░╤Й╨╕╤Й╨╡╨╜╤Л.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_d8562.dir\\Debug\\\\" /Fd"cmTC_d8562.dir\\Debug\\vc143.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_bc830.dir\\Debug\\\\" /Fd"cmTC_bc830.dir\\Debug\\vc143.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp"
           CMakeCXXCompilerABI.cpp
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zq272p\\Debug\\cmTC_d8562.exe" /INCREMENTAL /ILK:"cmTC_d8562.dir\\Debug\\cmTC_d8562.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-zq272p/Debug/cmTC_d8562.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-zq272p/Debug/cmTC_d8562.lib" /MACHINE:X64  /machine:x64 cmTC_d8562.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_d8562.vcxproj -> D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zq272p\\Debug\\cmTC_d8562.exe
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-3yrh76\\Debug\\cmTC_bc830.exe" /INCREMENTAL /ILK:"cmTC_bc830.dir\\Debug\\cmTC_bc830.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-3yrh76/Debug/cmTC_bc830.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-3yrh76/Debug/cmTC_bc830.lib" /MACHINE:X64  /machine:x64 cmTC_bc830.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_bc830.vcxproj -> C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-3yrh76\\Debug\\cmTC_bc830.exe
         FinalizeBuildStatus:
-          ╨д╨░╨╣╨╗ "cmTC_d8562.dir\\Debug\\cmTC_d8562.tlog\\unsuccessfulbuild" ╤Г╨┤╨░╨╗╤П╨╡╤В╤Б╤П.
-          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_d8562.dir\\Debug\\cmTC_d8562.tlog\\cmTC_d8562.lastbuildstate".
-        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zq272p\\cmTC_d8562.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+          ╨д╨░╨╣╨╗ "cmTC_bc830.dir\\Debug\\cmTC_bc830.tlog\\unsuccessfulbuild" ╤Г╨┤╨░╨╗╤П╨╡╤В╤Б╤П.
+          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_bc830.dir\\Debug\\cmTC_bc830.tlog\\cmTC_bc830.lastbuildstate".
+        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-3yrh76\\cmTC_bc830.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
         
         ╨б╨▒╨╛╤А╨║╨░ ╤Г╤Б╨┐╨╡╤И╨╜╨╛ ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░.
             ╨Я╤А╨╡╨┤╤Г╨┐╤А╨╡╨╢╨┤╨╡╨╜╨╕╨╣: 0
             ╨Ю╤И╨╕╨▒╨╛╨║: 0
         
-        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.79
+        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.82
         
       exitCode: 0
   -
@@ -1300,8 +1300,8 @@ events:
     checks:
       - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
     directories:
-      source: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-46zvn3"
-      binary: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-46zvn3"
+      source: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-wr5ohg"
+      binary: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-wr5ohg"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
@@ -1311,39 +1311,39 @@ events:
       variable: "CMAKE_HAVE_LIBC_PTHREAD"
       cached: true
       stdout: |
-        Change Dir: 'D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-46zvn3'
+        Change Dir: 'C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-wr5ohg'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_8f155.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_5bf67.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         ╨Т╨╡╤А╤Б╨╕╤П MSBuild 17.14.23+b0019275e ╨┤╨╗╤П .NET Framework
-        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 02.05.2026 18:45:53.
+        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 09.05.2026 19:10:59.
         
-        ╨Я╤А╨╛╨╡╨║╤В "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\cmTC_8f155.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+        ╨Я╤А╨╛╨╡╨║╤В "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\cmTC_5bf67.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
         PrepareForBuild:
           ╨б╤В╤А╤Г╨║╤В╤Г╤А╨╕╤А╨╛╨▓╨░╨╜╨╜╤Л╨╣ ╨▓╤Л╨▓╨╛╨┤ ╨▓╨║╨╗╤О╤З╨╡╨╜. ╨д╨╛╤А╨╝╨░╤В╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡ ╨┤╨╕╨░╨│╨╜╨╛╤Б╤В╨╕╨║╨╕ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А╨░ ╨▒╤Г╨┤╨╡╤В ╨╛╤В╤А╨░╨╢╨░╤В╤М ╨╕╨╡╤А╨░╤А╤Е╨╕╤О ╨╛╤И╨╕╨▒╨╛╨║. ╨Я╨╛╨┤╤А╨╛╨▒╨╜╨╡╨╡ ╤Б╨╝. https://aka.ms/cpp/structured-output.
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\Debug\\".
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_8f155.dir\\Debug\\cmTC_8f155.tlog\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\Debug\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_5bf67.dir\\Debug\\cmTC_5bf67.tlog\\".
         InitializeBuildStatus:
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_8f155.dir\\Debug\\cmTC_8f155.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
-          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_8f155.dir\\Debug\\cmTC_8f155.tlog\\unsuccessfulbuild".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_5bf67.dir\\Debug\\cmTC_5bf67.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
+          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_5bf67.dir\\Debug\\cmTC_5bf67.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_8f155.dir\\Debug\\\\" /Fd"cmTC_8f155.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\src.c"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_5bf67.dir\\Debug\\\\" /Fd"cmTC_5bf67.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\src.c"
           ╨Ю╨┐╤В╨╕╨╝╨╕╨╖╨╕╤А╤Г╤О╤Й╨╕╨╣ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А Microsoft (R) C/C++ ╨▓╨╡╤А╤Б╨╕╨╕ 19.44.35221 ╨┤╨╗╤П x64
           (C) ╨Ъ╨╛╤А╨┐╨╛╤А╨░╤Ж╨╕╤П ╨Ь╨░╨╣╨║╤А╨╛╤Б╨╛╤Д╤В (Microsoft Corporation).  ╨Т╤Б╨╡ ╨┐╤А╨░╨▓╨░ ╨╖╨░╤Й╨╕╤Й╨╡╨╜╤Л.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_8f155.dir\\Debug\\\\" /Fd"cmTC_8f155.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\src.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_5bf67.dir\\Debug\\\\" /Fd"cmTC_5bf67.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\src.c"
           src.c
-        D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\src.c(1,10): error C1083: ╨Э╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ ╨▓╨║╨╗╤О╤З╨╡╨╜╨╕╨╡: pthread.h: No such file or directory, [D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\cmTC_8f155.vcxproj]
-        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\cmTC_8f155.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) ╤Б ╨╛╤И╨╕╨▒╨║╨╛╨╣.
+        C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\src.c(1,10): error C1083: ╨Э╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ ╨▓╨║╨╗╤О╤З╨╡╨╜╨╕╨╡: pthread.h: No such file or directory, [C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\cmTC_5bf67.vcxproj]
+        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\cmTC_5bf67.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) ╤Б ╨╛╤И╨╕╨▒╨║╨╛╨╣.
         
         ╨Ю╤И╨╕╨▒╨║╨░ ╤Б╨▒╨╛╤А╨║╨╕.
         
-        "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\cmTC_8f155.vcxproj" (╤Ж╨╡╨╗╨╡╨▓╨╛╨╣ ╨╛╨▒╤К╨╡╨║╤В ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) (1) ->
+        "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\cmTC_5bf67.vcxproj" (╤Ж╨╡╨╗╨╡╨▓╨╛╨╣ ╨╛╨▒╤К╨╡╨║╤В ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) (1) ->
         (╨ж╨╡╨╗╨╡╨▓╨╛╨╣ ╨╛╨▒╤К╨╡╨║╤В ClCompile) -> 
-          D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\src.c(1,10): error C1083: ╨Э╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ ╨▓╨║╨╗╤О╤З╨╡╨╜╨╕╨╡: pthread.h: No such file or directory, [D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-46zvn3\\cmTC_8f155.vcxproj]
+          C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\src.c(1,10): error C1083: ╨Э╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ ╨▓╨║╨╗╤О╤З╨╡╨╜╨╕╨╡: pthread.h: No such file or directory, [C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wr5ohg\\cmTC_5bf67.vcxproj]
         
             ╨Я╤А╨╡╨┤╤Г╨┐╤А╨╡╨╢╨┤╨╡╨╜╨╕╨╣: 0
             ╨Ю╤И╨╕╨▒╨╛╨║: 1
         
-        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.44
+        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.46
         
       exitCode: 1
   -
@@ -1357,8 +1357,8 @@ events:
     checks:
       - "Looking for pthread_create in pthreads"
     directories:
-      source: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-dq3yen"
-      binary: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-dq3yen"
+      source: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-xyhabr"
+      binary: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-xyhabr"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
@@ -1368,41 +1368,41 @@ events:
       variable: "CMAKE_HAVE_PTHREADS_CREATE"
       cached: true
       stdout: |
-        Change Dir: 'D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-dq3yen'
+        Change Dir: 'C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-xyhabr'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_9fc0f.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_12c19.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         ╨Т╨╡╤А╤Б╨╕╤П MSBuild 17.14.23+b0019275e ╨┤╨╗╤П .NET Framework
-        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 02.05.2026 18:45:54.
+        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 09.05.2026 19:11:00.
         
-        ╨Я╤А╨╛╨╡╨║╤В "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dq3yen\\cmTC_9fc0f.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+        ╨Я╤А╨╛╨╡╨║╤В "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xyhabr\\cmTC_12c19.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
         PrepareForBuild:
           ╨б╤В╤А╤Г╨║╤В╤Г╤А╨╕╤А╨╛╨▓╨░╨╜╨╜╤Л╨╣ ╨▓╤Л╨▓╨╛╨┤ ╨▓╨║╨╗╤О╤З╨╡╨╜. ╨д╨╛╤А╨╝╨░╤В╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡ ╨┤╨╕╨░╨│╨╜╨╛╤Б╤В╨╕╨║╨╕ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А╨░ ╨▒╤Г╨┤╨╡╤В ╨╛╤В╤А╨░╨╢╨░╤В╤М ╨╕╨╡╤А╨░╤А╤Е╨╕╤О ╨╛╤И╨╕╨▒╨╛╨║. ╨Я╨╛╨┤╤А╨╛╨▒╨╜╨╡╨╡ ╤Б╨╝. https://aka.ms/cpp/structured-output.
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dq3yen\\Debug\\".
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_9fc0f.dir\\Debug\\cmTC_9fc0f.tlog\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xyhabr\\Debug\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_12c19.dir\\Debug\\cmTC_12c19.tlog\\".
         InitializeBuildStatus:
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_9fc0f.dir\\Debug\\cmTC_9fc0f.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
-          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_9fc0f.dir\\Debug\\cmTC_9fc0f.tlog\\unsuccessfulbuild".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_12c19.dir\\Debug\\cmTC_12c19.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
+          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_12c19.dir\\Debug\\cmTC_12c19.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_9fc0f.dir\\Debug\\\\" /Fd"cmTC_9fc0f.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dq3yen\\CheckFunctionExists.c"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_12c19.dir\\Debug\\\\" /Fd"cmTC_12c19.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xyhabr\\CheckFunctionExists.c"
           ╨Ю╨┐╤В╨╕╨╝╨╕╨╖╨╕╤А╤Г╤О╤Й╨╕╨╣ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А Microsoft (R) C/C++ ╨▓╨╡╤А╤Б╨╕╨╕ 19.44.35221 ╨┤╨╗╤П x64
           (C) ╨Ъ╨╛╤А╨┐╨╛╤А╨░╤Ж╨╕╤П ╨Ь╨░╨╣╨║╤А╨╛╤Б╨╛╤Д╤В (Microsoft Corporation).  ╨Т╤Б╨╡ ╨┐╤А╨░╨▓╨░ ╨╖╨░╤Й╨╕╤Й╨╡╨╜╤Л.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_9fc0f.dir\\Debug\\\\" /Fd"cmTC_9fc0f.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dq3yen\\CheckFunctionExists.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_12c19.dir\\Debug\\\\" /Fd"cmTC_12c19.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xyhabr\\CheckFunctionExists.c"
           CheckFunctionExists.c
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dq3yen\\Debug\\cmTC_9fc0f.exe" /INCREMENTAL /ILK:"cmTC_9fc0f.dir\\Debug\\cmTC_9fc0f.ilk" /NOLOGO pthreads.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-dq3yen/Debug/cmTC_9fc0f.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-dq3yen/Debug/cmTC_9fc0f.lib" /MACHINE:X64  /machine:x64 cmTC_9fc0f.dir\\Debug\\CheckFunctionExists.obj
-        LINK : fatal error LNK1104: ╨╜╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ "pthreads.lib" [D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dq3yen\\cmTC_9fc0f.vcxproj]
-        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dq3yen\\cmTC_9fc0f.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) ╤Б ╨╛╤И╨╕╨▒╨║╨╛╨╣.
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xyhabr\\Debug\\cmTC_12c19.exe" /INCREMENTAL /ILK:"cmTC_12c19.dir\\Debug\\cmTC_12c19.ilk" /NOLOGO pthreads.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-xyhabr/Debug/cmTC_12c19.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-xyhabr/Debug/cmTC_12c19.lib" /MACHINE:X64  /machine:x64 cmTC_12c19.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: ╨╜╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ "pthreads.lib" [C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xyhabr\\cmTC_12c19.vcxproj]
+        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xyhabr\\cmTC_12c19.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) ╤Б ╨╛╤И╨╕╨▒╨║╨╛╨╣.
         
         ╨Ю╤И╨╕╨▒╨║╨░ ╤Б╨▒╨╛╤А╨║╨╕.
         
-        "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dq3yen\\cmTC_9fc0f.vcxproj" (╤Ж╨╡╨╗╨╡╨▓╨╛╨╣ ╨╛╨▒╤К╨╡╨║╤В ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) (1) ->
+        "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xyhabr\\cmTC_12c19.vcxproj" (╤Ж╨╡╨╗╨╡╨▓╨╛╨╣ ╨╛╨▒╤К╨╡╨║╤В ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) (1) ->
         (╨ж╨╡╨╗╨╡╨▓╨╛╨╣ ╨╛╨▒╤К╨╡╨║╤В Link) -> 
-          LINK : fatal error LNK1104: ╨╜╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ "pthreads.lib" [D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dq3yen\\cmTC_9fc0f.vcxproj]
+          LINK : fatal error LNK1104: ╨╜╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ "pthreads.lib" [C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xyhabr\\cmTC_12c19.vcxproj]
         
             ╨Я╤А╨╡╨┤╤Г╨┐╤А╨╡╨╢╨┤╨╡╨╜╨╕╨╣: 0
             ╨Ю╤И╨╕╨▒╨╛╨║: 1
         
-        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.55
+        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.51
         
       exitCode: 1
   -
@@ -1416,8 +1416,8 @@ events:
     checks:
       - "Looking for pthread_create in pthread"
     directories:
-      source: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-yhk85l"
-      binary: "D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-yhk85l"
+      source: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-t2zrmn"
+      binary: "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-t2zrmn"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
@@ -1427,41 +1427,41 @@ events:
       variable: "CMAKE_HAVE_PTHREAD_CREATE"
       cached: true
       stdout: |
-        Change Dir: 'D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-yhk85l'
+        Change Dir: 'C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-t2zrmn'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_d0278.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_ff6cf.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         ╨Т╨╡╤А╤Б╨╕╤П MSBuild 17.14.23+b0019275e ╨┤╨╗╤П .NET Framework
-        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 02.05.2026 18:45:55.
+        ╨б╨▒╨╛╤А╨║╨░ ╨╜╨░╤З╨░╤В╨░ 09.05.2026 19:11:01.
         
-        ╨Я╤А╨╛╨╡╨║╤В "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yhk85l\\cmTC_d0278.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
+        ╨Я╤А╨╛╨╡╨║╤В "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t2zrmn\\cmTC_ff6cf.vcxproj" ╨▓ ╤Г╨╖╨╗╨╡ 1 (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О).
         PrepareForBuild:
           ╨б╤В╤А╤Г╨║╤В╤Г╤А╨╕╤А╨╛╨▓╨░╨╜╨╜╤Л╨╣ ╨▓╤Л╨▓╨╛╨┤ ╨▓╨║╨╗╤О╤З╨╡╨╜. ╨д╨╛╤А╨╝╨░╤В╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡ ╨┤╨╕╨░╨│╨╜╨╛╤Б╤В╨╕╨║╨╕ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А╨░ ╨▒╤Г╨┤╨╡╤В ╨╛╤В╤А╨░╨╢╨░╤В╤М ╨╕╨╡╤А╨░╤А╤Е╨╕╤О ╨╛╤И╨╕╨▒╨╛╨║. ╨Я╨╛╨┤╤А╨╛╨▒╨╜╨╡╨╡ ╤Б╨╝. https://aka.ms/cpp/structured-output.
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yhk85l\\Debug\\".
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_d0278.dir\\Debug\\cmTC_d0278.tlog\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t2zrmn\\Debug\\".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ ╨║╨░╤В╨░╨╗╨╛╨│╨░ "cmTC_ff6cf.dir\\Debug\\cmTC_ff6cf.tlog\\".
         InitializeBuildStatus:
-          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_d0278.dir\\Debug\\cmTC_d0278.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
-          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_d0278.dir\\Debug\\cmTC_d0278.tlog\\unsuccessfulbuild".
+          ╨б╨╛╨╖╨┤╨░╨╜╨╕╨╡ "cmTC_ff6cf.dir\\Debug\\cmTC_ff6cf.tlog\\unsuccessfulbuild", ╤В╨░╨║ ╨║╨░╨║ ╨▒╤Л╨╗╨╛ ╨╖╨░╨┤╨░╨╜╨╛ "AlwaysCreate".
+          ╨Ю╨▒╤А╨░╤Й╨╡╨╜╨╕╨╡ ╨║ "cmTC_ff6cf.dir\\Debug\\cmTC_ff6cf.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_d0278.dir\\Debug\\\\" /Fd"cmTC_d0278.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yhk85l\\CheckFunctionExists.c"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_ff6cf.dir\\Debug\\\\" /Fd"cmTC_ff6cf.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t2zrmn\\CheckFunctionExists.c"
           ╨Ю╨┐╤В╨╕╨╝╨╕╨╖╨╕╤А╤Г╤О╤Й╨╕╨╣ ╨║╨╛╨╝╨┐╨╕╨╗╤П╤В╨╛╤А Microsoft (R) C/C++ ╨▓╨╡╤А╤Б╨╕╨╕ 19.44.35221 ╨┤╨╗╤П x64
           (C) ╨Ъ╨╛╤А╨┐╨╛╤А╨░╤Ж╨╕╤П ╨Ь╨░╨╣╨║╤А╨╛╤Б╨╛╤Д╤В (Microsoft Corporation).  ╨Т╤Б╨╡ ╨┐╤А╨░╨▓╨░ ╨╖╨░╤Й╨╕╤Й╨╡╨╜╤Л.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_d0278.dir\\Debug\\\\" /Fd"cmTC_d0278.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yhk85l\\CheckFunctionExists.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_ff6cf.dir\\Debug\\\\" /Fd"cmTC_ff6cf.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t2zrmn\\CheckFunctionExists.c"
           CheckFunctionExists.c
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yhk85l\\Debug\\cmTC_d0278.exe" /INCREMENTAL /ILK:"cmTC_d0278.dir\\Debug\\cmTC_d0278.ilk" /NOLOGO pthread.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-yhk85l/Debug/cmTC_d0278.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/CMakeFiles/CMakeScratch/TryCompile-yhk85l/Debug/cmTC_d0278.lib" /MACHINE:X64  /machine:x64 cmTC_d0278.dir\\Debug\\CheckFunctionExists.obj
-        LINK : fatal error LNK1104: ╨╜╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ "pthread.lib" [D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yhk85l\\cmTC_d0278.vcxproj]
-        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yhk85l\\cmTC_d0278.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) ╤Б ╨╛╤И╨╕╨▒╨║╨╛╨╣.
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t2zrmn\\Debug\\cmTC_ff6cf.exe" /INCREMENTAL /ILK:"cmTC_ff6cf.dir\\Debug\\cmTC_ff6cf.ilk" /NOLOGO pthread.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-t2zrmn/Debug/cmTC_ff6cf.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/CMakeFiles/CMakeScratch/TryCompile-t2zrmn/Debug/cmTC_ff6cf.lib" /MACHINE:X64  /machine:x64 cmTC_ff6cf.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: ╨╜╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ "pthread.lib" [C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t2zrmn\\cmTC_ff6cf.vcxproj]
+        ╨б╨▒╨╛╤А╨║╨░ ╨┐╤А╨╛╨╡╨║╤В╨░ "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t2zrmn\\cmTC_ff6cf.vcxproj" ╨╖╨░╨▓╨╡╤А╤И╨╡╨╜╨░ (╤Ж╨╡╨╗╨╡╨▓╤Л╨╡ ╨╛╨▒╤К╨╡╨║╤В╤Л ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) ╤Б ╨╛╤И╨╕╨▒╨║╨╛╨╣.
         
         ╨Ю╤И╨╕╨▒╨║╨░ ╤Б╨▒╨╛╤А╨║╨╕.
         
-        "D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yhk85l\\cmTC_d0278.vcxproj" (╤Ж╨╡╨╗╨╡╨▓╨╛╨╣ ╨╛╨▒╤К╨╡╨║╤В ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) (1) ->
+        "C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t2zrmn\\cmTC_ff6cf.vcxproj" (╤Ж╨╡╨╗╨╡╨▓╨╛╨╣ ╨╛╨▒╤К╨╡╨║╤В ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О) (1) ->
         (╨ж╨╡╨╗╨╡╨▓╨╛╨╣ ╨╛╨▒╤К╨╡╨║╤В Link) -> 
-          LINK : fatal error LNK1104: ╨╜╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ "pthread.lib" [D:\\Program\\my_projects\\my_programs_CPP\\sem2_lab2\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yhk85l\\cmTC_d0278.vcxproj]
+          LINK : fatal error LNK1104: ╨╜╨╡ ╤Г╨┤╨░╨╡╤В╤Б╤П ╨╛╤В╨║╤А╤Л╤В╤М ╤Д╨░╨╣╨╗ "pthread.lib" [C:\\Program1\\my_projects\\my_programs_CPP\\sem2_lab2(1)\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t2zrmn\\cmTC_ff6cf.vcxproj]
         
             ╨Я╤А╨╡╨┤╤Г╨┐╤А╨╡╨╢╨┤╨╡╨╜╨╕╨╣: 0
             ╨Ю╤И╨╕╨▒╨╛╨║: 1
         
-        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.56
+        ╨Я╤А╨╛╤И╨╗╨╛ ╨▓╤А╨╡╨╝╨╡╨╜╨╕ 00:00:00.54
         
       exitCode: 1
 ...

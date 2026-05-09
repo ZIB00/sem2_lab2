@@ -459,35 +459,6 @@ Sequence<T>* SegmentedList<T>::Skip(size_t count)
 }
 
 template<class T>
-Sequence<Sequence<T>*>* SegmentedList<T>::Split(bool (*Function)(T))
-{
-    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
-
-    auto result = new SegmentedList<Sequence<T>*>();
-    Sequence<T>* currentPart = new SegmentedList<T>();
-
-    try {
-        for (size_t i = 0; i < this->GetLength(); ++i) {
-            T value = this->Get(i);
-            if (Function(value)) {
-                result->Append(currentPart);
-                currentPart = new SegmentedList<T>();
-            } else {
-                currentPart->Append(value);
-            }
-        }
-        result->Append(currentPart);
-    }
-    catch (...) {
-        delete result;
-        delete currentPart;
-        throw;
-    }
-    
-    return result;
-}
-
-template<class T>
 Sequence<T>* SegmentedList<T>::Splice(size_t index, size_t count, Sequence<T>* insertSequence)
 {
     if (index > this->GetLength()) throw OutOfRange("Index out of bounds");
@@ -536,28 +507,6 @@ Sequence<T>* SegmentedList<T>::FlatMap(Sequence<T>* (*Function)(T))
             }
             
             delete subSequence;
-        }
-    }
-    catch (...) {
-        delete result;
-        throw;
-    }
-
-    return result;
-}
-
-template<class T>
-Sequence<Pair<T, T>>* SegmentedList<T>::Zip(Sequence<T>* other)
-{
-    if (other == nullptr) throw InvalidArgument("Other sequence cannot be null");
-
-    auto result = new SegmentedList<Pair<T, T>>();
-    
-    size_t minLen = (this->GetLength() < other->GetLength()) ? this->GetLength() : other->GetLength();
-
-    try {
-        for (size_t i = 0; i < minLen; ++i) {
-            result->Append(Pair<T, T>(this->Get(i), other->Get(i)));
         }
     }
     catch (...) {

@@ -4,11 +4,13 @@
 
 #pragma region sequence main functions
 
+#define BITS_IN_BYTE 8
+
 template<class T>
 void BitSequence<T>::SetBit(size_t index, bool value)
 {
-    size_t byteIndex = index / 8;
-    size_t bitOffset = index % 8;
+    size_t byteIndex = index / BITS_IN_BYTE;
+    size_t bitOffset = index % BITS_IN_BYTE;
 
     unsigned char theByte = this->bytes->Get(byteIndex);
 
@@ -54,17 +56,21 @@ BitSequence<T>::~BitSequence()
 template<class T>
 T BitSequence<T>::Get(size_t index)
 {
-    if (index < 0 || index >= this->bitCount) {
-        throw OutOfRange("Index is out of range");
-    }
+    if (index >= this->bitCount) throw OutOfRange("Index out of bounds");
 
-    size_t byteIndex = index / 8;
-    size_t bitOffset = index % 8;
+    size_t byteIndex = index / BITS_IN_BYTE;
+    size_t bitOffset = index % BITS_IN_BYTE;
 
     unsigned char theByte = this->bytes->Get(byteIndex);
-    bool bitValue = (theByte >> bitOffset) & 1;
 
-    return static_cast<T>(bitValue);
+    return static_cast<T>((theByte >> bitOffset) & 1);
+}
+
+template<class T>
+void BitSequence<T>::Set(size_t index, T value)
+{
+    if (index >= this->bitCount) throw OutOfRange("Index out of bounds");
+    this->SetBit(index, static_cast<bool>(value));
 }
 
 template<class T>
@@ -106,7 +112,7 @@ Sequence<T>* BitSequence<T>::GetSubsequence(size_t startIndex, size_t endIndex)
 template<class T>
 Sequence<T>* BitSequence<T>::Append(T item)
 {
-    if (this->bitCount % 8 == 0) {
+    if (this->bitCount % BITS_IN_BYTE == 0) {
         size_t currentBytes = this->bytes->GetSize();
         this->bytes->Resize(currentBytes + 1);
         this->bytes->Set(currentBytes, 0);
@@ -175,26 +181,6 @@ BitSequence<T>& BitSequence<T>::operator=(const BitSequence<T>& other)
     this->bitCount = other.bitCount;
 
     return *this;
-}
-
-template<class T>
-T& BitSequence<T>::operator[](size_t index)
-{
-    if (index >= this->bitCount) throw OutOfRange("Index out of bounds");
-    
-    static T temp;
-    temp = this->Get(index);
-    return temp;
-}
-
-template<class T>
-const T& BitSequence<T>::operator[](size_t index) const
-{
-    if (index >= this->bitCount) throw OutOfRange("Index out of bounds");
-
-    static T temp;
-    temp = this->Get(index);
-    return temp;
 }
 
 template<class T>
@@ -329,35 +315,6 @@ Sequence<T>* BitSequence<T>::Skip(size_t count)
 }
 
 template<class T>
-Sequence<Sequence<T>*>* BitSequence<T>::Split(bool (*Function)(T))
-{
-    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
-
-    auto result = new BitSequence<Sequence<T>*>();
-    Sequence<T>* currentPart = new BitSequence<T>();
-
-    try {
-        for (size_t i = 0; i < this->GetLength(); ++i) {
-            T value = this->Get(i);
-            if (Function(value)) {
-                result->Append(currentPart);
-                currentPart = new BitSequence<T>();
-            } else {
-                currentPart->Append(value);
-            }
-        }
-        result->Append(currentPart);
-    }
-    catch (...) {
-        delete result;
-        delete currentPart;
-        throw;
-    }
-    
-    return result;
-}
-
-template<class T>
 Sequence<T>* BitSequence<T>::Splice(size_t index, size_t count, Sequence<T>* insertSequence)
 {
     if (index > this->GetLength()) throw OutOfRange("Index out of bounds");
@@ -406,28 +363,6 @@ Sequence<T>* BitSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
             }
             
             delete subSequence;
-        }
-    }
-    catch (...) {
-        delete result;
-        throw;
-    }
-
-    return result;
-}
-
-template<class T>
-Sequence<Pair<T, T>>* BitSequence<T>::Zip(Sequence<T>* other)
-{
-    if (other == nullptr) throw InvalidArgument("Other sequence cannot be null");
-
-    auto result = new BitSequence<Pair<T, T>>();
-    
-    size_t minLen = (this->GetLength() < other->GetLength()) ? this->GetLength() : other->GetLength();
-
-    try {
-        for (size_t i = 0; i < minLen; ++i) {
-            result->Append(Pair<T, T>(this->Get(i), other->Get(i)));
         }
     }
     catch (...) {

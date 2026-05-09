@@ -5,6 +5,6 @@ C:/Program Files/CMake/share/cmake-4.3/Modules/CheckLibraryExists.cmake
 C:/Program Files/CMake/share/cmake-4.3/Modules/FindPackageHandleStandardArgs.cmake
 C:/Program Files/CMake/share/cmake-4.3/Modules/FindPackageMessage.cmake
 C:/Program Files/CMake/share/cmake-4.3/Modules/FindThreads.cmake
-D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googlemock/CMakeLists.txt
-D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googlemock/cmake/gmock.pc.in
-D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googlemock/cmake/gmock_main.pc.in
+C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/tests/googletest-1.17.0/googlemock/CMakeLists.txt
+C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/tests/googletest-1.17.0/googlemock/cmake/gmock.pc.in
+C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/tests/googletest-1.17.0/googlemock/cmake/gmock_main.pc.in

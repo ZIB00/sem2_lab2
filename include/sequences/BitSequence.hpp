@@ -21,15 +21,14 @@ class BitSequence : public Sequence<T>
         ~BitSequence() override;
 
         BitSequence<T>& operator=(const BitSequence<T>& other);
-        T& operator[](size_t index) override;
-        const T& operator[](size_t index) const override;
-        Sequence<T>* operator+(Sequence<T>* other) override;
-        bool operator==(Sequence<T>* other) override;
-        bool operator!=(Sequence<T>* other) override;
+        Sequence<T>* operator+(Sequence<T>* other);
+        bool operator==(Sequence<T>* other);
+        bool operator!=(Sequence<T>* other);
 
         T GetFirst() override;
         T GetLast() override;
         T Get(size_t index) override;
+        void Set(size_t index, T value);
         Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) override;
         size_t GetLength() override;
 
@@ -47,11 +46,9 @@ class BitSequence : public Sequence<T>
 
         IEnumerator<T>* GetEnumerator() override;
 
-        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T)) override;
-        Sequence<T>* Skip(size_t count) override;
-        Sequence<Sequence<T>*>* Split(bool (*Function)(T)) override;
-        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr) override;
-        Sequence<Pair<T, T>>* Zip(Sequence<T>* other) override;
+        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T));
+        Sequence<T>* Skip(size_t count);
+        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr);
 
         BitSequence<T>* NOT();
         BitSequence<T>* AND(const BitSequence<T>* other);

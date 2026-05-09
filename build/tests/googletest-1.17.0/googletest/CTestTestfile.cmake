@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: D:/Program/my_projects/my_programs_CPP/sem2_lab2/tests/googletest-1.17.0/googletest
-# Build directory: D:/Program/my_projects/my_programs_CPP/sem2_lab2/build/tests/googletest-1.17.0/googletest
+# Source directory: C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/tests/googletest-1.17.0/googletest
+# Build directory: C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/tests/googletest-1.17.0/googletest
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

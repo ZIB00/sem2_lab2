@@ -8,10 +8,13 @@ add_executable(main
 
 target_include_directories(main PRIVATE
     include
+    include/other
+    include/sequences
     templates
+    templates/other
+    templates/sequences
 )
 
-# Заставляем GoogleTest использовать ту же динамическую библиотеку (MD/MDd), что и твой проект
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 add_subdirectory(tests/googletest-1.17.0)
@@ -28,7 +31,11 @@ add_executable(tests
 
 target_include_directories(tests PRIVATE
     include
+    include/other
+    include/sequences
     templates
+    templates/other
+    templates/sequences
 )
 
 target_link_libraries(tests PRIVATE
