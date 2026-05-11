@@ -45,6 +45,7 @@ class Sequence : public ICollection<T>, public IEnumerable<T>
         virtual Sequence<T>* InsertAt(T item, size_t index) = 0;
         virtual Sequence<T>* Concat(Sequence<T>* list) = 0;
 
+        //M-2.
         virtual Sequence<T>* Map(T (*Function)(T)) = 0;
         virtual Sequence<T>* Where(bool (*)(T)) = 0;
         virtual T Reduce(T (*Function)(T, T)) = 0;
@@ -53,4 +54,9 @@ class Sequence : public ICollection<T>, public IEnumerable<T>
         virtual Option<T> GetLast(bool (*Function)(T)) = 0;
         
         virtual IEnumerator<T>* GetEnumerator() = 0;
+
+        //M2.1
+        virtual Sequence<T>* FlatMap(Sequence<T>* (*Function)(T)) = 0;
+        virtual Sequence<T>* Skip(size_t count) = 0;
+        virtual Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr) = 0;
 };

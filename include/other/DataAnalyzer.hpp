@@ -26,14 +26,14 @@ public:
             throw std::runtime_error("Sequence is empty");
         }
 
-        T minVal = (*seq)[0];
-        T maxVal = (*seq)[0];
+        T minVal = seq->Get(0);
+        T maxVal = seq->Get(0);
         T sumVal = group.Zero();
         size_t count = seq->GetLength();
 
         // За один проход собираем всю информацию
         for (size_t i = 0; i < count; ++i) {
-            T current = (*seq)[i];
+            T current = seq->Get(i);
             
             if (current < minVal) minVal = current;
             if (current > maxVal) maxVal = current;
@@ -58,7 +58,7 @@ public:
         // Извлекаем элементы для сортировки
         T* tempArray = new T[length];
         for (size_t i = 0; i < length; ++i) {
-            tempArray[i] = (*seq)[i];
+            tempArray[i] = seq->Get(i);
         }
 
         // Простая сортировка вставками для надежности (или std::sort)
@@ -93,7 +93,7 @@ public:
 
         for (size_t i = 0; i < length; ++i) {
             for (size_t j = i + 1; j < length; ++j) {
-                if ((*seq)[i] > (*seq)[j]) {
+                if (seq->Get(i) > seq->Get(j)) {
                     inversions++;
                 }
             }
@@ -104,17 +104,17 @@ public:
     // =========================================================================
     // П-4. Для каждого элемента - множество предшествующих и меньших
     // =========================================================================
-    static Sequence<Sequence<T>*>* GetPrecedingSmaller(Sequence<T>* seq, Sequence<Sequence<T>*>* outSeq) {
+    static Sequence<Sequence<T>*>* GetPrecedingSmaller(Sequence<T>* seq, Sequence<Sequence<T>*>* outSeq, Sequence<T>* emptyProto) {
         if (seq == nullptr || outSeq == nullptr) return outSeq;
         size_t length = seq->GetLength();
 
         for (size_t i = 0; i < length; ++i) {
-            Sequence<T>* subSeq = seq->CreateEmpty(); // Создаем пустую последовательность того же типа
-            T current = (*seq)[i];
+            Sequence<T>* subSeq = emptyProto->Skip(emptyProto->GetLength());
+            T current = seq->Get(i);
 
             for (size_t j = 0; j < i; ++j) {
-                if ((*seq)[j] < current) {
-                    subSeq = subSeq->Append((*seq)[j]);
+                if (seq->Get(j) < current) {
+                    subSeq = subSeq->Append(seq->Get(j));
                 }
             }
             outSeq = outSeq->Append(subSeq);
@@ -151,9 +151,9 @@ public:
         if (length < 3) return outSeq; // Недостаточно элементов
 
         for (size_t i = 1; i < length - 1; ++i) {
-            T prev = (*seq)[i - 1];
-            T curr = (*seq)[i];
-            T next = (*seq)[i + 1];
+            T prev = seq->Get(i - 1);
+            T curr = seq->Get(i);
+            T next = seq->Get(i + 1);
 
             // Складываем элементы через интерфейс кольца/группы
             T sum = ring.Add(ring.Add(prev, curr), next);
@@ -174,21 +174,21 @@ public:
         // 1. Считаем среднее арифметическое
         T sum = ring.Zero();
         for (size_t i = 0; i < length; ++i) {
-            sum = ring.Add(sum, (*seq)[i]);
+            sum = ring.Add(sum, seq->Get(i));
         }
         double mean = static_cast<double>(sum) / length;
 
         // 2. Считаем дисперсию (variance) и среднеквадратичное отклонение (sigma)
         double varianceSum = 0;
         for (size_t i = 0; i < length; ++i) {
-            double diff = static_cast<double>((*seq)[i]) - mean;
+            double diff = static_cast<double>(seq->Get(i)) - mean;
             varianceSum += diff * diff;
         }
         double sigmaSquared = varianceSum / length;
 
         // 3. Вычисляем sqrt(sigma^2 - a_i^2) для каждого элемента
         for (size_t i = 0; i < length; ++i) {
-            double currentVal = static_cast<double>((*seq)[i]);
+            double currentVal = static_cast<double>(seq->Get(i));
             double underRoot = sigmaSquared - (currentVal * currentVal);
 
             double result = (underRoot >= 0.0) ? std::sqrt(underRoot) : 0.0;
@@ -204,8 +204,8 @@ public:
         size_t length = seq->GetLength();
 
         for (size_t i = 0; i < length; ++i) {
-            T normalElem = (*seq)[i];
-            T reflectedElem = (*seq)[length - 1 - i];
+            T normalElem = seq->Get(i);
+            T reflectedElem = seq->Get(length - 1 - i);
 
             T sum = group.Add(normalElem, reflectedElem);
             outSeq = outSeq->Append(sum);

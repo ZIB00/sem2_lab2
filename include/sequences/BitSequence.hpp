@@ -46,9 +46,9 @@ class BitSequence : public Sequence<T>
 
         IEnumerator<T>* GetEnumerator() override;
 
-        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T));
-        Sequence<T>* Skip(size_t count);
-        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr);
+        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T)) override;
+        Sequence<T>* Skip(size_t count) override;
+        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr) override;
 
         BitSequence<T>* NOT();
         BitSequence<T>* AND(const BitSequence<T>* other);

@@ -5,17 +5,21 @@ namespace SequenceUtils {
     template<class T>
     Pair<Sequence<T>*, Sequence<T>*> Unzip(Sequence<Pair<T, T>>* pairsSeq, Sequence<T>* sequence1, Sequence<T>* sequence2)
     {
+        if (pairsSeq == nullptr || sequence1 == nullptr || sequence2 == nullptr)
+            throw InvalidArgument("Arguments cannot be null");
+
+        IEnumerator<Pair<T, T>>* iterator = pairsSeq->GetEnumerator();
         try {
-            IEnumerator<Pair<T, T>>* iterator = pairsSeq->GetEnumerator();
             while (iterator->MoveNext()) {
-                Pair<T, T> currentPair = iterator->GetCurrent();
-                sequence1 = sequence1->Append(currentPair.first);
-                sequence2 = sequence2->Append(currentPair.second);
+                Pair<T, T> current = iterator->GetCurrent();
+                sequence1 = sequence1->Append(current.first);
+                sequence2 = sequence2->Append(current.second);
             }
-            delete iterator;
         } catch (...) {
+            delete iterator;
             throw;
         }
+        delete iterator;
         return Pair<Sequence<T>*, Sequence<T>*>(sequence1, sequence2);
     }
 
@@ -32,6 +36,24 @@ namespace SequenceUtils {
         }
 
         return sequence;
+    }
+
+    template<class T>
+    ZipEnumerator<T>* Zip(Sequence<T>* a, Sequence<T>* b)
+    {
+        if (a == nullptr || b == nullptr)
+            throw InvalidArgument("Sequences cannot be null");
+
+        return new ZipEnumerator<T>(a->GetEnumerator(), b->GetEnumerator());
+    }
+
+    template<class T>
+    SplitEnumerator<T>* Split(Sequence<T>* seq, bool (*predicate)(T), Sequence<T>* prototype)
+    {
+        if (seq == nullptr || predicate == nullptr || prototype == nullptr)
+            throw InvalidArgument("Arguments cannot be null");
+
+        return new SplitEnumerator<T>(seq->GetEnumerator(), predicate, prototype);
     }
 
 }

@@ -20,7 +20,7 @@ Option<T>::~Option() {}
 template<class T>
 bool Option<T>::HasValue()
 {
-    return this->hasValue
+    return this->hasValue;
 }
 
 template<class T>
