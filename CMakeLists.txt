@@ -26,6 +26,9 @@ target_include_directories(main PRIVATE
 add_executable(gui WIN32
     src/gui/main_gui.cpp
     src/gui/MainWindow.cpp
+    src/gui/MainWindowAnalysis.cpp
+    src/gui/MainWindowUtils.cpp
+    src/gui/MainWindowFunctions.cpp
 )
 
 target_include_directories(gui PRIVATE

@@ -1,7 +1,3 @@
-#pragma once
-
-#include "AdaptiveSequence.hpp"
-
 #pragma region sequence main functions
 
 template<class T>
@@ -25,6 +21,15 @@ AdaptiveSequence<T>::AdaptiveSequence(const AdaptiveSequence<T>& other)
 {
     this->sequence = nullptr;
     this->CopyFrom(other);
+}
+
+template<class T>
+AdaptiveSequence<T>::AdaptiveSequence(std::initializer_list<T> items)
+{
+    this->sequence = new MutableArraySequence<T>(items);
+    
+    this->getCount = 0;
+    this->insertCount = 0;
 }
 
 template<class T>
@@ -213,6 +218,11 @@ Sequence<T>* AdaptiveSequence<T>::Concat(Sequence<T>* list)
 
 #pragma endregion
 
+template <class T>
+Sequence<T>* AdaptiveSequence<T>::CreateEmpty() {
+    return new AdaptiveSequence<T>();
+}
+
 #pragma region operators (=, [], const [], +, ==, !=)
 
 template<class T>
@@ -279,172 +289,6 @@ template<class T>
 bool AdaptiveSequence<T>::operator!=(Sequence<T>* other)
 {
     return !(*this == other);
-}
-
-#pragma endregion
-
-#pragma region Mar/Where/Reduce
-
-template<class T>
-Sequence<T>* AdaptiveSequence<T>::Map(T (*Function)(T))
-{
-    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
-
-    AdaptiveSequence<T>* result = new AdaptiveSequence<T>();
-
-    if (dynamic_cast<MutableListSequence<T>*>(this->sequence) != nullptr) {
-        result->SwitchToListSequence();
-    }
-
-    try {
-        size_t length = this->GetLength();
-
-        for (size_t index = 0; index < length; ++index) {
-            result->sequence->Append(Function(this->sequence->Get(index)));
-        }
-    }
-    catch (...) {
-        delete result;
-        throw;
-    }
-
-    return result;
-}
-
-template<class T>
-Sequence<T>* AdaptiveSequence<T>::Where(bool (*Function)(T))
-{
-    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
-
-    AdaptiveSequence<T>* result = new AdaptiveSequence<T>();
-
-    if (dynamic_cast<MutableListSequence<T>*>(this->sequence) != nullptr) {
-        result->SwitchToListSequence();
-    }
-
-    try {
-        size_t length = this->GetLength();
-
-        for (size_t index = 0; index < length; ++index) {
-            T value = this->sequence->Get(index);
-
-            if (Function(value)) {
-                result->sequence->Append(value);
-            }
-        }
-    }
-    catch (...) {
-        delete result;
-        throw;
-    }
-
-    return result;
-}
-
-template<class T>
-T AdaptiveSequence<T>::Reduce(T (*Function)(T, T))
-{
-    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
-    if (this->GetLength() == 0) throw OutOfRange("Sequence is empty");
-
-    T result = this->sequence->Get(0);
-    size_t length = this->GetLength();
-
-    for (size_t index = 1; index < length; ++index) {
-        result = Function(result, this->sequence->Get(index));
-    }
-
-    return result;
-}
-
-#pragma endregion
-
-#pragma region Option
-
-template<class T>
-Option<T> AdaptiveSequence<T>::GetFirst(bool (*Function)(T))
-{
-    this->UpdateStrategy();
-    return this->sequence->GetFirst(Function);
-}
-
-template<class T>
-Option<T> AdaptiveSequence<T>::GetLast(bool (*Function)(T))
-{
-    this->UpdateStrategy();
-    return this->sequence->GetLast(Function);
-}
-
-#pragma endregion
-
-#pragma region Zip/Skip/Split/Splice/FlatMap
-
-template<class T>
-Sequence<T>* AdaptiveSequence<T>::Skip(size_t count)
-{
-    if (count >= this->GetLength()) {
-        return new AdaptiveSequence<T>();
-    }
-    return this->GetSubsequence(count, this->GetLength() - 1);
-}
-
-template<class T>
-Sequence<T>* AdaptiveSequence<T>::Splice(size_t index, size_t count, Sequence<T>* insertSequence)
-{
-    if (index > this->GetLength()) throw OutOfRange("Index out of bounds");
-
-    size_t realCount = (count <= this->GetLength() - index) ? count : this->GetLength() - index;
-
-    auto result = new AdaptiveSequence<T>();
-
-    try {
-        for (size_t i = 0; i < index; ++i) {
-            result->Append(this->Get(i));
-        }
-
-        if (insertSequence != nullptr) {
-            for (size_t i = 0; i < insertSequence->GetLength(); ++i) {
-                result->Append(insertSequence->Get(i));
-            }
-        }
-
-        for (size_t i = index + realCount; i < this->GetLength(); ++i) {
-            result->Append(this->Get(i));
-        }
-    } 
-    catch (...) {
-        delete result;
-        throw;
-    }
-
-    return result;
-}
-
-template<class T>
-Sequence<T>* AdaptiveSequence<T>::FlatMap(Sequence<T>* (*Function)(T))
-{
-    if (Function == nullptr) throw InvalidArgument("Function cannot be null");
-
-    auto result = new AdaptiveSequence<T>();
-
-    try {
-        size_t length = this->GetLength();
-        for (size_t index = 0; index < length; ++index) {
-            Sequence<T>* subSequence = Function(this->Get(index)); 
-            
-            for (size_t subIndex = 0; subIndex < subSequence->GetLength(); ++subIndex) {
-                result->Append(subSequence->Get(subIndex));
-            }
-            
-            delete subSequence;
-        }
-    }
-    catch (...) {
-        delete result;
-        throw;
-    }
-
-    return result;
 }
 
 #pragma endregion

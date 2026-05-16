@@ -1,8 +1,11 @@
 #include <gtest/gtest.h>
+#include <functional>
 
 #include "SegmentedList.hpp"
 #include "ArraySequence.hpp"
 #include "Exceptions.hpp"
+#include "TestUtils.hpp"
+#include "SequenceUtils.hpp"
 
 namespace SegmentedListTests
 {
@@ -23,7 +26,7 @@ TEST(SegmentedListTests, DefaultConstructorCreatesEmptySequence)
 {
     SegmentedList<int> list;
 
-    EXPECT_EQ(list.GetLength(), 0);
+    EXPECT_TRUE(TestUtils::CheckSequence({}, &list, "Default constructor creates empty sequence"));
     EXPECT_THROW(list.GetFirst(), OutOfRange);
     EXPECT_THROW(list.GetLast(), OutOfRange);
 }
@@ -33,10 +36,7 @@ TEST(SegmentedListTests, ItemsConstructorCopiesElements)
     int items[] = {1, 2, 3};
     SegmentedList<int> list(items, 3);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(0), 1);
-    EXPECT_EQ(list.Get(1), 2);
-    EXPECT_EQ(list.Get(2), 3);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &list, "Items constructor copies elements"));
 }
 
 TEST(SegmentedListTests, CopyConstructorCreatesIndependentSequence)
@@ -47,10 +47,8 @@ TEST(SegmentedListTests, CopyConstructorCreatesIndependentSequence)
     SegmentedList<int> copy(original);
     copy.InsertAt(99, 1);
 
-    EXPECT_EQ(original.GetLength(), 3);
-    EXPECT_EQ(original.Get(1), 2);
-    EXPECT_EQ(copy.GetLength(), 4);
-    EXPECT_EQ(copy.Get(1), 99);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &original, "Original sequence remains unchanged"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 99, 2, 3}, &copy, "Copied sequence creates independent storage"));
 }
 
 TEST(SegmentedListTests, AssignmentCreatesIndependentSequence)
@@ -62,9 +60,8 @@ TEST(SegmentedListTests, AssignmentCreatesIndependentSequence)
     target = source;
     target.Append(4);
 
-    EXPECT_EQ(source.GetLength(), 3);
-    EXPECT_EQ(target.GetLength(), 4);
-    EXPECT_EQ(target.GetLast(), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &source, "Source sequence remains unchanged"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3, 4}, &target, "Target sequence creates independent storage"));
 }
 
 TEST(SegmentedListTests, AppendAddsElementsToEnd)
@@ -73,9 +70,7 @@ TEST(SegmentedListTests, AppendAddsElementsToEnd)
 
     list.Append(1)->Append(2)->Append(3);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.GetLast(), 3);
-    EXPECT_EQ(list.Get(1), 2);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &list, "Append elements to end"));
 }
 
 TEST(SegmentedListTests, PrependAddsElementsToBeginning)
@@ -84,9 +79,7 @@ TEST(SegmentedListTests, PrependAddsElementsToBeginning)
 
     list.Prepend(3)->Prepend(2)->Prepend(1);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.GetFirst(), 1);
-    EXPECT_EQ(list.Get(2), 3);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &list, "Prepend elements to beginning"));
 }
 
 TEST(SegmentedListTests, InsertAtPlacesElementCorrectly)
@@ -96,8 +89,7 @@ TEST(SegmentedListTests, InsertAtPlacesElementCorrectly)
 
     list.InsertAt(2, 1);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(1), 2);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &list, "InsertAt places element correctly"));
 }
 
 TEST(SegmentedListTests, ConcatAppendsAnotherSequence)
@@ -109,9 +101,7 @@ TEST(SegmentedListTests, ConcatAppendsAnotherSequence)
 
     left.Concat(&right);
 
-    EXPECT_EQ(left.GetLength(), 4);
-    EXPECT_EQ(left.Get(2), 3);
-    EXPECT_EQ(left.Get(3), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3, 4}, &left, "Concat appends another sequence"));
 }
 
 TEST(SegmentedListTests, GetSubsequenceReturnsCorrectRange)
@@ -121,9 +111,7 @@ TEST(SegmentedListTests, GetSubsequenceReturnsCorrectRange)
 
     Sequence<int>* subSeq = list.GetSubsequence(1, 3);
 
-    EXPECT_EQ(subSeq->GetLength(), 3);
-    EXPECT_EQ(subSeq->Get(0), 2);
-    EXPECT_EQ(subSeq->Get(2), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 3, 4}, subSeq, "GetSubsequence returns correct range"));
 
     delete subSeq;
 }
@@ -143,12 +131,9 @@ TEST(SegmentedListTests, MapTransformsElements)
     int items[] = {1, 2, 3};
     SegmentedList<int> list(items, 3);
 
-    Sequence<int>* mapped = list.Map(SegmentedListTests::MultiplyByTwo);
+    Sequence<int>* mapped = SequenceUtils::Map<int>(&list, std::function<int(int)>(SegmentedListTests::MultiplyByTwo));
 
-    EXPECT_EQ(mapped->GetLength(), 3);
-    EXPECT_EQ(mapped->Get(0), 2);
-    EXPECT_EQ(mapped->Get(1), 4);
-    EXPECT_EQ(mapped->Get(2), 6);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4, 6}, mapped, "Map transforms elements"));
 
     delete mapped;
 }
@@ -158,11 +143,9 @@ TEST(SegmentedListTests, WhereFiltersElements)
     int items[] = {1, 2, 3, 4, 5};
     SegmentedList<int> list(items, 5);
 
-    Sequence<int>* filtered = list.Where(SegmentedListTests::IsEven);
+    Sequence<int>* filtered = SequenceUtils::Where<int>(&list, std::function<bool(int)>(SegmentedListTests::IsEven));
 
-    EXPECT_EQ(filtered->GetLength(), 2);
-    EXPECT_EQ(filtered->Get(0), 2);
-    EXPECT_EQ(filtered->Get(1), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4}, filtered, "Where filters elements"));
 
     delete filtered;
 }
@@ -172,7 +155,7 @@ TEST(SegmentedListTests, ReduceAccumulatesValues)
     int items[] = {1, 2, 3, 4};
     SegmentedList<int> list(items, 4);
 
-    int sum = list.Reduce(SegmentedListTests::SumValues);
+    int sum = SequenceUtils::Reduce<int, int>(&list, std::function<int(int, int)>(SegmentedListTests::SumValues));
 
     EXPECT_EQ(sum, 10);
 }
@@ -185,11 +168,11 @@ TEST(SegmentedListTests, AppendWorksAcrossMultipleSegments)
         list.Append(i);
     }
 
-    EXPECT_EQ(list.GetLength(), 25);
-    EXPECT_EQ(list.GetFirst(), 0);
-    EXPECT_EQ(list.GetLast(), 24);
-    EXPECT_EQ(list.Get(10), 10);
-    EXPECT_EQ(list.Get(24), 24);
+    EXPECT_TRUE(TestUtils::CheckSequence(
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}, 
+        &list, 
+        "Append 25 elements across multiple segments"
+    ));
 }
 
 TEST(SegmentedListTests, PrependWorksAcrossMultipleSegments)
@@ -200,8 +183,9 @@ TEST(SegmentedListTests, PrependWorksAcrossMultipleSegments)
         list.Prepend(i);
     }
 
-    EXPECT_EQ(list.GetLength(), 25);
-    EXPECT_EQ(list.GetFirst(), 24);
-    EXPECT_EQ(list.GetLast(), 0);
-    EXPECT_EQ(list.Get(10), 14);
+    EXPECT_TRUE(TestUtils::CheckSequence(
+        {24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, 
+        &list, 
+        "Prepend 25 elements across multiple segments"
+    ));
 }

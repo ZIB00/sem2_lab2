@@ -17,9 +17,10 @@ class ListSequence : public Sequence<T>
     protected:
         ListSequence();
         void SetItems(T* items, size_t count);
+        void SetItems(std::initializer_list<T> items);
         void CopyItems(const ListSequence<T>& sequence);
         virtual ListSequence<T>* Instance() = 0;
-        virtual ListSequence<T>* CreateEmpty() = 0;
+        virtual ListSequence<T>* CreateEmptyMut() = 0;
 
     public:
         ~ListSequence() override;
@@ -42,18 +43,9 @@ class ListSequence : public Sequence<T>
         Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
-        Sequence<T>* Map(T (*Function)(T)) override;
-        Sequence<T>* Where(bool (*Function)(T)) override;
-        T Reduce(T (*Function)(T, T)) override;
-
-        Option<T> GetFirst(bool (*Function)(T)) override;
-        Option<T> GetLast(bool (*Function)(T)) override;
+        Sequence<T>* CreateEmpty() override;
 
         IEnumerator<T>* GetEnumerator() override;
-
-        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T)) override;
-        Sequence<T>* Skip(size_t count) override;
-        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr) override;
 };
 
 template<class T>
@@ -76,12 +68,13 @@ class MutableListSequence : public ListSequence<T>
 {
     protected:
         ListSequence<T>* Instance() override;
-        ListSequence<T>* CreateEmpty() override;
+        ListSequence<T>* CreateEmptyMut() override;
 
     public:
         MutableListSequence();
         MutableListSequence(T* items, size_t count);
         MutableListSequence(const MutableListSequence<T>& sequence);
+        MutableListSequence(std::initializer_list<T> items);
 
         MutableListSequence<T>& operator=(const MutableListSequence<T>& sequence);
 };
@@ -91,12 +84,13 @@ class ImmutableListSequence : public ListSequence<T>
 {
     protected:
         ListSequence<T>* Instance() override;
-        ListSequence<T>* CreateEmpty() override;
+        ListSequence<T>* CreateEmptyMut() override;
 
     public:
         ImmutableListSequence();
         ImmutableListSequence(T* items, size_t count);
         ImmutableListSequence(const ImmutableListSequence<T>& sequence);
+        ImmutableListSequence(std::initializer_list<T> items);
 
         ImmutableListSequence<T>& operator=(const ImmutableListSequence<T>& sequence);
 };

@@ -1,8 +1,11 @@
 #include <gtest/gtest.h>
+#include <functional>
 
 #include "ArraySequence.hpp"
 #include "ListSequence.hpp"
 #include "Exceptions.hpp"
+#include "TestUtils.hpp"
+#include "SequenceUtils.hpp"
 
 namespace ArraySequenceTests
 {
@@ -143,12 +146,9 @@ TEST(MutableArraySequenceTests, MapTransformsElements)
     int items[] = {1, 2, 3};
     MutableArraySequence<int> sequence(items, 3);
 
-    Sequence<int>* mapped = sequence.Map(ArraySequenceTests::MultiplyByTwo);
+    Sequence<int>* mapped = SequenceUtils::Map<int>(&sequence, std::function<int(int)>(ArraySequenceTests::MultiplyByTwo));
 
-    EXPECT_EQ(mapped->GetLength(), 3);
-    EXPECT_EQ(mapped->Get(0), 2);
-    EXPECT_EQ(mapped->Get(1), 4);
-    EXPECT_EQ(mapped->Get(2), 6);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4, 6}, mapped, "Map: multiply by two"));
 
     delete mapped;
 }
@@ -158,7 +158,7 @@ TEST(MutableArraySequenceTests, WhereFiltersElements)
     int items[] = {1, 2, 3, 4, 5};
     MutableArraySequence<int> sequence(items, 5);
 
-    Sequence<int>* filtered = sequence.Where(ArraySequenceTests::IsEven);
+    Sequence<int>* filtered = SequenceUtils::Where<int>(&sequence, std::function<bool(int)>(ArraySequenceTests::IsEven));
 
     EXPECT_EQ(filtered->GetLength(), 2);
     EXPECT_EQ(filtered->Get(0), 2);
@@ -172,7 +172,7 @@ TEST(MutableArraySequenceTests, ReduceAccumulatesValues)
     int items[] = {1, 2, 3, 4};
     MutableArraySequence<int> sequence(items, 4);
 
-    int sum = sequence.Reduce(ArraySequenceTests::SumValues);
+    int sum = SequenceUtils::Reduce<int, int>(&sequence, std::function<int(int, int)>(ArraySequenceTests::SumValues));
 
     EXPECT_EQ(sum, 10);
 }
@@ -249,13 +249,12 @@ TEST(ImmutableArraySequenceTests, MapReturnsNewSequenceWithoutModifyingOriginal)
     int items[] = {1, 2, 3};
     ImmutableArraySequence<int> original(items, 3);
 
-    Sequence<int>* mapped = original.Map(ArraySequenceTests::MultiplyByTwo);
+    Sequence<int>* mapped = SequenceUtils::Map<int>(&original, std::function<int(int)>(ArraySequenceTests::MultiplyByTwo));
 
     EXPECT_EQ(original.Get(0), 1);
     EXPECT_EQ(original.Get(2), 3);
 
-    EXPECT_EQ(mapped->Get(0), 2);
-    EXPECT_EQ(mapped->Get(2), 6);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4, 6}, mapped, "Map: multiply by two"));
 
     delete mapped;
 }
@@ -265,7 +264,7 @@ TEST(ImmutableArraySequenceTests, WhereReturnsNewSequenceWithoutModifyingOrigina
     int items[] = {1, 2, 3, 4};
     ImmutableArraySequence<int> original(items, 4);
 
-    Sequence<int>* filtered = original.Where(ArraySequenceTests::IsEven);
+    Sequence<int>* filtered = SequenceUtils::Where<int>(&original, std::function<bool(int)>(ArraySequenceTests::IsEven));
 
     EXPECT_EQ(original.GetLength(), 4);
     EXPECT_EQ(filtered->GetLength(), 2);

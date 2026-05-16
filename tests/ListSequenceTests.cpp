@@ -1,8 +1,11 @@
 #include <gtest/gtest.h>
+#include <functional>
 
 #include "ListSequence.hpp"
 #include "ArraySequence.hpp"
 #include "Exceptions.hpp"
+#include "TestUtils.hpp"
+#include "SequenceUtils.hpp"
 
 namespace ListSequenceTests
 {
@@ -23,7 +26,7 @@ TEST(MutableListSequenceTests, DefaultConstructorCreatesEmptySequence)
 {
     MutableListSequence<int> sequence;
 
-    EXPECT_EQ(sequence.GetLength(), 0);
+    EXPECT_TRUE(TestUtils::CheckSequence({}, &sequence, "Default empty list sequence"));
     EXPECT_THROW(sequence.GetFirst(), OutOfRange);
     EXPECT_THROW(sequence.GetLast(), OutOfRange);
 }
@@ -33,10 +36,7 @@ TEST(MutableListSequenceTests, ItemsConstructorCopiesElements)
     int items[] = {1, 2, 3};
     MutableListSequence<int> sequence(items, 3);
 
-    EXPECT_EQ(sequence.GetLength(), 3);
-    EXPECT_EQ(sequence.Get(0), 1);
-    EXPECT_EQ(sequence.Get(1), 2);
-    EXPECT_EQ(sequence.Get(2), 3);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &sequence, "Items constructor"));
 }
 
 TEST(MutableListSequenceTests, CopyConstructorCreatesIndependentSequence)
@@ -47,10 +47,8 @@ TEST(MutableListSequenceTests, CopyConstructorCreatesIndependentSequence)
     MutableListSequence<int> copy(original);
     copy.InsertAt(99, 1);
 
-    EXPECT_EQ(original.GetLength(), 3);
-    EXPECT_EQ(original.Get(1), 2);
-    EXPECT_EQ(copy.GetLength(), 4);
-    EXPECT_EQ(copy.Get(1), 99);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &original, "Original sequence remains unchanged"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 99, 2, 3}, &copy, "Copied sequence after InsertAt"));
 }
 
 TEST(MutableListSequenceTests, AssignmentCreatesIndependentSequence)
@@ -62,9 +60,8 @@ TEST(MutableListSequenceTests, AssignmentCreatesIndependentSequence)
     target = source;
     target.Append(4);
 
-    EXPECT_EQ(source.GetLength(), 3);
-    EXPECT_EQ(target.GetLength(), 4);
-    EXPECT_EQ(target.GetLast(), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &source, "Source sequence"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3, 4}, &target, "Target sequence after Append"));
 }
 
 TEST(MutableListSequenceTests, AppendAddsElementsToEnd)
@@ -73,9 +70,7 @@ TEST(MutableListSequenceTests, AppendAddsElementsToEnd)
 
     sequence.Append(1)->Append(2)->Append(3);
 
-    EXPECT_EQ(sequence.GetLength(), 3);
-    EXPECT_EQ(sequence.GetLast(), 3);
-    EXPECT_EQ(sequence.Get(1), 2);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &sequence, "Chained Append"));
 }
 
 TEST(MutableListSequenceTests, PrependAddsElementsToBeginning)
@@ -84,9 +79,7 @@ TEST(MutableListSequenceTests, PrependAddsElementsToBeginning)
 
     sequence.Prepend(3)->Prepend(2)->Prepend(1);
 
-    EXPECT_EQ(sequence.GetLength(), 3);
-    EXPECT_EQ(sequence.GetFirst(), 1);
-    EXPECT_EQ(sequence.Get(2), 3);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &sequence, "Chained Prepend"));
 }
 
 TEST(MutableListSequenceTests, InsertAtPlacesElementCorrectly)
@@ -96,8 +89,7 @@ TEST(MutableListSequenceTests, InsertAtPlacesElementCorrectly)
 
     sequence.InsertAt(2, 1);
 
-    EXPECT_EQ(sequence.GetLength(), 3);
-    EXPECT_EQ(sequence.Get(1), 2);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &sequence, "InsertAt index 1"));
 }
 
 TEST(MutableListSequenceTests, ConcatAppendsAnotherSequence)
@@ -109,9 +101,7 @@ TEST(MutableListSequenceTests, ConcatAppendsAnotherSequence)
 
     left.Concat(&right);
 
-    EXPECT_EQ(left.GetLength(), 4);
-    EXPECT_EQ(left.Get(2), 3);
-    EXPECT_EQ(left.Get(3), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3, 4}, &left, "Concat two populated sequences"));
 }
 
 TEST(MutableListSequenceTests, GetSubsequenceReturnsCorrectRange)
@@ -121,9 +111,7 @@ TEST(MutableListSequenceTests, GetSubsequenceReturnsCorrectRange)
 
     Sequence<int>* subSeq = sequence.GetSubsequence(1, 3);
 
-    EXPECT_EQ(subSeq->GetLength(), 3);
-    EXPECT_EQ(subSeq->Get(0), 2);
-    EXPECT_EQ(subSeq->Get(2), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 3, 4}, subSeq, "GetSubsequence(1, 3)"));
 
     delete subSeq;
 }
@@ -143,12 +131,9 @@ TEST(MutableListSequenceTests, MapTransformsElements)
     int items[] = {1, 2, 3};
     MutableListSequence<int> sequence(items, 3);
 
-    Sequence<int>* mapped = sequence.Map(ListSequenceTests::MultiplyByTwo);
+    Sequence<int>* mapped = SequenceUtils::Map<int>(&sequence, std::function<int(int)>(ListSequenceTests::MultiplyByTwo));
 
-    EXPECT_EQ(mapped->GetLength(), 3);
-    EXPECT_EQ(mapped->Get(0), 2);
-    EXPECT_EQ(mapped->Get(1), 4);
-    EXPECT_EQ(mapped->Get(2), 6);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4, 6}, mapped, "Map MultiplyByTwo"));
 
     delete mapped;
 }
@@ -158,11 +143,9 @@ TEST(MutableListSequenceTests, WhereFiltersElements)
     int items[] = {1, 2, 3, 4, 5};
     MutableListSequence<int> sequence(items, 5);
 
-    Sequence<int>* filtered = sequence.Where(ListSequenceTests::IsEven);
+    Sequence<int>* filtered = SequenceUtils::Where<int>(&sequence, std::function<bool(int)>(ListSequenceTests::IsEven));
 
-    EXPECT_EQ(filtered->GetLength(), 2);
-    EXPECT_EQ(filtered->Get(0), 2);
-    EXPECT_EQ(filtered->Get(1), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4}, filtered, "Where IsEven"));
 
     delete filtered;
 }
@@ -172,7 +155,7 @@ TEST(MutableListSequenceTests, ReduceAccumulatesValues)
     int items[] = {1, 2, 3, 4};
     MutableListSequence<int> sequence(items, 4);
 
-    int sum = sequence.Reduce(ListSequenceTests::SumValues);
+    int sum = SequenceUtils::Reduce<int, int>(&sequence, std::function<int(int, int)>(ListSequenceTests::SumValues));
 
     EXPECT_EQ(sum, 10);
 }
@@ -184,11 +167,8 @@ TEST(ImmutableListSequenceTests, AppendReturnsNewSequenceAndKeepsOriginal)
 
     Sequence<int>* changed = original.Append(4);
 
-    EXPECT_EQ(original.GetLength(), 3);
-    EXPECT_EQ(original.GetLast(), 3);
-    
-    EXPECT_EQ(changed->GetLength(), 4);
-    EXPECT_EQ(changed->GetLast(), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &original, "Original immutable sequence"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3, 4}, changed, "New sequence after Append"));
 
     delete changed;
 }
@@ -200,11 +180,8 @@ TEST(ImmutableListSequenceTests, PrependReturnsNewSequenceAndKeepsOriginal)
 
     Sequence<int>* changed = original.Prepend(1);
 
-    EXPECT_EQ(original.GetLength(), 2);
-    EXPECT_EQ(original.GetFirst(), 2);
-
-    EXPECT_EQ(changed->GetLength(), 3);
-    EXPECT_EQ(changed->GetFirst(), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 3}, &original, "Original immutable sequence"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, changed, "New sequence after Prepend"));
 
     delete changed;
 }
@@ -216,11 +193,8 @@ TEST(ImmutableListSequenceTests, InsertAtReturnsNewSequenceAndKeepsOriginal)
 
     Sequence<int>* changed = original.InsertAt(2, 1);
 
-    EXPECT_EQ(original.GetLength(), 2);
-    EXPECT_EQ(original.Get(1), 3);
-
-    EXPECT_EQ(changed->GetLength(), 3);
-    EXPECT_EQ(changed->Get(1), 2);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 3}, &original, "Original immutable sequence"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, changed, "New sequence after InsertAt"));
 
     delete changed;
 }
@@ -234,12 +208,8 @@ TEST(ImmutableListSequenceTests, ConcatReturnsNewSequenceAndKeepsOriginal)
 
     Sequence<int>* changed = left.Concat(&right);
 
-    EXPECT_EQ(left.GetLength(), 2);
-    EXPECT_EQ(left.GetLast(), 2);
-
-    EXPECT_EQ(changed->GetLength(), 4);
-    EXPECT_EQ(changed->Get(2), 3);
-    EXPECT_EQ(changed->Get(3), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2}, &left, "Original immutable sequence"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3, 4}, changed, "New sequence after Concat"));
 
     delete changed;
 }
@@ -249,13 +219,10 @@ TEST(ImmutableListSequenceTests, MapReturnsNewSequenceWithoutModifyingOriginal)
     int items[] = {1, 2, 3};
     ImmutableListSequence<int> original(items, 3);
 
-    Sequence<int>* mapped = original.Map(ListSequenceTests::MultiplyByTwo);
+    Sequence<int>* mapped = SequenceUtils::Map<int>(&original, std::function<int(int)>(ListSequenceTests::MultiplyByTwo));
 
-    EXPECT_EQ(original.Get(0), 1);
-    EXPECT_EQ(original.Get(2), 3);
-
-    EXPECT_EQ(mapped->Get(0), 2);
-    EXPECT_EQ(mapped->Get(2), 6);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &original, "Original immutable sequence"));
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4, 6}, mapped, "New sequence after Map"));
 
     delete mapped;
 }
@@ -265,12 +232,10 @@ TEST(ImmutableListSequenceTests, WhereReturnsNewSequenceWithoutModifyingOriginal
     int items[] = {1, 2, 3, 4};
     ImmutableListSequence<int> original(items, 4);
 
-    Sequence<int>* filtered = original.Where(ListSequenceTests::IsEven);
+    Sequence<int>* filtered = SequenceUtils::Where<int>(&original, std::function<bool(int)>(ListSequenceTests::IsEven));
 
-    EXPECT_EQ(original.GetLength(), 4);
-    EXPECT_EQ(filtered->GetLength(), 2);
-    EXPECT_EQ(filtered->Get(0), 2);
-    EXPECT_EQ(filtered->Get(1), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3, 4}, &original, "Original immutable sequence"));
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4}, filtered, "New sequence after Where"));
 
     delete filtered;
 }

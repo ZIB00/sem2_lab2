@@ -20,6 +20,7 @@ class AdaptiveSequence : public Sequence<T>
         AdaptiveSequence();
         AdaptiveSequence(T* items, size_t count);
         AdaptiveSequence(const AdaptiveSequence<T>& other);
+        AdaptiveSequence(std::initializer_list<T> items);
         ~AdaptiveSequence() override;
 
         AdaptiveSequence<T>& operator=(const AdaptiveSequence<T>& other);
@@ -39,19 +40,9 @@ class AdaptiveSequence : public Sequence<T>
         Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
-
-        Sequence<T>* Map(T (*Function)(T)) override;
-        Sequence<T>* Where(bool (*Function)(T)) override;
-        T Reduce(T (*Function)(T, T)) override;
-
-        Option<T> GetFirst(bool (*Function)(T)) override;
-        Option<T> GetLast(bool (*Function)(T)) override;
+        Sequence<T>* CreateEmpty() override;
 
         IEnumerator<T>* GetEnumerator() override;
-
-        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T)) override;
-        Sequence<T>* Skip(size_t count) override;
-        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr) override;
 };
 
 #include "AdaptiveSequence.tpp"

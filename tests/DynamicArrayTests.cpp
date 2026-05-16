@@ -1,24 +1,62 @@
 #include <gtest/gtest.h>
 #include <string>
+#include <vector>
 #include "DynamicArray.hpp"
+
+namespace {
+    template<class T>
+    testing::AssertionResult CheckDynamicArray(
+        const std::vector<T>& expected, 
+        DynamicArray<T>& actual, 
+        const std::string& contextAction = "") 
+    {
+        bool match = true;
+        if (expected.size() != actual.GetSize()) {
+            match = false;
+        } else {
+            for (size_t i = 0; i < expected.size(); ++i) {
+                if (expected[i] != actual.Get(i)) {
+                    match = false;
+                    break;
+                }
+            }
+        }
+
+        if (match) return testing::AssertionSuccess();
+
+        testing::AssertionResult failure = testing::AssertionFailure();
+        if (!contextAction.empty()) failure << "ACTION PERFORMED: " << contextAction << "\n";
+        failure << "ARRAY MISMATCH DETECTED!\n";
+        
+        failure << "EXPECTED: [";
+        for (size_t i = 0; i < expected.size(); ++i) {
+            failure << expected[i] << (i < expected.size() - 1 ? ", " : "");
+        }
+        failure << "] (size: " << expected.size() << ")\n";
+
+        failure << "RECEIVED: [";
+        for (size_t i = 0; i < actual.GetSize(); ++i) {
+            failure << actual.Get(i) << (i < actual.GetSize() - 1 ? ", " : "");
+        }
+        failure << "] (size: " << actual.GetSize() << ")\n";
+
+        return failure;
+    }
+}
 
 TEST(DynamicArrayTests, ItemsConstructorCopiesElements)
 {
     int items[] = {1, 2, 3};
-
     DynamicArray<int> array(items, 3);
 
-    EXPECT_EQ(array.GetSize(), 3);
-    EXPECT_EQ(array.Get(0), 1);
-    EXPECT_EQ(array.Get(1), 2);
-    EXPECT_EQ(array.Get(2), 3);
+    EXPECT_TRUE(CheckDynamicArray({1, 2, 3}, array, "Items constructor initialization"));
 }
 
 TEST(DynamicArrayTests, SizeConstructorAllowZeroSize)
 {
     DynamicArray<int> array(0);
 
-    EXPECT_EQ(array.GetSize(), 0);
+    EXPECT_TRUE(CheckDynamicArray({}, array, "Zero size constructor"));
 }
 
 TEST(DynamicArrayTests, SizeConstructorRequestedSize)
@@ -31,27 +69,26 @@ TEST(DynamicArrayTests, SizeConstructorRequestedSize)
 TEST(DynamicArrayTests, ItemsConstructorMakesIndependentCopy)
 {
     int items[] = {1, 2, 3};
-
     DynamicArray<int> array(items, 3);
+    
     items[0] = 100;
 
-    EXPECT_EQ(array.Get(0), 1);
+    EXPECT_TRUE(CheckDynamicArray({1, 2, 3}, array, "Array after external source modification"));
 }
 
 TEST(DynamicArrayTests, ItemsConstructorAllowsZeroCountWithNullItems)
 {
     DynamicArray<int> array(nullptr, 0);
 
-    EXPECT_EQ(array.GetSize(), 0);
+    EXPECT_TRUE(CheckDynamicArray({}, array, "Constructor with nullptr and size 0"));
 }
 
 TEST(DynamicArrayTests, ItemsConstructorAllowsZeroCountWithNonNullItems)
 {
     int items[] = {1, 2, 3};
-
     DynamicArray<int> array(items, 0);
 
-    EXPECT_EQ(array.GetSize(), 0);
+    EXPECT_TRUE(CheckDynamicArray({}, array, "Constructor with valid pointer but size 0"));
 }
 
 TEST(DynamicArrayTests, ItemsConstructorRejectsNullItemsWhenCountIsPositive)
@@ -67,29 +104,24 @@ TEST(DynamicArrayTests, GetReturnsValuesSetBySet)
     array.Set(1, 20);
     array.Set(2, 30);
 
-    EXPECT_EQ(array.Get(0), 10);
-    EXPECT_EQ(array.Get(1), 20);
-    EXPECT_EQ(array.Get(2), 30);
+    EXPECT_TRUE(CheckDynamicArray({10, 20, 30}, array, "Sequential Set operations"));
 }
 
 TEST(DynamicArrayTests, GetRejectsIndexEqualToSize)
 {
     DynamicArray<int> array(3);
-
     EXPECT_THROW(array.Get(3), OutOfRange);
 }
 
 TEST(DynamicArrayTests, GetRejectsIndexGreaterThanSize)
 {
     DynamicArray<int> array(3);
-
     EXPECT_THROW(array.Get(10), OutOfRange);
 }
 
 TEST(DynamicArrayTests, GetRejectsIndexInEmptyArray)
 {
     DynamicArray<int> array(0);
-
     EXPECT_THROW(array.Get(0), OutOfRange);
 }
 
@@ -100,29 +132,24 @@ TEST(DynamicArrayTests, SetChangesElement)
 
     array.Set(1, 200);
 
-    EXPECT_EQ(array.Get(0), 1);
-    EXPECT_EQ(array.Get(1), 200);
-    EXPECT_EQ(array.Get(2), 3);
+    EXPECT_TRUE(CheckDynamicArray({1, 200, 3}, array, "Set(1, 200) on {1, 2, 3}"));
 }
 
 TEST(DynamicArrayTests, SetRejectsIndexEqualToSize)
 {
     DynamicArray<int> array(3);
-
     EXPECT_THROW(array.Set(3, 10), OutOfRange);
 }
 
 TEST(DynamicArrayTests, SetRejectsIndexGreaterThanSize)
 {
     DynamicArray<int> array(3);
-
     EXPECT_THROW(array.Set(10, 10), OutOfRange);
 }
 
 TEST(DynamicArrayTests, SetRejectsIndexInEmptyArray)
 {
     DynamicArray<int> array(0);
-
     EXPECT_THROW(array.Set(0, 10), OutOfRange);
 }
 
@@ -146,10 +173,7 @@ TEST(DynamicArrayTests, ResizeToSmallerSizeChangesSizeAndKeepsPrefix)
 
     array.Resize(3);
 
-    EXPECT_EQ(array.GetSize(), 3);
-    EXPECT_EQ(array.Get(0), 1);
-    EXPECT_EQ(array.Get(1), 2);
-    EXPECT_EQ(array.Get(2), 3);
+    EXPECT_TRUE(CheckDynamicArray({1, 2, 3}, array, "Resize from 5 to 3"));
     EXPECT_THROW(array.Get(3), OutOfRange);
 }
 
@@ -160,10 +184,7 @@ TEST(DynamicArrayTests, ResizeToSameSizeKeepsElements)
 
     array.Resize(3);
 
-    EXPECT_EQ(array.GetSize(), 3);
-    EXPECT_EQ(array.Get(0), 1);
-    EXPECT_EQ(array.Get(1), 2);
-    EXPECT_EQ(array.Get(2), 3);
+    EXPECT_TRUE(CheckDynamicArray({1, 2, 3}, array, "Resize to same size"));
 }
 
 TEST(DynamicArrayTests, ResizeToZeroClearsArray)
@@ -173,7 +194,7 @@ TEST(DynamicArrayTests, ResizeToZeroClearsArray)
 
     array.Resize(0);
 
-    EXPECT_EQ(array.GetSize(), 0);
+    EXPECT_TRUE(CheckDynamicArray({}, array, "Resize to 0"));
     EXPECT_THROW(array.Get(0), OutOfRange);
 }
 
@@ -185,9 +206,7 @@ TEST(DynamicArrayTests, ResizeFromZeroToPositiveCreatesUsableArray)
     array.Set(0, 10);
     array.Set(1, 20);
 
-    EXPECT_EQ(array.GetSize(), 2);
-    EXPECT_EQ(array.Get(0), 10);
-    EXPECT_EQ(array.Get(1), 20);
+    EXPECT_TRUE(CheckDynamicArray({10, 20}, array, "Resize from 0 to 2 and populate"));
 }
 
 TEST(DynamicArrayTests, ResizeCanGrowAfterClear)
@@ -199,8 +218,7 @@ TEST(DynamicArrayTests, ResizeCanGrowAfterClear)
     array.Resize(1);
     array.Set(0, 42);
 
-    EXPECT_EQ(array.GetSize(), 1);
-    EXPECT_EQ(array.Get(0), 42);
+    EXPECT_TRUE(CheckDynamicArray({42}, array, "Resize to 0, then to 1 and populate"));
 }
 
 TEST(DynamicArrayTests, CopyConstructorCopiesSizeAndElements)
@@ -210,10 +228,7 @@ TEST(DynamicArrayTests, CopyConstructorCopiesSizeAndElements)
 
     DynamicArray<int> copy(original);
 
-    EXPECT_EQ(copy.GetSize(), 3);
-    EXPECT_EQ(copy.Get(0), 1);
-    EXPECT_EQ(copy.Get(1), 2);
-    EXPECT_EQ(copy.Get(2), 3);
+    EXPECT_TRUE(CheckDynamicArray({1, 2, 3}, copy, "Copy constructor"));
 }
 
 TEST(DynamicArrayTests, CopyConstructorCreatesIndependentStorage)
@@ -225,16 +240,15 @@ TEST(DynamicArrayTests, CopyConstructorCreatesIndependentStorage)
     copy.Set(0, 100);
 
     EXPECT_EQ(original.Get(0), 1);
-    EXPECT_EQ(copy.Get(0), 100);
+    EXPECT_TRUE(CheckDynamicArray({100, 2, 3}, copy, "Copied array after Set(0, 100)"));
 }
 
 TEST(DynamicArrayTests, CopyConstructorCopiesEmptyArray)
 {
     DynamicArray<int> original(0);
-
     DynamicArray<int> copy(original);
 
-    EXPECT_EQ(copy.GetSize(), 0);
+    EXPECT_TRUE(CheckDynamicArray({}, copy, "Copy of empty array"));
     EXPECT_THROW(copy.Get(0), OutOfRange);
 }
 
@@ -247,10 +261,7 @@ TEST(DynamicArrayTests, AssignmentCopiesSizeAndElements)
 
     target = source;
 
-    EXPECT_EQ(target.GetSize(), 3);
-    EXPECT_EQ(target.Get(0), 1);
-    EXPECT_EQ(target.Get(1), 2);
-    EXPECT_EQ(target.Get(2), 3);
+    EXPECT_TRUE(CheckDynamicArray({1, 2, 3}, target, "Assignment from larger array"));
 }
 
 TEST(DynamicArrayTests, AssignmentCreatesIndependentStorage)
@@ -263,7 +274,7 @@ TEST(DynamicArrayTests, AssignmentCreatesIndependentStorage)
     target.Set(0, 100);
 
     EXPECT_EQ(source.Get(0), 1);
-    EXPECT_EQ(target.Get(0), 100);
+    EXPECT_TRUE(CheckDynamicArray({100, 2, 3}, target, "Assigned array after Set(0, 100)"));
 }
 
 TEST(DynamicArrayTests, AssignmentFromEmptyArrayClearsTarget)
@@ -274,7 +285,7 @@ TEST(DynamicArrayTests, AssignmentFromEmptyArrayClearsTarget)
 
     target = source;
 
-    EXPECT_EQ(target.GetSize(), 0);
+    EXPECT_TRUE(CheckDynamicArray({}, target, "Assignment from empty array"));
     EXPECT_THROW(target.Get(0), OutOfRange);
 }
 
@@ -286,10 +297,7 @@ TEST(DynamicArrayTests, AssignmentToEmptyArrayCopiesSource)
 
     target = source;
 
-    EXPECT_EQ(target.GetSize(), 3);
-    EXPECT_EQ(target.Get(0), 1);
-    EXPECT_EQ(target.Get(1), 2);
-    EXPECT_EQ(target.Get(2), 3);
+    EXPECT_TRUE(CheckDynamicArray({1, 2, 3}, target, "Assignment to empty array"));
 }
 
 TEST(DynamicArrayTests, SelfAssignmentKeepsArrayValid)
@@ -299,10 +307,7 @@ TEST(DynamicArrayTests, SelfAssignmentKeepsArrayValid)
 
     array = array;
 
-    EXPECT_EQ(array.GetSize(), 3);
-    EXPECT_EQ(array.Get(0), 1);
-    EXPECT_EQ(array.Get(1), 2);
-    EXPECT_EQ(array.Get(2), 3);
+    EXPECT_TRUE(CheckDynamicArray({1, 2, 3}, array, "Self-assignment"));
 }
 
 TEST(DynamicArrayTests, WorksWithStringValues)
@@ -312,7 +317,5 @@ TEST(DynamicArrayTests, WorksWithStringValues)
     array.Set(0, "first");
     array.Set(1, "second");
 
-    EXPECT_EQ(array.GetSize(), 2);
-    EXPECT_EQ(array.Get(0), "first");
-    EXPECT_EQ(array.Get(1), "second");
+    EXPECT_TRUE(CheckDynamicArray<std::string>({"first", "second"}, array, "Array of strings"));
 }

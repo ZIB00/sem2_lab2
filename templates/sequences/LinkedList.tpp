@@ -1,6 +1,4 @@
-#pragma once
-
-#include "LinkedList.hpp"
+#include <string>
 
 template<class T>
 LinkedList<T>::Node::Node(T value, Node* next)
@@ -27,8 +25,10 @@ void LinkedList<T>::Clear()
 template<class T>
 LinkedList<T>::LinkedList(T* items, size_t count)
 {
-    if (count < 0) throw InvalidArgument("Count cannot be negative");
-    if (count > 0 && items == nullptr) throw InvalidArgument("Items cannot be null when count is positive");
+    if (count > 0 && items == nullptr) {
+        throw InvalidArgument("LinkedList::Constructor - Invalid Argument: Attempted to create a list with count = " + 
+                              std::to_string(count) + ", but the 'items' pointer is null.");
+    }
 
     this->head = nullptr;
     this->tail = nullptr;
@@ -72,6 +72,21 @@ LinkedList<T>::LinkedList(const LinkedList<T>& list)
 }
 
 template<class T>
+LinkedList<T>::LinkedList(std::initializer_list<T> items) : head(nullptr), tail(nullptr) 
+{
+    try {
+        for (const T& item : items) 
+        {
+            this->Append(item);
+        }
+    }
+    catch (...) {
+        this->Clear(); 
+        throw;
+    }
+}
+
+template<class T>
 LinkedList<T>::~LinkedList()
 {
     this->Clear();
@@ -101,10 +116,16 @@ T& LinkedList<T>::operator[](size_t index)
 {
     Node* current = head;
     for (size_t i = 0; i < index; ++i) {
-        if (current == nullptr) throw OutOfRange("Index out of bounds");
+        if (current == nullptr) {
+            throw OutOfRange("LinkedList::operator[] - Out of Range: Cannot access index " + std::to_string(index) + 
+                             ". The list ended prematurely at index " + std::to_string(i) + ".");
+        }
         current = current->next;
     }
-    if (current == nullptr) throw OutOfRange("Index out of bounds");
+    if (current == nullptr) {
+        throw OutOfRange("LinkedList::operator[] - Out of Range: The list is empty or index " + std::to_string(index) + 
+                         " is strictly greater than the maximum available index.");
+    }
     
     return current->value;
 }
@@ -114,18 +135,62 @@ const T& LinkedList<T>::operator[](size_t index) const
 {
     Node* current = head;
     for (size_t i = 0; i < index; ++i) {
-        if (current == nullptr) throw OutOfRange("Index out of bounds");
+        if (current == nullptr) {
+            throw OutOfRange("LinkedList::operator[] const - Out of Range: Cannot access index " + std::to_string(index) + 
+                             ". The list ended prematurely at index " + std::to_string(i) + ".");
+        }
         current = current->next;
     }
-    if (current == nullptr) throw OutOfRange("Index out of bounds");
+    if (current == nullptr) {
+        throw OutOfRange("LinkedList::operator[] const - Out of Range: The list is empty or index " + std::to_string(index) + 
+                         " is strictly greater than the maximum available index.");
+    }
     
     return current->value;
 }
 
 template<class T>
+LinkedList<T>* LinkedList<T>::operator+(const LinkedList<T>* other) {
+    return this->Concat(other);
+}
+
+template<class T>
+bool LinkedList<T>::operator==(const LinkedList<T>* other)
+{
+    if (other == nullptr) {
+        return false;
+    }
+    if (this == other) {
+        return true; 
+    }
+
+    Node* currentThis = this->head;
+    Node* currentOther = other->head;
+
+    while (currentThis != nullptr && currentOther != nullptr) {
+        if (currentThis->value != currentOther->value) {
+            return false;
+        }
+        
+        currentThis = currentThis->next;
+        currentOther = currentOther->next;
+    }
+
+    return currentThis == nullptr && currentOther == nullptr;
+}
+
+template<class T>
+bool LinkedList<T>::operator!=(const LinkedList<T>* other)
+{
+    return !(*this == other);
+}
+
+template<class T>
 T LinkedList<T>::GetFirst()
 {
-    if (this->head == nullptr) throw OutOfRange("List is empty");
+    if (this->head == nullptr) {
+        throw OutOfRange("LinkedList::GetFirst - Out of Range: The list is completely empty (head is null).");
+    }
 
     return this->head->value;
 }
@@ -133,7 +198,9 @@ T LinkedList<T>::GetFirst()
 template<class T>
 T LinkedList<T>::GetLast()
 {
-    if (this->tail == nullptr) throw OutOfRange("List is empty");
+    if (this->tail == nullptr) {
+        throw OutOfRange("LinkedList::GetLast - Out of Range: The list is completely empty (tail is null).");
+    }
 
     return this->tail->value;
 }
@@ -141,8 +208,6 @@ T LinkedList<T>::GetLast()
 template<class T>
 T LinkedList<T>::Get(size_t index)
 {
-    if (index < 0) throw InvalidArgument("Index cannot be negative");
-
     Node* current = this->head;
     size_t currentIndex = 0;
 
@@ -155,15 +220,17 @@ T LinkedList<T>::Get(size_t index)
         currentIndex++;
     }
 
-    throw OutOfRange("Index is out of range");
+    throw OutOfRange("LinkedList::Get - Out of Range: Index " + std::to_string(index) + 
+                     " does not exist. Current list length is " + std::to_string(currentIndex) + ".");
 }
 
 template<class T>
 LinkedList<T>* LinkedList<T>::GetSubList(size_t startIndex, size_t endIndex)
 {
-    if (startIndex < 0) throw InvalidArgument("Start index cannot be negative");
-    if (endIndex < 0) throw InvalidArgument("End index cannot be negative");
-    if (startIndex > endIndex) throw InvalidArgument("Start index cannot be bigger than end index");
+    if (startIndex > endIndex) {
+        throw InvalidArgument("LinkedList::GetSubList - Logical Error: startIndex (" + std::to_string(startIndex) + 
+                              ") cannot be greater than endIndex (" + std::to_string(endIndex) + ").");
+    }
 
     LinkedList<T>* result = new LinkedList<T>();
     Node* current = this->head;
@@ -180,7 +247,8 @@ LinkedList<T>* LinkedList<T>::GetSubList(size_t startIndex, size_t endIndex)
         }
 
         if (endIndex >= currentIndex) {
-            throw OutOfRange("Index is out of range");
+            throw OutOfRange("LinkedList::GetSubList - Out of Range: endIndex (" + std::to_string(endIndex) + 
+                             ") exceeds the actual list bounds. Max reached index was " + std::to_string(currentIndex - 1) + ".");
         }
     }
     catch (...) {
@@ -235,7 +303,9 @@ void LinkedList<T>::Prepend(T item)
 template<class T>
 void LinkedList<T>::InsertAt(T item, size_t index)
 {
-    if (index < 0) throw InvalidArgument("Index cannot be negative");
+    if (index < 0) {
+        throw InvalidArgument("LinkedList::InsertAt - Invalid Argument: Index cannot be negative.");
+    }
 
     if (index == 0) {
         this->Prepend(item);
@@ -250,7 +320,10 @@ void LinkedList<T>::InsertAt(T item, size_t index)
         previousIndex++;
     }
 
-    if (previous == nullptr) throw OutOfRange("Index is out of range");
+    if (previous == nullptr) {
+        throw OutOfRange("LinkedList::InsertAt - Out of Range: Cannot insert item at index " + std::to_string(index) + 
+                         ". The list only has elements up to index " + std::to_string(previousIndex) + ".");
+    }
 
     Node* node = new Node(item, previous->next);
     previous->next = node;
@@ -263,7 +336,9 @@ void LinkedList<T>::InsertAt(T item, size_t index)
 template<class T>
 LinkedList<T>* LinkedList<T>::Concat(const LinkedList<T>* list)
 {
-    if (list == nullptr) throw InvalidArgument("List cannot be null");
+    if (list == nullptr) {
+        throw InvalidArgument("LinkedList::Concat - Invalid Argument: The right operand (list pointer) is null.");
+    }
 
     LinkedList<T>* result = new LinkedList<T>(*this);
     Node* current = list->head;

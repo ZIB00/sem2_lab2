@@ -13,11 +13,15 @@ class DynamicArray
         DynamicArray(T* items, size_t count);
         DynamicArray(size_t size);
         DynamicArray(const DynamicArray<T>& dynamicArray);
+        DynamicArray(std::initializer_list<T> items);
         ~DynamicArray();
 
         DynamicArray<T>& operator=(const DynamicArray<T>& dynamicArray);
         T& operator[](size_t index);
         const T& operator[](size_t index) const;
+        DynamicArray<T>* operator+(const DynamicArray<T>* other);
+        bool operator==(const DynamicArray<T>* other);
+        bool operator!=(const DynamicArray<T>* other);
 
         T Get(size_t index);
         size_t GetSize();

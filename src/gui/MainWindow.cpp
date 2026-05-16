@@ -1,1709 +1,509 @@
 #include "MainWindow.hpp"
-#include <QApplication>
-#include <QScrollArea>
-#include <climits>
-#include <cmath>
-#include <type_traits>
 
-namespace {
-    bool intSplitIsZero(int x) { return x == 0; }
-    bool dblSplitIsZero(double x) { return x == 0.0; }
-    bool charSplitIsSpace(char16_t x){ return x == u' '; }
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
+    intMainSeq = nullptr;
+    intAdditionalSeq = nullptr;
+    intOriginalSeq = nullptr;
 
-    char16_t charFromQChar(QChar ch)
-    {
-        return static_cast<char16_t>(ch.unicode());
-    }
+    doubleMainSeq = nullptr;
+    doubleAdditionalSeq = nullptr;
+    doubleOriginalSeq = nullptr;
 
-    QString charToText(char16_t value)
-    {
-        return QString(QChar(static_cast<ushort>(value)));
-    }
+    charMainSeq = nullptr;
+    charAdditionalSeq = nullptr;
+    charOriginalSeq = nullptr;
 
-    QString charToDisplay(char16_t value)
-    {
-        return value == u' ' ? "[пробел]" : charToText(value);
-    }
-
-    template<typename T>
-    QString valueToString(const T& value)
-    {
-        return QString::number(value);
-    }
-
-    QString valueToString(char16_t value)
-    {
-        return charToDisplay(value);
-    }
+    SetupInterface();
 }
 
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
-{
-    setWindowTitle("Последовательности");
-    setMinimumSize(1200, 650);
+MainWindow::~MainWindow() {
+    if (intMainSeq) { delete intMainSeq; }
+    if (intAdditionalSeq) { delete intAdditionalSeq; }
+    if (intOriginalSeq) { delete intOriginalSeq; }
 
-    QWidget* central = new QWidget(this);
-    setCentralWidget(central);
-    QVBoxLayout* mainLayout = new QVBoxLayout(central);
+    if (doubleMainSeq) { delete doubleMainSeq; }
+    if (doubleAdditionalSeq) { delete doubleAdditionalSeq; }
+    if (doubleOriginalSeq) { delete doubleOriginalSeq; }
 
-    mainSplitter = new QSplitter(Qt::Horizontal, this);
-    mainSplitter->addWidget(createPanel());
-    mainSplitter->addWidget(displayPanel());
-    mainSplitter->addWidget(operationsPanel());
-    mainSplitter->setSizes({220, 450, 330});
-
-    logOutput = new QTextEdit(this);
-    logOutput->setReadOnly(true);
-    logOutput->setMaximumHeight(140);
-    logOutput->setPlaceholderText("Лог операций...");
-
-    mainLayout->addWidget(mainSplitter);
-    mainLayout->addWidget(logOutput);
+    if (charMainSeq) { delete charMainSeq; }
+    if (charAdditionalSeq) { delete charAdditionalSeq; }
+    if (charOriginalSeq) { delete charOriginalSeq; }
 }
 
-MainWindow::~MainWindow()
-{
-    delete currentSeqInt;
-    delete currentSeqDouble;
-    delete currentSeqChar;
-    delete originalSeqInt;
-    delete originalSeqDouble;
-    delete originalSeqChar;
+void MainWindow::ClearSequences() {
+    if (intMainSeq) { delete intMainSeq; intMainSeq = nullptr; }
+    if (intAdditionalSeq) { delete intAdditionalSeq; intAdditionalSeq = nullptr; }
+    if (intOriginalSeq) { delete intOriginalSeq; intOriginalSeq = nullptr; }
+
+    if (doubleMainSeq) { delete doubleMainSeq; doubleMainSeq = nullptr; }
+    if (doubleAdditionalSeq) { delete doubleAdditionalSeq; doubleAdditionalSeq = nullptr; }
+    if (doubleOriginalSeq) { delete doubleOriginalSeq; doubleOriginalSeq = nullptr; }
+
+    if (charMainSeq) { delete charMainSeq; charMainSeq = nullptr; }
+    if (charAdditionalSeq) { delete charAdditionalSeq; charAdditionalSeq = nullptr; }
+    if (charOriginalSeq) { delete charOriginalSeq; charOriginalSeq = nullptr; }
+
+    RefreshLists();
 }
 
-QGroupBox* MainWindow::createPanel()
-{
-    QGroupBox* group = new QGroupBox("Создать последовательность");
-    QVBoxLayout* layout = new QVBoxLayout(group);
+void MainWindow::SetupInterface() {
+    QWidget* centralWidget = new QWidget(this);
+    setCentralWidget(centralWidget);
+    setWindowTitle("Sequences");
+    resize(1300, 800);
 
-    instructionButton = new QPushButton("? Справка");
-    layout->addWidget(instructionButton);
-    connect(instructionButton, &QPushButton::clicked, this, &MainWindow::onShowInstructions);
+    QVBoxLayout* mainVBoxLayout = new QVBoxLayout(centralWidget);
 
-    layout->addWidget(new QLabel("Тип данных:"));
-    dataTypeCombo = new QComboBox();
-    dataTypeCombo->addItems({"int", "double", "char16_t"});
-    layout->addWidget(dataTypeCombo);
+    QHBoxLayout* topHBoxLayout = new QHBoxLayout();
+    QGroupBox* topLeftBox = new QGroupBox("Создание последовательности", this);
+    QGroupBox* topMiddleBox = new QGroupBox("Отображение последовательностей", this);
+    QGroupBox* topRightBox = new QGroupBox("", this);
 
-    layout->addWidget(new QLabel("Структура:"));
-    seqTypeCombo = new QComboBox();
-    seqTypeCombo->addItems({"ArraySequence", "ListSequence",
-                            "AdaptiveSequence", "SegmentedList", "BitSequence"});
-    layout->addWidget(seqTypeCombo);
-    connect(seqTypeCombo, &QComboBox::currentTextChanged, this, &MainWindow::onSeqTypeChanged);
+    topHBoxLayout->addWidget(topLeftBox);
+    topHBoxLayout->addWidget(topMiddleBox);
+    topHBoxLayout->addWidget(topRightBox);
 
-    layout->addWidget(new QLabel("Вариант:"));
-    mutabilityCombo = new QComboBox();
-    mutabilityCombo->addItems({"Изменяемая", "Неизменяемая"});
-    layout->addWidget(mutabilityCombo);
+    QGroupBox* logPanelBox = new QGroupBox("Лог операций", this);
 
-    layout->addWidget(new QLabel("Элементы (через пробел):"));
-    elementsInput = new QLineEdit();
-    elementsInput->setPlaceholderText("1 2 3 / абвг деё жз");
-    layout->addWidget(elementsInput);
+    mainVBoxLayout->addLayout(topHBoxLayout);
+    mainVBoxLayout->addWidget(logPanelBox);
 
-    createButton = new QPushButton("Создать");
-    layout->addWidget(createButton);
-    layout->addStretch();
+    QHBoxLayout* middlePanelHBoxLayout = new QHBoxLayout(topMiddleBox);
+    topMiddleBox->setLayout(middlePanelHBoxLayout);
 
-    connect(createButton, &QPushButton::clicked, this, &MainWindow::onCreateSequence);
-    return group;
+    SetupLeftPanel(topLeftBox);
+    SetupCentralPanel(middlePanelHBoxLayout);
+    SetupRightPanel(topRightBox);
+    SetupLogPanel(logPanelBox);
+
+    connect(sequenceOptionSelector, qOverload<int>(&QComboBox::currentIndexChanged), this, &MainWindow::HandleSequenceStructureChanged);
+    connect(mutableOptionSelector, qOverload<int>(&QComboBox::currentIndexChanged), this, &MainWindow::HandleMutabilityChanged);
+
+    HandleMutabilityChanged(mutableOptionSelector->currentIndex());
+    HandleSequenceStructureChanged(sequenceOptionSelector->currentIndex());
 }
 
-QGroupBox* MainWindow::displayPanel()
-{
-    QGroupBox* group = new QGroupBox("Последовательность");
-    QVBoxLayout* layout = new QVBoxLayout(group);
+void MainWindow::SetupLeftPanel(QGroupBox* leftPanelContainer) {
+    QVBoxLayout* leftPanelLayout = new QVBoxLayout(leftPanelContainer);
 
-    seqInfoLabel = new QLabel("Тип: —   Длина: 0");
-    layout->addWidget(seqInfoLabel);
-    seqDisplay = new QListWidget();
-    layout->addWidget(seqDisplay);
+    QPushButton* createHelpPushButton = new QPushButton("Справка", this);
 
-    origGroup = new QGroupBox("Оригинал (до операции)");
-    QVBoxLayout* origLayout = new QVBoxLayout(origGroup);
-    origInfoLabel = new QLabel("Длина: 0");
-    origDisplay = new QListWidget();
-    origLayout->addWidget(origInfoLabel);
-    origLayout->addWidget(origDisplay);
-    origGroup->setVisible(false);
-    layout->addWidget(origGroup);
+    QLabel* sequenceOptionLabel = new QLabel("Вариант последовательности:", this);
+    sequenceOptionSelector = new QComboBox(this);
+    sequenceOptionSelector->addItems({"ArraySequence", 
+                                    "ListSequence", 
+                                    "BitSequence", 
+                                    "AdaptiveArray", 
+                                    "SegmentedList"});
 
-    return group;
+    QLabel* mutableOptionLabel = new QLabel("Изменяемость:", this);
+    mutableOptionSelector = new QComboBox(this);
+    mutableOptionSelector->addItems({"Изменяемая", 
+                                    "Неизменяемая"});
+
+    QLabel* sequenceTypeLabel = new QLabel("Тип последовательности:", this);
+    sequenceTypeSelector = new QComboBox(this);
+    sequenceTypeSelector->addItems({"Целые числа", 
+                                    "Вещественные числа", 
+                                    "Символы"});
+
+    QLabel* valueInputLabel = new QLabel("Ввод последовательности:", this);
+    leftLineEdit = new QLineEdit(this);
+    leftLineEdit->setPlaceholderText("Введите последовательность...");
+
+    QLabel* createLabel = new QLabel("Создать:", this);
+    QPushButton* createMainSequencePushButton = new QPushButton("Основную", this);
+    createAdditionalSequencePushButton = new QPushButton("Дополнительную", this);
+
+    leftPanelLayout->addWidget(createHelpPushButton);
+    leftPanelLayout->addWidget(sequenceOptionLabel);
+    leftPanelLayout->addWidget(sequenceOptionSelector);
+    leftPanelLayout->addWidget(mutableOptionLabel);
+    leftPanelLayout->addWidget(mutableOptionSelector);
+    leftPanelLayout->addWidget(sequenceTypeLabel);
+    leftPanelLayout->addWidget(sequenceTypeSelector);
+    leftPanelLayout->addWidget(valueInputLabel);
+    leftPanelLayout->addWidget(leftLineEdit);
+    leftPanelLayout->addWidget(createLabel);
+    leftPanelLayout->addWidget(createMainSequencePushButton);
+    leftPanelLayout->addWidget(createAdditionalSequencePushButton);
+
+    leftPanelLayout->addStretch();
+
+    leftPanelContainer->setLayout(leftPanelLayout);
+
+    connect(createHelpPushButton, &QPushButton::clicked, this, &MainWindow::onHelp);
+    connect(createMainSequencePushButton, &QPushButton::clicked, this, &MainWindow::onMainCreate);
+    connect(createAdditionalSequencePushButton, &QPushButton::clicked, this, &MainWindow::onAdditionalCreate);
 }
 
-// Правая панель (вкладки)  
-QTabWidget* MainWindow::operationsPanel()
-{
-    QTabWidget* tabs = new QTabWidget();
+void MainWindow::SetupCentralPanel(QHBoxLayout* centralPanelContainer) {
+    QGroupBox* firstPanelBox = new QGroupBox("Основная", this);
+    QVBoxLayout* firstPanelLayout = new QVBoxLayout(firstPanelBox);
+    firstPanelList = new QListWidget(this);
+    firstPanelList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    firstPanelLayout->addWidget(firstPanelList);
+    firstPanelBox->setLayout(firstPanelLayout);
 
-    // Оборачиваем вкладки в QScrollArea чтобы не обрезалось
-    auto wrap = [](QWidget* w) {
-        QScrollArea* sa = new QScrollArea();
-        sa->setWidget(w);
-        sa->setWidgetResizable(true);
-        return sa;
-    };
+    secondPanelBox = new QGroupBox("Дополнительная", this);
+    QVBoxLayout* secondPanelLayout = new QVBoxLayout(secondPanelBox);
+    secondPanelList = new QListWidget(this);
+    secondPanelList->setSelectionMode(QAbstractItemView::NoSelection);
+    secondPanelLayout->addWidget(secondPanelList);
+    secondPanelBox->setLayout(secondPanelLayout);
 
-    tabs->addTab(wrap(buildMethodsTab()), "Методы");
-    tabs->addTab(wrap(buildFunctionsTab()), "Функции");
-    tabs->addTab(wrap(buildUtilsTab()), "Утилиты");
-    tabs->addTab(wrap(buildAnalysisTab()), "Анализ");
-    return tabs;
+    thirdPanelBox = new QGroupBox("Оригинал", this);
+    QVBoxLayout* thirdPanelLayout = new QVBoxLayout(thirdPanelBox);
+    thirdPanelList = new QListWidget(this);
+    thirdPanelList->setSelectionMode(QAbstractItemView::NoSelection);
+    thirdPanelLayout->addWidget(thirdPanelList);
+    thirdPanelBox->setLayout(thirdPanelLayout);
+
+    centralPanelContainer->addWidget(firstPanelBox);
+    centralPanelContainer->addWidget(secondPanelBox);
+    centralPanelContainer->addWidget(thirdPanelBox);
 }
 
-//Методы
-QWidget* MainWindow::buildMethodsTab()
-{
-    QWidget* w = new QWidget();
-    QVBoxLayout* layout = new QVBoxLayout(w);
+void MainWindow::SetupRightPanel(QGroupBox* rightPanelContainer) {
+    QVBoxLayout *mainLayout = new QVBoxLayout(rightPanelContainer);
 
-    auto addGroup = [&](const QString& title, std::function<void(QHBoxLayout*)> fill) {
-        QGroupBox* g = new QGroupBox(title);
-        QHBoxLayout* h = new QHBoxLayout(g);
-        fill(h);
-        layout->addWidget(g);
-    };
+    rightTabWidget = new QTabWidget(this);
 
-    addGroup("Получить по индексу", [&](QHBoxLayout* h) {
-        indexInput = new QLineEdit(); indexInput->setPlaceholderText("индекс");
-        QPushButton* btn = new QPushButton("Получить");
-        h->addWidget(indexInput); h->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onGet);
-    });
-    addGroup("Добавить в конец", [&](QHBoxLayout* h) {
-        appendInput = new QLineEdit(); appendInput->setPlaceholderText("значение");
-        QPushButton* btn = new QPushButton("Добавить");
-        h->addWidget(appendInput); h->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onAppend);
-    });
-    addGroup("Добавить в начало", [&](QHBoxLayout* h) {
-        prependInput = new QLineEdit(); prependInput->setPlaceholderText("значение");
-        QPushButton* btn = new QPushButton("Добавить");
-        h->addWidget(prependInput); h->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onPrepend);
-    });
-    addGroup("Вставить по индексу", [&](QHBoxLayout* h) {
-        insertValueInput = new QLineEdit(); insertValueInput->setPlaceholderText("значение");
-        insertIndexInput = new QLineEdit(); insertIndexInput->setPlaceholderText("индекс");
-        QPushButton* btn = new QPushButton("Вставить");
-        h->addWidget(insertValueInput); h->addWidget(insertIndexInput); h->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onInsertAt);
-    });
-    addGroup("Подпоследовательность [начало, конец]", [&](QHBoxLayout* h) {
-        subStartInput = new QLineEdit(); subStartInput->setPlaceholderText("начало");
-        subEndInput = new QLineEdit(); subEndInput->setPlaceholderText("конец");
-        QPushButton* btn = new QPushButton("Получить");
-        h->addWidget(subStartInput); h->addWidget(subEndInput); h->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onGetSubsequence);
-    });
-    addGroup("Первый / Последний", [&](QHBoxLayout* h) {
-        QPushButton* bf = new QPushButton("Первый");
-        QPushButton* bl = new QPushButton("Последний");
-        h->addWidget(bf); h->addWidget(bl);
-        connect(bf, &QPushButton::clicked, this, &MainWindow::onGetFirst);
-        connect(bl, &QPushButton::clicked, this, &MainWindow::onGetLast);
-    });
+    QWidget* sequenceFunctions = new QWidget();
+    QVBoxLayout* sequenceFunctionsVBoxLayout = new QVBoxLayout(sequenceFunctions);
+    QLabel* valueInputFunctionalLabel = new QLabel("Ввод значения:", this);
+    rightLineEditFunctional = new QLineEdit(this);
+    rightLineEditFunctional->setPlaceholderText("Введите значение...");
+    sequenceFunctionsVBoxLayout->addWidget(valueInputFunctionalLabel);
+    sequenceFunctionsVBoxLayout->addWidget(rightLineEditFunctional);
 
-    layout->addStretch();
-    return w;
+    QPushButton* buttonPrepend = new QPushButton("Добавить в начало");
+    QPushButton* buttonAppend = new QPushButton("Добавить в конец");
+    QPushButton* buttonInsert = new QPushButton("Вставить после выбранного");
+    QPushButton* buttonSubseq = new QPushButton("Получить подпослед.");
+    QPushButton* buttonConcat = new QPushButton("Объеденить с новой послед.");
+    QPushButton* buttonFirst = new QPushButton("Получить первое");
+    QPushButton* buttonLast = new QPushButton("Получить последнее");
+    QPushButton* buttonSelected = new QPushButton("Получить выбранное");
+
+    sequenceFunctionsVBoxLayout->addWidget(buttonPrepend);
+    sequenceFunctionsVBoxLayout->addWidget(buttonAppend);
+    sequenceFunctionsVBoxLayout->addWidget(buttonInsert);
+    sequenceFunctionsVBoxLayout->addWidget(buttonSubseq);
+    sequenceFunctionsVBoxLayout->addWidget(buttonConcat);
+    sequenceFunctionsVBoxLayout->addWidget(buttonFirst);
+    sequenceFunctionsVBoxLayout->addWidget(buttonLast);
+    sequenceFunctionsVBoxLayout->addWidget(buttonSelected);
+
+    sequenceFunctionsVBoxLayout->addWidget(new QLabel("Логические операции (итог сверху)"));
+    buttonNot = new QPushButton("НЕ", this);
+    buttonAnd = new QPushButton("И", this);
+    buttonOr = new QPushButton("ИЛИ", this);
+    buttonXor = new QPushButton("Исключающее ИЛИ", this);
+
+    sequenceFunctionsVBoxLayout->addWidget(buttonNot);
+    sequenceFunctionsVBoxLayout->addWidget(buttonAnd);
+    sequenceFunctionsVBoxLayout->addWidget(buttonOr);
+    sequenceFunctionsVBoxLayout->addWidget(buttonXor);
+    sequenceFunctionsVBoxLayout->addStretch();
+    rightTabWidget->addTab(sequenceFunctions, "Функции");
+
+    QWidget* sequenceUtilts = new QWidget();
+    QVBoxLayout* sequenceUtiltsVBoxLayout = new QVBoxLayout(sequenceUtilts);
+    QLabel* valueInputUtiltsLabel = new QLabel("Ввод значениий:", this);
+    rightLineEditUtilts = new QLineEdit(this);
+    rightLineEditUtilts->setPlaceholderText("Введите значения...");
+    QPushButton* buttonZip = new QPushButton("Zip");
+    QPushButton* buttonUnzip = new QPushButton("Unzip");
+    QPushButton* buttonRange = new QPushButton("Range");
+    QPushButton* buttonSplit = new QPushButton("Split");
+    QPushButton* buttonFlatMap = new QPushButton("FlatMap");
+    QPushButton* buttonSkip = new QPushButton("Skip");
+    QPushButton* buttonSplice = new QPushButton("Splice");
+    QPushButton* buttonMap = new QPushButton("Map");
+    QPushButton* buttonWhere = new QPushButton("Where");
+    QPushButton* buttonReduce = new QPushButton("Reduce");
+    QPushButton* buttonGetFirstOpt = new QPushButton("GetFirst");
+    QPushButton* buttonGetLastOpt = new QPushButton("GetLast");
+
+    sequenceUtiltsVBoxLayout->addWidget(valueInputUtiltsLabel);
+    sequenceUtiltsVBoxLayout->addWidget(rightLineEditUtilts);
+    sequenceUtiltsVBoxLayout->addWidget(buttonZip);
+    sequenceUtiltsVBoxLayout->addWidget(buttonUnzip);
+    sequenceUtiltsVBoxLayout->addWidget(buttonRange);
+    sequenceUtiltsVBoxLayout->addWidget(buttonSplit);
+    sequenceUtiltsVBoxLayout->addWidget(buttonFlatMap);
+    sequenceUtiltsVBoxLayout->addWidget(buttonSkip);
+    sequenceUtiltsVBoxLayout->addWidget(buttonSplice);
+    sequenceUtiltsVBoxLayout->addWidget(buttonMap);
+    sequenceUtiltsVBoxLayout->addWidget(buttonWhere);
+    sequenceUtiltsVBoxLayout->addWidget(buttonReduce);
+    sequenceUtiltsVBoxLayout->addWidget(buttonGetFirstOpt);
+    sequenceUtiltsVBoxLayout->addWidget(buttonGetLastOpt);
+    sequenceUtiltsVBoxLayout->addStretch();
+    rightTabWidget->addTab(sequenceUtilts, "Утилиты");
+
+    QWidget* sequenceDataAnalysis = new QWidget();
+    QVBoxLayout* sequenceDataAnalysisVBoxLayout = new QVBoxLayout(sequenceDataAnalysis);
+    sequenceDataAnalysisVBoxLayout->addWidget(new QLabel("Получить значение"));
+    QPushButton* buttonStats = new QPushButton("Мин/Макс/Средн.");
+    QPushButton* buttonPermutations = new QPushButton("Кол-во перестановок");
+    sequenceDataAnalysisVBoxLayout->addWidget(buttonStats);
+    sequenceDataAnalysisVBoxLayout->addWidget(buttonPermutations);
+
+    sequenceDataAnalysisVBoxLayout->addWidget(new QLabel("Получить список"));
+    QPushButton* buttonSmaller = new QPushButton("Меньших элементов до него");
+    QPushButton* buttonMovingAvg = new QPushButton("Скользящих средних");
+    QPushButton* buttonSigma = new QPushButton("разниц сигм");
+    QPushButton* buttonReflected = new QPushButton("сумм с «отражением»");
+
+    sequenceDataAnalysisVBoxLayout->addWidget(buttonSmaller);
+    sequenceDataAnalysisVBoxLayout->addWidget(buttonMovingAvg);
+    sequenceDataAnalysisVBoxLayout->addWidget(buttonSigma);
+    sequenceDataAnalysisVBoxLayout->addWidget(buttonReflected);
+    sequenceDataAnalysisVBoxLayout->addStretch();
+    rightTabWidget->addTab(sequenceDataAnalysis, "Анализ");
+
+    mainLayout->addWidget(rightTabWidget);
+    rightPanelContainer->setLayout(mainLayout);
+
+    connect(rightTabWidget, &QTabWidget::currentChanged, this, &MainWindow::HandleTabChanged);
+    connect(buttonPrepend, &QPushButton::clicked, this, &MainWindow::onPrepend);
+    connect(buttonAppend, &QPushButton::clicked, this, &MainWindow::onAppend);
+    connect(buttonInsert, &QPushButton::clicked, this, &MainWindow::onInsert);
+    connect(buttonSubseq, &QPushButton::clicked, this, &MainWindow::onSubsequence);
+    connect(buttonConcat, &QPushButton::clicked, this, &MainWindow::onConcat);
+    connect(buttonFirst, &QPushButton::clicked, this, &MainWindow::onFirst);
+    connect(buttonLast, &QPushButton::clicked, this, &MainWindow::onLast);
+    connect(buttonSelected, &QPushButton::clicked, this, &MainWindow::onSelected);
+    connect(buttonNot, &QPushButton::clicked, this, &MainWindow::onBitNot);
+    connect(buttonAnd, &QPushButton::clicked, this, &MainWindow::onBitAnd);
+    connect(buttonOr, &QPushButton::clicked, this, &MainWindow::onBitOr);
+    connect(buttonXor, &QPushButton::clicked, this, &MainWindow::onBitXor);
+    connect(buttonZip, &QPushButton::clicked, this, &MainWindow::onZip);
+    connect(buttonUnzip, &QPushButton::clicked, this, &MainWindow::onUnzip);
+    connect(buttonRange, &QPushButton::clicked, this, &MainWindow::onRange);
+    connect(buttonSplit, &QPushButton::clicked, this, &MainWindow::onSplit);
+    connect(buttonFlatMap, &QPushButton::clicked, this, &MainWindow::onFlatMap);
+    connect(buttonSkip, &QPushButton::clicked, this, &MainWindow::onSkip);
+    connect(buttonSplice, &QPushButton::clicked, this, &MainWindow::onSplice);
+    connect(buttonMap, &QPushButton::clicked, this, &MainWindow::onMap);
+    connect(buttonWhere, &QPushButton::clicked, this, &MainWindow::onWhere);
+    connect(buttonReduce, &QPushButton::clicked, this, &MainWindow::onReduce);
+    connect(buttonGetFirstOpt, &QPushButton::clicked, this, &MainWindow::onGetFirstOpt);
+    connect(buttonGetLastOpt, &QPushButton::clicked, this, &MainWindow::onGetLastOpt);
+    connect(buttonStats, &QPushButton::clicked, this, &MainWindow::onStats);
+    connect(buttonPermutations, &QPushButton::clicked, this, &MainWindow::onPermutations);
+    connect(buttonSmaller, &QPushButton::clicked, this, &MainWindow::onSmaller);
+    connect(buttonMovingAvg, &QPushButton::clicked, this, &MainWindow::onMovingAvg);
+    connect(buttonSigma, &QPushButton::clicked, this, &MainWindow::onSigma);
+    connect(buttonReflected, &QPushButton::clicked, this, &MainWindow::onReflected);
 }
 
-//Функции
-QWidget* MainWindow::buildFunctionsTab()
-{
-    QWidget* w = new QWidget();
-    QVBoxLayout* layout = new QVBoxLayout(w);
+void MainWindow::SetupLogPanel(QGroupBox* logPanelContainer) {
+    QVBoxLayout* logPanelLayout = new QVBoxLayout(logPanelContainer);
 
-    // Map
-    {
-        QGroupBox* g = new QGroupBox("Map — применить функцию к каждому элементу");
-        QVBoxLayout* v = new QVBoxLayout(g);
-        mapFuncCombo = new QComboBox();
-        mapFuncCombo->addItems({
-            "x * 2          (для символов: следующий символ)",
-            "x * x          (для символов: предыдущий символ)",
-            "x + 1         (для символов: заглавная/строчная)",
-            "|x|             (для символов: строчная)",
-            "-x              (для символов: заглавные)"
-        });
-        QPushButton* btn = new QPushButton("Map");
-        v->addWidget(mapFuncCombo);
-        v->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onMap);
-        layout->addWidget(g);
-    }
-    // Where
-    {
-        QGroupBox* g = new QGroupBox("Where — оставить элементы по условию");
-        QVBoxLayout* v = new QVBoxLayout(g);
-        whereFuncCombo = new QComboBox();
-        whereFuncCombo->addItems({
-            "x > 0             (для символов: только буквы)",
-            "x % 2 == 0     (для символов: только цифры)",
-            "x < 0             (для символов: только строчные)",
-            "x != 0            (для символов: только заглавные)"
-        });
-        QPushButton* btn = new QPushButton("Where");
-        v->addWidget(whereFuncCombo);
-        v->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onWhere);
-        layout->addWidget(g);
-    }
-    // Reduce
-    {
-        QGroupBox* g = new QGroupBox("Reduce — свернуть в одно значение");
-        QVBoxLayout* v = new QVBoxLayout(g);
-        reduceFuncCombo = new QComboBox();
-        reduceFuncCombo->addItems({
-            "a + b  (сумма)          (для символов: первый элемент)",
-            "a * b  (произведение)   (для символов: первый элемент)",
-            "макс(a,b)               (для символов: первый элемент)",
-            "мин(a,b)                (для символов: первый элемент)"
-        });
-        QPushButton* btn = new QPushButton("Reduce");
-        v->addWidget(reduceFuncCombo);
-        v->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onReduce);
-        layout->addWidget(g);
-    }
-    // FlatMap
-    {
-        QGroupBox* g = new QGroupBox("FlatMap — развернуть в новую последовательность");
-        QVBoxLayout* v = new QVBoxLayout(g);
-        flatMapFuncCombo = new QComboBox();
-        flatMapFuncCombo->addItems({
-            "x → [x, x²]   (для символов: [x, x])",
-            "x → [x, -x]   (для символов: [x, заглавная(x)])",
-            "x → [x]       (то же самое)))"
-        });
-        QPushButton* btn = new QPushButton("FlatMap");
-        v->addWidget(flatMapFuncCombo);
-        v->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onFlatMap);
-        layout->addWidget(g);
-    }
+    globalLog = new QTextEdit(logPanelContainer);
+    globalLog->setReadOnly(true);
 
-    {
-        QGroupBox* g = new QGroupBox("Skip — пропустить N элементов");
-        QHBoxLayout* h = new QHBoxLayout(g);
-        skipInput = new QLineEdit(); skipInput->setPlaceholderText("N");
-        QPushButton* btn = new QPushButton("Skip");
-        h->addWidget(skipInput); h->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onSkip);
-        layout->addWidget(g);
-    }
-    {
-        QGroupBox* g = new QGroupBox("Splice — удалить N элементов, начиная с позиции i");
-        QHBoxLayout* h = new QHBoxLayout(g);
-        spliceIndexInput = new QLineEdit(); spliceIndexInput->setPlaceholderText("i");
-        spliceCountInput = new QLineEdit(); spliceCountInput->setPlaceholderText("N");
-        QPushButton* btn = new QPushButton("Splice");
-        h->addWidget(spliceIndexInput); h->addWidget(spliceCountInput); h->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onSplice);
-        layout->addWidget(g);
-    }
-
-    layout->addStretch();
-    return w;
+    logPanelLayout->addWidget(globalLog);
 }
 
-//Утилиты
-QWidget* MainWindow::buildUtilsTab()
-{
-    QWidget* w = new QWidget();
-    QVBoxLayout* layout = new QVBoxLayout(w);
+void MainWindow::onHelp() {
+    QString helpText =
+        "=== Руководство пользователя ===\n\n"
 
-    {
-        QGroupBox* g = new QGroupBox("Zip — объединить с другой последовательностью");
-        QVBoxLayout* v = new QVBoxLayout(g);
-        v->addWidget(new QLabel("Вторая последовательность (через пробел):"));
-        zipInput = new QLineEdit(); zipInput->setPlaceholderText("4 5 6");
-        QPushButton* btn = new QPushButton("Zip");
-        v->addWidget(zipInput); v->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onZip);
-        layout->addWidget(g);
-    }
-    {
-        QGroupBox* g = new QGroupBox("Unzip — разбить последовательность пар на две");
-        QVBoxLayout* v = new QVBoxLayout(g);
-        v->addWidget(new QLabel("Введите пары через пробел, значения пары через запятую:"));
-        v->addWidget(new QLabel("Форматы:  1,2 3,4 5,6   или   (1,2) (3,4)   или   1,2; 3,4"));
-        unzipLabel = new QLineEdit(); unzipLabel->setPlaceholderText("1,2 3,4 5,6");
-        QPushButton* btn = new QPushButton("Unzip");
-        v->addWidget(unzipLabel); v->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onUnzip);
-        layout->addWidget(g);
-    }
-    {
-        QGroupBox* g = new QGroupBox("Split — разбить по разделителю (0 / пробел)");
-        QPushButton* btn = new QPushButton("Split");
-        QVBoxLayout* v = new QVBoxLayout(g);
-        v->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onSplit);
-        layout->addWidget(g);
-    }
-    {
-        QGroupBox* g = new QGroupBox("Range — заполнить диапазоном [начало, конец] и шагом");
-        QHBoxLayout* h = new QHBoxLayout(g);
-        rangeStartInput = new QLineEdit(); rangeStartInput->setPlaceholderText("начало");
-        rangeEndInput = new QLineEdit(); rangeEndInput->setPlaceholderText("конец");
-        rangeStepInput  = new QLineEdit(); rangeStepInput->setPlaceholderText("шаг");
-        QPushButton* btn = new QPushButton("Range");
-        h->addWidget(rangeStartInput); h->addWidget(rangeEndInput);
-        h->addWidget(rangeStepInput);  h->addWidget(btn);
-        connect(btn, &QPushButton::clicked, this, &MainWindow::onRange);
-        layout->addWidget(g);
-    }
+        "[ Создание последовательности ]\n"
+        "1. Выберите структуру, тип данных и вариант изменяемости.\n"
+        "2. Введите начальные элементы через пробел или запятую в левое поле.\n"
+        "3. Нажмите 'Основную' или 'Дополнительную', чтобы создать список.\n\n"
 
-    layout->addStretch();
-    return w;
+        "[ Списки элементов (Панель по центру) ]\n"
+        "- Основная: Ваша текущая рабочая последовательность. Вы можете кликать по элементам, чтобы выделить их. Для выделения нескольких элементов зажмите Ctrl или Shift.\n"
+        "- Дополнительная: Она нужна как второй участник для объединения (Concat), Zip и битовых операций.\n"
+        "- Оригинал: Показывает исходную версию списка в момент создания (доступно только для неизменяемых структур).\n\n"
+
+        "[ Правое текстовое поле (Ввод значений) ]\n"
+        "Используется для передачи параметров в кнопки:\n"
+        "- Добавить / Вставить: одно значение.\n"
+        "- Range (Генерация): три числа через пробел (начало конец шаг, пример: 0 10 2).\n"
+        "- Skip (Пропуск): число элементов, которые нужно пропустить с начала.\n"
+        "- Splice (Удаление): индекс элемента (начиная с 0).\n"
+        "- GetFirst / GetLast: число-порог для поиска (>= или <=).\n\n"
+
+        "[ Вкладка 'Функции' ]\n"
+        "- Добавить в начало/конец: берет число из правого поля.\n"
+        "- Вставить после выбранного: выделите один элемент в 'Основной', введите число справа и нажмите кнопку.\n"
+        "- Получить подпослед.: выделите несколько элементов в 'Основной' (рамкой или зажав Ctrl/Shift). Программа сама возьмет отрезок от самого верхнего до самого нижнего выделенного.\n"
+        "- Объединить (Concat): приклеивает 'Дополнительную' в конец 'Основной'.\n"
+        "- Получить первое/последнее/выбранное: печатает элемент в лог внизу.\n"
+        "- Битовые операции (НЕ, И, ИЛИ, XOR): для двуместных операций нужны заполненные 'Основная' и 'Дополнительная' последовательности.\n\n"
+
+        "[ Вкладка 'Утилиты' (Демонстрация работы) ]\n"
+        "- Zip: собирает элементы двух списков в пары.\n"
+        "- Unzip: разбивает пары обратно на два списка (выводит в лог).\n"
+        "- Range: создает новый список чисел по вашим параметрам из правого поля.\n"
+        "- Split: разрезает список там, где встречаются нули (для чисел) или символ '_' (для букв).\n"
+        "- FlatMap: берет элемент X и делает из него два: [X, X*2].\n"
+        "- Skip: пропускает N элементов с начала.\n"
+        "- Splice: вырезает элемент по указанному справа индексу.\n"
+        "- Map: умножает все элементы на 2.\n"
+        "- Where: оставляет только неотрицательные числа.\n"
+        "- Reduce: складывает все числа вместе (сумма в лог).\n"
+        "- GetFirst / GetLast: находит первое или последнее число, подходящее под порог из поля.\n\n"
+
+        "[ Вкладка 'Анализ' (Все результаты идут в Лог) ]\n"
+        "- Мин/Макс/Средн.: сбор статистики.\n"
+        "- Кол-во перестановок: расчет числа инверсий.\n"
+        "- Меньших элементов: для каждого числа показывает, какие числа до него были меньше.\n"
+        "- Скользящих средних: сглаживание по 3 элементам.\n"
+        "- Разниц сигм / Отражение: применение формул анализа к списку.";
+
+    QMessageBox::information(this, "Справка", helpText);
 }
 
-//Анализ"
-QWidget* MainWindow::buildAnalysisTab()
-{
-    QWidget* w = new QWidget();
-    QVBoxLayout* layout = new QVBoxLayout(w);
-
-    auto makeBtn = [&](const QString& name, auto slot) {
-        QPushButton* btn = new QPushButton(name);
-        connect(btn, &QPushButton::clicked, this, slot);
-        layout->addWidget(btn);
-    };
-
-    makeBtn("Min / Max / Avg", &MainWindow::onBasicStats);
-    makeBtn("Медиана", &MainWindow::onMedian);
-    makeBtn("Кол-во инверсий", &MainWindow::onInversions);
-    makeBtn("Предшествующие меньшие элементы", &MainWindow::onPrecedingSmaller);
-    makeBtn("Все префиксы и постфиксы", &MainWindow::onPrefixesPostfixes);
-    makeBtn("Скользящее среднее (a[i-1]+a[i]+a[i+1])/3", &MainWindow::onMovingAverage);
-    makeBtn("√(σ² − aᵢ²)", &MainWindow::onSigmaDiff);
-    makeBtn("aᵢ + a[n-1-i] (отражение)", &MainWindow::onReflectedSum);
-
-    layout->addStretch();
-    return w;
-}
-
-//Вспомогательные методы
-
-void MainWindow::log(const QString& msg)
-{
-    logOutput->append(msg);
-}
-
-void MainWindow::logError(const QString& msg)
-{
-    logOutput->append("<span style='color:reduce'>✗ " + msg + "</span>");
-}
-
-void MainWindow::saveOriginal()
-{
-    if (!isImmutable()) return;
-    delete originalSeqInt;    
-    originalSeqInt = nullptr;
-    delete originalSeqDouble; 
-    originalSeqDouble = nullptr;
-    delete originalSeqChar;   
-    originalSeqChar = nullptr;
-
-    if (currentSeqInt && currentSeqInt->GetLength() > 0) {
-        originalSeqInt = currentSeqInt->GetSubsequence(0, currentSeqInt->GetLength() - 1);
-    }
-
-    if (currentSeqDouble && currentSeqDouble->GetLength() > 0) {
-        originalSeqDouble = currentSeqDouble->GetSubsequence(0, currentSeqDouble->GetLength() - 1);
-    }
-
-    if (currentSeqChar && currentSeqChar->GetLength() > 0) {
-        originalSeqChar = currentSeqChar->GetSubsequence(0, currentSeqChar->GetLength() - 1);
-    }
-}
-
-void MainWindow::clearOriginal()
-{
-    delete originalSeqInt;
-    originalSeqInt = nullptr;
-    delete originalSeqDouble;
-    originalSeqDouble = nullptr;
-    delete originalSeqChar;
-    originalSeqChar = nullptr;
-    origGroup->setVisible(false);
-}
-
-void MainWindow::refreshDisplay()
-{
-    seqDisplay->clear();
-    origDisplay->clear();
-
-    bool isImmut = isImmutable();
-    origGroup->setVisible(isImmut);
-
-    auto fillList = [](QListWidget* list, QLabel* lbl, auto* seq, const QString& typeName) {
-        if (!seq) { 
-            lbl->setText("Тип: —   Длина: 0"); 
-            return; 
-        }
-
-        size_t len = seq->GetLength();
-
-        lbl->setText(QString("Тип: %1   Длина: %2").arg(typeName).arg(len));
-        
-        for (size_t i = 0; i < len; ++i) {
-            list->addItem(QString("[%1] = %2").arg(i).arg(valueToString(seq->Get(i))));
-        }
-    };
-
-    QString typeName = seqTypeCombo->currentText();
-    switch (currentType) {
-        case DataType::Int:
-            fillList(seqDisplay, seqInfoLabel, currentSeqInt, typeName);
-            if (isImmut) fillList(origDisplay, origInfoLabel, originalSeqInt, typeName + " (оригинал)");
-            break;
-        case DataType::Double:
-            fillList(seqDisplay, seqInfoLabel, currentSeqDouble, typeName);
-            if (isImmut) fillList(origDisplay, origInfoLabel, originalSeqDouble, typeName + " (оригинал)");
-            break;
-        case DataType::Char:
-            fillList(seqDisplay, seqInfoLabel, currentSeqChar, typeName);
-            if (isImmut) fillList(origDisplay, origInfoLabel, originalSeqChar, typeName + " (оригинал)");
-            break;
-    }
-}
-
-bool MainWindow::parseIntVal(const QString& text, int& out)
-{
-    bool ok;
-    QString t = text.trimmed();
-    out = t.toInt(&ok);
-    if (!ok) {
-        logError("Некорректный ввод");
-        return false;
-    }
-    return true;
-}
-
-bool MainWindow::parseDoubleVal(const QString& text, double& out)
-{
-    bool ok;
-    QString t = text.trimmed();
-    out = t.toDouble(&ok);
-    if (!ok) {
-        logError("Ожидается вещественное число, получено: \"" + t + "\"");
-        return false;
-    }
-    if (std::isinf(out)) {
-        logError(QString("Число \"%1\" слишком велико для double").arg(t));
-        return false;
-    }
-    return true;
-}
-
-bool MainWindow::parseIndex(const QString& text, size_t& out)
-{
-    bool ok;
-    int v = text.trimmed().toInt(&ok);
-    if (!ok || v < 0) {
-        logError("Некорректный ввод");
-        return false;
-    }
-    out = static_cast<size_t>(v);
-    return true;
-}
-
-bool MainWindow::parseIntList(const QString& text, QList<int>& out)
-{
-    out.clear();
-    QString t = text.trimmed();
-    if (t.isEmpty()) { 
-        logError("Поле ввода пустое"); 
-        return false; 
-    }
-
-    for (const QString& s : t.split(' ', Qt::SkipEmptyParts)) {
-        bool ok;
-        int v = s.toInt(&ok);
-        if (!ok) { logError("Некорректный ввод"); return false; }
-        out.append(v);
-    }
-    return true;
-}
-
-bool MainWindow::parseDoubleList(const QString& text, QList<double>& out)
-{
-    out.clear();
-    QString t = text.trimmed();
-    if (t.isEmpty()) { logError("Поле ввода пустое"); return false; }
-    for (const QString& s : t.split(' ', Qt::SkipEmptyParts)) {
-        bool ok;
-        double v = s.toDouble(&ok);
-        if (!ok) { logError("\"" + s + "\" — не вещественное число"); return false; }
-        out.append(v);
-    }
-    return true;
-}
-
-bool MainWindow::parseCharList(const QString& text, QList<char16_t>& out)
-{
-    out.clear();
-    if (text.isEmpty()) { logError("Поле ввода пустое"); return false; }
-    for (QChar ch : text)
-        out.append(charFromQChar(ch));
-    return true;
-}
-
-//Слоты
-
-void MainWindow::onShowInstructions()
-{
-    InstructionDialog dlg(this);
-    dlg.exec();
-}
-
-void MainWindow::onSeqTypeChanged()
-{
-    if (hasNoMutability()) {
-        mutabilityCombo->setCurrentIndex(0);
-        mutabilityCombo->setEnabled(false);
+void MainWindow::HandleSequenceStructureChanged(int index) {
+    if (index == 0 || index == 1) {
+        mutableOptionSelector->setEnabled(true);
     } else {
-        mutabilityCombo->setEnabled(true);
-    }
-}
-
-void MainWindow::onCreateSequence()
-{
-    int dtIdx = dataTypeCombo->currentIndex();
-    currentType = (dtIdx == 0) ? DataType::Int : (dtIdx == 1) ? DataType::Double : DataType::Char;
-
-    QString seqType = seqTypeCombo->currentText();
-    bool mutable_ = (mutabilityCombo->currentIndex() == 0);
-
-    if (!mutable_ && hasNoMutability()) {
-        logError(seqType + " поддерживает только Mutable");
-        return;
+        mutableOptionSelector->setEnabled(false);
+        mutableOptionSelector->setCurrentIndex(0);
     }
 
-    clearOriginal();
+    bool isBitSequence = (index == 2);
+    buttonNot->setEnabled(isBitSequence);
+    buttonAnd->setEnabled(isBitSequence);
+    buttonOr->setEnabled(isBitSequence);
+    buttonXor->setEnabled(isBitSequence);
 
-    delete currentSeqInt;
-    currentSeqInt = nullptr;
-    delete currentSeqDouble;
-    currentSeqDouble = nullptr;
-    delete currentSeqChar;
-    currentSeqChar = nullptr;
+    if (isBitSequence) {
+        sequenceTypeSelector->setCurrentIndex(0);
+        sequenceTypeSelector->setEnabled(false);
 
-    try {
-        if (currentType == DataType::Int) {
-            QList<int> elems;
-            if (!parseIntList(elementsInput->text(), elems)) return;
-            int* arr = new int[elems.size()];
-            for (int i = 0; i < elems.size(); ++i) arr[i] = elems[i];
-            size_t cnt = static_cast<size_t>(elems.size());
-
-            if (seqType == "ArraySequence") {
-                if (mutable_) {
-                    currentSeqInt = (Sequence<int>*)new MutableArraySequence<int>(arr, cnt);
-                } else {
-                    currentSeqInt = (Sequence<int>*)new ImmutableArraySequence<int>(arr, cnt);
-                }
-            } else if (seqType == "ListSequence") {
-                if (mutable_) {
-                    currentSeqInt = (Sequence<int>*)new MutableListSequence<int>(arr, cnt);
-                } else {
-                    currentSeqInt = (Sequence<int>*)new ImmutableListSequence<int>(arr, cnt);
-                }
-            } else if (seqType == "AdaptiveSequence") {
-                currentSeqInt = new AdaptiveSequence<int>(arr, cnt);
-            } else if (seqType == "SegmentedList") {
-                currentSeqInt = new SegmentedList<int>(arr, cnt);
-            } else if (seqType == "BitSequence") {
-                currentSeqInt = new BitSequence<int>(arr, cnt);
-            }
-            delete[] arr;
-
-        } else if (currentType == DataType::Double) {
-            QList<double> elems;
-            if (!parseDoubleList(elementsInput->text(), elems)) return;
-            double* arr = new double[elems.size()];
-            for (int i = 0; i < elems.size(); ++i) arr[i] = elems[i];
-            size_t cnt = static_cast<size_t>(elems.size());
-
-            if (seqType == "ArraySequence") {
-                if (mutable_) {
-                    currentSeqDouble = (Sequence<double>*)new MutableArraySequence<double>(arr, cnt);
-                } else {
-                    currentSeqDouble = (Sequence<double>*)new ImmutableArraySequence<double>(arr, cnt);
-                }
-            } else if (seqType == "ListSequence") {
-                if (mutable_) {
-                    currentSeqDouble = (Sequence<double>*)new MutableListSequence<double>(arr, cnt);
-                } else {
-                    currentSeqDouble = (Sequence<double>*)new ImmutableListSequence<double>(arr, cnt);
-                }
-            } else if (seqType == "AdaptiveSequence") {
-                currentSeqDouble = new AdaptiveSequence<double>(arr, cnt);
-            } else if (seqType == "SegmentedList") {
-                currentSeqDouble = new SegmentedList<double>(arr, cnt);
-            } else if (seqType == "BitSequence") {
-                logError("BitSequence поддерживает только int");
-                delete[] arr; return;
-            }
-            delete[] arr;
-
-        } else {
-            QList<char16_t> elems;
-            if (!parseCharList(elementsInput->text(), elems)) return;
-            char16_t* arr = new char16_t[elems.size()];
-            for (int i = 0; i < elems.size(); ++i) arr[i] = elems[i];
-            size_t cnt = static_cast<size_t>(elems.size());
-
-            if (seqType == "ArraySequence") {
-                if (mutable_) {
-                    currentSeqChar = (Sequence<char16_t>*)new MutableArraySequence<char16_t>(arr, cnt);
-                } else {
-                    currentSeqChar = (Sequence<char16_t>*)new ImmutableArraySequence<char16_t>(arr, cnt);
-                }
-            } else if (seqType == "ListSequence") {
-                if (mutable_) {
-                    currentSeqChar = (Sequence<char16_t>*)new MutableListSequence<char16_t>(arr, cnt);
-                } else {
-                    currentSeqChar = (Sequence<char16_t>*)new ImmutableListSequence<char16_t>(arr, cnt);
-                }
-            } else if (seqType == "AdaptiveSequence") {
-                currentSeqChar = new AdaptiveSequence<char16_t>(arr, cnt);
-            } else if (seqType == "SegmentedList") {
-                currentSeqChar = new SegmentedList<char16_t>(arr, cnt);
-            } else if (seqType == "BitSequence") {
-                logError("BitSequence поддерживает только int");
-                delete[] arr; return;
-            }
-            delete[] arr;
-        }
-
-        log("✓ Создана: " + seqType + " <" + dataTypeCombo->currentText() + "> "
-            + (mutable_ ? "Mutable" : "Immutable"));
-        refreshDisplay();
-    } catch (const std::exception& e) {
-        logError(QString(e.what()));
-    }
-}
- 
-#define DISPATCH_READ(intBlock, dblBlock, charBlock) \
-    switch (currentType) { \
-        case DataType::Int: \
-            if (!currentSeqInt) { \
-                logError("Нет последовательности"); \
-                return; \
-            } \
-            intBlock; \
-            break; \
-        case DataType::Double:\
-            if (!currentSeqDouble) { \
-                logError("Нет последовательности"); \
-                return; \
-            } dblBlock; \
-            break; \
-        case DataType::Char: \
-            if (!currentSeqChar) { \
-                logError("Нет последовательности"); \
-                return; \
-            } \
-            charBlock;  \
-            break; \
-    }
-
-#define DISPATCH_WRITE(intBlock, dblBlock, charBlock) \
-    saveOriginal(); \
-    DISPATCH_READ(intBlock, dblBlock, charBlock) \
-    refreshDisplay();
-
-
-void MainWindow::onGet()
-{
-    size_t index;
-    if (!parseIndex(indexInput->text(), index)) return;
-    try {
-        DISPATCH_READ( \
-            log(QString("Get(%1) = %2").arg(index).arg(currentSeqInt->Get(index))), \
-            log(QString("Get(%1) = %2").arg(index).arg(currentSeqDouble->Get(index))), \
-            log(QString("Get(%1) = %2").arg(index).arg(valueToString(currentSeqChar->Get(index)))) \
-        );
-    } catch (const std::exception& e) { 
-        logError(e.what()); 
-    }
-}
-
-void MainWindow::onAppend()
-{
-    try {
-        switch (currentType) {
-            case DataType::Int: {
-                if (!currentSeqInt) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                int v; if (!parseIntVal(appendInput->text(), v)) return;
-
-                saveOriginal(); 
-                currentSeqInt = currentSeqInt->Append(v);
-
-                log("Append(" + QString::number(v) + ")"); 
-                break;
-            }
-            case DataType::Double: {
-                if (!currentSeqDouble) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                double v; 
-                if (!parseDoubleVal(appendInput->text(), v)) 
-                return;
-
-                saveOriginal(); 
-                currentSeqDouble = currentSeqDouble->Append(v);
-
-                log("Append(" + QString::number(v) + ")"); 
-                break;
-            }
-            case DataType::Char: {
-                if (!currentSeqChar) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-                QList<char16_t> elems; 
-                if (!parseCharList(appendInput->text(), elems)) return;
-
-                saveOriginal();
-
-                for (char16_t c : elems) currentSeqChar = currentSeqChar->Append(c);
-
-                log(QString("Append(%1 символ)").arg(elems.size())); 
-                break;
-            }
-        }
-        refreshDisplay();
-    } catch (const std::exception& e) { 
-        logError(e.what()); 
-    }
-}
-
-void MainWindow::onPrepend()
-{
-    try {
-        switch (currentType) {
-            case DataType::Int: {
-                if (!currentSeqInt) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                int v; 
-                if (!parseIntVal(prependInput->text(), v)) return;
-
-                saveOriginal(); 
-                currentSeqInt = currentSeqInt->Prepend(v);
-
-                log("Prepend(" + QString::number(v) + ")"); break;
-            }
-            case DataType::Double: {
-                if (!currentSeqDouble) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                double v; 
-                if (!parseDoubleVal(prependInput->text(), v)) return;
-
-                saveOriginal(); 
-                currentSeqDouble = currentSeqDouble->Prepend(v);
-
-                log("Prepend(" + QString::number(v) + ")"); break;
-            }
-            case DataType::Char: {
-                if (!currentSeqChar) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                QList<char16_t> elems; 
-                if (!parseCharList(prependInput->text(), elems)) return;
-
-                saveOriginal();
-                for (int i = elems.size() - 1; i >= 0; --i) {
-                    currentSeqChar = currentSeqChar->Prepend(elems[i]);
-                }
-                log(QString("Prepend(%1 char16_t)").arg(elems.size())); 
-                break;
-            }
-        }
-        refreshDisplay();
-    } catch (const std::exception& e) { 
-        logError(e.what()); 
-    }
-}
-
-void MainWindow::onInsertAt()
-{
-    size_t index; if (!parseIndex(insertIndexInput->text(), index)) return;
-    try {
-        switch (currentType) {
-            case DataType::Int: {
-                if (!currentSeqInt) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-                int v; 
-                if (!parseIntVal(insertValueInput->text(), v)) return;
-
-                saveOriginal(); 
-                currentSeqInt = currentSeqInt->InsertAt(v, index);
-
-                log(QString("Вставка (%1, номер=%2)").arg(v).arg(index+1)); 
-                break;
-            }
-            case DataType::Double: {
-                if (!currentSeqDouble) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                double v; 
-                if (!parseDoubleVal(insertValueInput->text(), v)) return;
-
-                saveOriginal(); 
-                currentSeqDouble = currentSeqDouble->InsertAt(v, index);
-
-                log(QString("Вставка (%1, номер=%2)").arg(v).arg(index+1)); 
-                break;
-            }
-            case DataType::Char: {
-                if (!currentSeqChar) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                QList<char16_t> elems; 
-                if (!parseCharList(insertValueInput->text(), elems)) return;
-
-                saveOriginal();
-                for (int i = 0; i < elems.size(); ++i) {
-                    currentSeqChar = currentSeqChar->InsertAt(elems[i], index + i);
-                }
-
-                log(QString("Вставка(%1 символ, номер=%2)").arg(elems.size()).arg(index+1)); 
-                break;
-            }
-        }
-        refreshDisplay();
-    } catch (const std::exception& e) { 
-        logError(e.what()); 
-    }
-}
-
-void MainWindow::onGetSubsequence()
-{
-    size_t s, e;
-    if (!parseIndex(subStartInput->text(), s)) return;
-    if (!parseIndex(subEndInput->text(), e)) return;
-
-    try {
-        auto printSeq = [&](auto* seq) {
-            if (!seq) { logError("Нет последовательности"); return; }
-            auto* sub = seq->GetSubsequence(s, e);
-            QString r = QString("Подпоследовательность(%1,%2) = [").arg(s).arg(e);
-            for (size_t i = 0; i < sub->GetLength(); ++i) {
-                if (i > 0) r += ", ";
-                r += valueToString(sub->Get(i));
-            }
-            r += "]"; log(r); delete sub;
-        };
-        switch (currentType) {
-            case DataType::Int: printSeq(currentSeqInt); break;
-            case DataType::Double: printSeq(currentSeqDouble); break;
-            case DataType::Char: printSeq(currentSeqChar); break;
-        }
-    } catch (const std::exception& ex) { 
-        logError(ex.what()); 
-    }
-}
-
-void MainWindow::onGetFirst()
-{
-    try {
-        DISPATCH_READ(
-            log("Первый элемент = " + QString::number(currentSeqInt->GetFirst())),
-            log("Первый элемент = " + QString::number(currentSeqDouble->GetFirst())),
-            log(QString("Первый элемент = '%1'").arg(valueToString(currentSeqChar->GetFirst())))
-        );
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onGetLast()
-{
-    try {
-        DISPATCH_READ(
-            log("Последний элемент = " + QString::number(currentSeqInt->GetLast())),
-            log("Последний элемент = " + QString::number(currentSeqDouble->GetLast())),
-            log(QString("Последний элемент = '%1'").arg(valueToString(currentSeqChar->GetLast())))
-        );
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-namespace {
-    int g_mapChoice = 0, g_whereChoice = 0, g_reduceChoice = 0, g_flatMapChoice = 0;
-
-    int mapInt (int x) { 
-        switch(g_mapChoice) {
-            case 1:
-                return x*x; 
-            case 2:
-                return x+1; 
-            case 3:
-                return x < 0 ? -x : x; 
-            case 4:
-                return -x; 
-            default:
-                return x*2;
-            } 
-    }
-    double mapDouble (double x) { 
-        switch(g_mapChoice) {
-            case 1:
-                return x * x; 
-            case 2:
-                return x+1; 
-            case 3:
-                return x < 0 ? -x : x; 
-            case 4:
-                return -x; 
-            default:
-                return x * 2.0;
-            } 
-        }
-    char16_t mapChar (char16_t x) { 
-        QChar q(static_cast<ushort>(x)); 
-        switch(g_mapChoice){
-            case 1:
-                return static_cast<char16_t>(x-1); 
-            case 2:
-                return (q.isLower() || q.isUpper()) ? static_cast<char16_t>(q.isLower() ? q.toUpper().unicode() : q.toLower().unicode()) : x; 
-            case 3:
-                return static_cast<char16_t>(q.toLower().unicode()); 
-            case 4:
-                return static_cast<char16_t>(q.toUpper().unicode()); 
-            default:
-                return static_cast<char16_t>(x+1);
-            } 
-        }
-
-    bool whereInt (int x) { 
-        switch(g_whereChoice) {
-            case 1:
-                return x % 2 == 0; 
-            case 2:
-                return x < 0; 
-            case 3:
-                return x != 0; 
-            default:
-                return x > 0;
-            } 
-        }
-    bool whereDouble (double x) { 
-        switch(g_whereChoice) {
-            case 1:
-                return fmod(x,2)==0; 
-            case 2:
-                return x<0; 
-            case 3:
-                return x != 0; 
-            default:
-                return x > 0;
-            } 
-        }
-    bool whereChar(char16_t x) { 
-        QChar q(static_cast<ushort>(x)); 
-        switch(g_whereChoice) {
-            case 1:
-                return q.isLetter(); 
-            case 2:
-                return q.isDigit(); 
-            case 3:
-                return q.isLower(); 
-            default:
-                return q.isUpper();
-            } 
-        }
-
-    int reduceInt(int a, int b) { 
-        switch (g_reduceChoice) {
-            case 1:  
-                return a * b;  
-            case 2:  
-                return (a > b) ? a : b; 
-            case 3:  
-                return (a < b) ? a : b; 
-            default: 
-                return a + b; 
-        } 
-    }
-
-    double reduceDouble(double a, double b) { 
-        switch (g_reduceChoice) {
-            case 1:  
-                return a * b;
-            case 2:  
-                return (a > b) ? a : b;
-            case 3:  
-                return (a < b) ? a : b;
-            default: 
-                return a + b;
-        } 
-    }
-
-    char16_t reduceChar(char16_t a, char16_t /* b */) 
-    { 
-        return a; 
-    }
-
-    Sequence<int>* fmInt(int x) 
-    {
-        switch (g_flatMapChoice) {
-            case 1: {
-                int a[2] = {x, -x};
-                return new MutableArraySequence<int>(a, 2);
-            }
-            case 2: {
-                int a[1] = {x};
-                return new MutableArraySequence<int>(a, 1);
-            }
-            default: {
-                int a[2] = {x, x * x};
-                return new MutableArraySequence<int>(a, 2);
-            }
-        }
-    }
-
-    Sequence<double>* fmDouble(double x) 
-    {
-        switch (g_flatMapChoice) {
-            case 1: {
-                double a[2] = {x, -x};
-                return new MutableArraySequence<double>(a, 2);
-            }
-            case 2: {
-                double a[1] = {x};
-                return new MutableArraySequence<double>(a, 1);
-            }
-            default: {
-                double a[2] = {x, x * x};
-                return new MutableArraySequence<double>(a, 2);
-            }
-        }
-    }
-
-    Sequence<char16_t>* fmChar(char16_t x) 
-    {
-        QChar q(static_cast<ushort>(x));
+        QRegularExpression rx("[01\\s,]*");
         
-        switch (g_flatMapChoice) {
-            case 1: {
-                char16_t a[2] = {x, static_cast<char16_t>(q.toUpper().unicode())};
-                return new MutableArraySequence<char16_t>(a, 2);
+        if (!leftLineEdit->validator()) {
+            leftLineEdit->setValidator(new QRegularExpressionValidator(rx, leftLineEdit));
+        }
+        if (!rightLineEditFunctional->validator()) {
+            rightLineEditFunctional->setValidator(new QRegularExpressionValidator(rx, rightLineEditFunctional));
+        }
+    } else {
+        sequenceTypeSelector->setEnabled(true);
+        
+        auto* model = qobject_cast<QStandardItemModel*>(sequenceTypeSelector->model());
+        if (model) {
+            model->item(1)->setEnabled(true);
+            if (rightTabWidget->currentIndex() != 2) {
+                model->item(2)->setEnabled(true);
             }
-            case 2: {
-                char16_t a[1] = {x};
-                return new MutableArraySequence<char16_t>(a, 1);
-            }
-            default: {
-                char16_t a[2] = {x, x};
-                return new MutableArraySequence<char16_t>(a, 2);
-            }
+        }
+
+        if (leftLineEdit->validator()) {
+            const_cast<QValidator*>(leftLineEdit->validator())->deleteLater();
+            leftLineEdit->setValidator(nullptr);
+        }
+        if (rightLineEditFunctional->validator()) {
+            const_cast<QValidator*>(rightLineEditFunctional->validator())->deleteLater();
+            rightLineEditFunctional->setValidator(nullptr);
         }
     }
 }
 
-void MainWindow::onMap()
-{
-    g_mapChoice = mapFuncCombo->currentIndex();
-    try {
-        DISPATCH_WRITE(
-            currentSeqInt = currentSeqInt->Map(mapInt),
-            currentSeqDouble = currentSeqDouble->Map(mapDouble),
-            currentSeqChar = currentSeqChar->Map(mapChar)
-        );
-        log("Map: " + mapFuncCombo->currentText().split("(")[0].trimmed());
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onWhere()
-{
-    g_whereChoice = whereFuncCombo->currentIndex();
-    try {
-        DISPATCH_WRITE(
-            currentSeqInt = currentSeqInt->Where(whereInt),
-            currentSeqDouble = currentSeqDouble->Where(whereDouble),
-            currentSeqChar = currentSeqChar->Where(whereChar)
-        );
-        log("Where: " + whereFuncCombo->currentText().split("(")[0].trimmed());
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onReduce()
-{
-    g_reduceChoice = reduceFuncCombo->currentIndex();
-    try {
-        DISPATCH_READ(
-            log("Reduce = " + QString::number(currentSeqInt->Reduce(reduceInt))),
-            log("Reduce = " + QString::number(currentSeqDouble->Reduce(reduceDouble))),
-            log(QString("Reduce = '%1'").arg(valueToString(currentSeqChar->Reduce(reduceChar))))
-        );
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onFlatMap()
-{
-    g_flatMapChoice = flatMapFuncCombo->currentIndex();
-    try {
-        DISPATCH_WRITE(
-            currentSeqInt  = currentSeqInt->FlatMap(fmInt),
-            currentSeqDouble = currentSeqDouble->FlatMap(fmDouble),
-            currentSeqChar = currentSeqChar->FlatMap(fmChar)
-        );
-        log("FlatMap: " + flatMapFuncCombo->currentText().split("(")[0].trimmed());
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onSkip()
-{
-    size_t n; if (!parseIndex(skipInput->text(), n)) return;
-    try {
-        DISPATCH_WRITE(
-            currentSeqInt = currentSeqInt->Skip(n),
-            currentSeqDouble = currentSeqDouble->Skip(n),
-            currentSeqChar = currentSeqChar->Skip(n)
-        );
-        log("Skip(" + QString::number(n) + ")");
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onSplice()
-{
-    size_t index, cnt;
-    if (!parseIndex(spliceIndexInput->text(), index)) return;
-    if (!parseIndex(spliceCountInput->text(), cnt)) return;
-    try {
-        DISPATCH_WRITE(
-            currentSeqInt = currentSeqInt->Splice(index, cnt),
-            currentSeqDouble = currentSeqDouble->Splice(index, cnt),
-            currentSeqChar = currentSeqChar->Splice(index, cnt)
-        );
-        log(QString("Splice(%1, %2)").arg(index).arg(cnt));
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-//Утилиты─────────
-
-void MainWindow::onZip()
-{
-    try {
-        switch (currentType) {
-            case DataType::Int: {
-                if (!currentSeqInt) {
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                QList<int> elems; 
-                if (!parseIntList(zipInput->text(), elems)) return;
-
-                int* arr = new int[elems.size()];
-
-                for (int i = 0; i < elems.size(); ++i) arr[i] = elems[i];
-
-                MutableArraySequence<int> other(arr, elems.size()); 
-                delete[] arr;
-
-                auto* it = SequenceUtils::Zip(currentSeqInt, &other);
-                QString r = "Zip = ["; bool first = true;
-
-                while (it->MoveNext()) {
-                    if (!first) r += ", ";
-                    auto p = it->GetCurrent();
-                    r += QString("(%1,%2)").arg(p.first).arg(p.second);
-                    first = false;
-                }
-                r += "]"; delete it; log(r); 
-                break;
-            }
-            case DataType::Double: {
-                if (!currentSeqDouble) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                QList<double> elems; 
-                if (!parseDoubleList(zipInput->text(), elems)) 
-                return;
-
-                double* arr = new double[elems.size()];
-                for (int i = 0; i < elems.size(); ++i) arr[i] = elems[i];
-
-                MutableArraySequence<double> other(arr, elems.size()); 
-                delete[] arr;
-
-                auto* it = SequenceUtils::Zip(currentSeqDouble, &other);
-                QString r = "Zip = ["; bool first = true;
-
-                while (it->MoveNext()) {
-                    if (!first) r += ", ";
-                    auto p = it->GetCurrent();
-                    r += QString("(%1,%2)").arg(p.first).arg(p.second);
-                    first = false;
-                }
-                r += "]"; delete it; log(r); 
-                break;
-            }
-            case DataType::Char: {
-                if (!currentSeqChar) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-                QList<char16_t> elems; 
-                if (!parseCharList(zipInput->text(), elems)) 
-                return;
-
-                char16_t* arr = new char16_t[elems.size()];
-
-                for (int i = 0; i < elems.size(); ++i) arr[i] = elems[i];
-
-                MutableArraySequence<char16_t> other(arr, elems.size()); 
-                delete[] arr;
-
-                auto* it = SequenceUtils::Zip(currentSeqChar, &other);
-                QString r = "Zip = ["; bool first = true;
-
-                while (it->MoveNext()) {
-                    if (!first) r += ", ";
-                    auto p = it->GetCurrent();
-                    r += QString("('%1','%2')").arg(valueToString(p.first)).arg(valueToString(p.second));
-                    first = false;
-                }
-                r += "]"; delete it; log(r);
-                break;
-            }
-        }
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onUnzip()
-{
-    QString text = unzipLabel->text().trimmed();
-    if (text.isEmpty()) { logError("Поле ввода пустое"); return; }
-
-    text.remove('(').remove(')').replace(';', ' ');
+void MainWindow::HandleMutabilityChanged(int index) {
+    bool isImmutable = (index == 1);
     
-    QStringList tokens = text.split(' ', Qt::SkipEmptyParts);
-
-    try {
-        switch (currentType) {
-            case DataType::Int: {
-                MutableArraySequence<Pair<int,int>> pairs;
-                for (const QString& token : tokens) {
-                    int comma = token.indexOf(',');
-                    if (comma < 0) { 
-                        logError("Ожидается формат «a,b», получено: \"" + token + "\""); 
-                        return; 
-                    }
-                    int a, b;
-
-                    if (!parseIntVal(token.left(comma),  a)) return;
-                    if (!parseIntVal(token.mid(comma+1), b)) return;
-
-                    pairs.Append(Pair<int,int>(a, b));
-                }
-                MutableArraySequence<int> s1, s2;
-                auto res = SequenceUtils::Unzip<int>(&pairs, &s1, &s2);
-
-                QString r1 = "A = [", r2 = "B = [";
-                for (size_t i = 0; i < res.first->GetLength();  ++i) { 
-                    if (i) r1 += ", "; 
-                    r1 += QString::number(res.first->Get(i));  
-                }
-                for (size_t i = 0; i < res.second->GetLength(); ++i) { 
-                    if (i) r2+=", "; 
-                    r2+=QString::number(res.second->Get(i)); 
-                }
-                log("Unzip:  " + r1 + "]   " + r2 + "]"); 
-                break;
-            }
-            case DataType::Double: {
-                MutableArraySequence<Pair<double,double>> pairs;
-                for (const QString& token : tokens) {
-                    int comma = token.indexOf(',');
-                    if (comma < 0) { 
-                        logError("Ожидается формат «a,b», получено: \"" + token + "\"");
-                        return; 
-                    }
-                    double a, b;
-                    if (!parseDoubleVal(token.left(comma),  a)) return;
-                    if (!parseDoubleVal(token.mid(comma+1), b)) return;
-
-                    pairs.Append(Pair<double,double>(a, b));
-                }
-                MutableArraySequence<double> s1, s2;
-                auto res = SequenceUtils::Unzip<double>(&pairs, &s1, &s2);
-                QString r1 = "A = [", r2 = "B = [";
-                for (size_t i = 0; i < res.first->GetLength();  ++i) { 
-                    if (i) r1+=", "; 
-                    r1 += QString::number(res.first->Get(i));  
-                }
-
-                for (size_t i = 0; i < res.second->GetLength(); ++i) { 
-                    if (i) r2+=", "; r2+=QString::number(res.second->Get(i)); 
-                }
-
-                log("Unzip:  " + r1 + "]   " + r2 + "]"); break;
-            }
-            case DataType::Char: {
-                MutableArraySequence<Pair<char16_t,char16_t>> pairs;
-                for (const QString& token : tokens) {
-                    int comma = token.indexOf(',');
-                    if (comma < 0) { 
-                        logError("Ожидается формат «a,b», получено: \"" + token + "\""); 
-                        return; 
-                    }
-
-                    QString ls = token.left(comma).trimmed(), rs = token.mid(comma+1).trimmed();
-                    if (ls.length()!=1||rs.length()!=1) { 
-                        logError("Символ должен быть одним знаком: \"" + token + "\""); 
-                        return; 
-                    }
-                    pairs.Append(Pair<char16_t,char16_t>(charFromQChar(ls[0]), charFromQChar(rs[0])));
-                }
-                MutableArraySequence<char16_t> s1, s2;
-                auto res = SequenceUtils::Unzip<char16_t>(&pairs, &s1, &s2);
-                QString r1 = "A = [", r2 = "B = [";
-
-                for (size_t i = 0; i < res.first->GetLength();  ++i) { 
-                    if (i) r1+=", "; r1 += QString("'%1'").arg(valueToString(res.first->Get(i)));  
-                }
-                for (size_t i = 0; i < res.second->GetLength(); ++i) { 
-                    if (i) r2+=", "; r2 += QString("'%1'").arg(valueToString(res.second->Get(i))); 
-                }
-                log("Unzip:  " + r1 + "]   " + r2 + "]"); 
-                break;
-            }
-        }
-    } catch (const std::exception& e) { logError(e.what()); }
+    thirdPanelBox->setVisible(isImmutable);
 }
 
-void MainWindow::onSplit()
-{
-    try {
-        switch (currentType) {
-            case DataType::Int: {
-                if (!currentSeqInt) { logError("Нет последовательности"); return; }
-                MutableArraySequence<int> proto;
-                auto* it = SequenceUtils::Split(currentSeqInt, intSplitIsZero, &proto);
-                int index = 0;
-                while (it->MoveNext()) {
-                    auto* part = it->GetCurrent();
-                    QString s = QString("Часть %1: [").arg(index++);
-                    for (size_t i = 0; i < part->GetLength(); ++i) {
-                        if (i > 0) s += ", ";
-                        s += QString::number(part->Get(i));
-                    }
-                    log(s + "]"); delete part;
-                }
-                delete it; break;
-            }
-            case DataType::Double: {
-                if (!currentSeqDouble) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-
-                MutableArraySequence<double> proto;
-                auto* it = SequenceUtils::Split(currentSeqDouble, dblSplitIsZero, &proto);
-
-                int index = 0;
-                while (it->MoveNext()) {
-                    auto* part = it->GetCurrent();
-                    QString s = QString("Часть %1: [").arg(index++);
-
-                    for (size_t i = 0; i < part->GetLength(); ++i) {
-                        if (i > 0) s += ", ";
-                        s += QString::number(part->Get(i));
-                    }
-
-                    log(s + "]"); 
-                    delete part;
-                }
-                delete it; break;
-            }
-            case DataType::Char: {
-                if (!currentSeqChar) { 
-                    logError("Нет последовательности"); 
-                    return; 
-                }
-                MutableArraySequence<char16_t> proto;
-                auto* it = SequenceUtils::Split(currentSeqChar, charSplitIsSpace, &proto);
-                int index = 0;
-                while (it->MoveNext()) {
-                    auto* part = it->GetCurrent();
-                    QString s = QString("Часть %1: [").arg(index++);
-                    for (size_t i = 0; i < part->GetLength(); ++i) {
-                        if (i > 0) s += ", ";
-                        s += QString("'%1'").arg(valueToString(part->Get(i)));
-                    }
-                    log(s + "]"); 
-                    delete part;
-                }
-                delete it; 
-                break;
-            }
+void MainWindow::HandleTabChanged(int index) {
+    auto* model = qobject_cast<QStandardItemModel*>(sequenceTypeSelector->model());
+    
+    if (index == 2) { 
+        if (sequenceTypeSelector->currentIndex() == 2) {
+            sequenceTypeSelector->setCurrentIndex(0);
         }
-    } catch (const std::exception& e) { 
-        logError(e.what()); 
+        
+        if (model) {
+            model->item(2)->setEnabled(false);
+        }
+
+        secondPanelBox->setVisible(false);
+        thirdPanelBox->setVisible(false);
+        createAdditionalSequencePushButton->setEnabled(false);
+        firstPanelList->setSelectionMode(QAbstractItemView::NoSelection);
+        
+        ClearSequences();
+        
+    } else { 
+        if (model) {
+            model->item(2)->setEnabled(true);
+        }
+        
+        if (sequenceOptionSelector->currentIndex() != 2) {
+            sequenceTypeSelector->setEnabled(true);
+        }
+        
+        secondPanelBox->setVisible(true);
+        createAdditionalSequencePushButton->setEnabled(true);
+        firstPanelList->setSelectionMode(QAbstractItemView::ExtendedSelection);
     }
 }
 
-void MainWindow::onRange()
-{
-    if (currentType == DataType::Char) { 
-        logError("Range не поддерживается для символов"); 
-        return; 
+void MainWindow::RefreshLists() {
+    int currentType = sequenceTypeSelector->currentIndex();
+
+    if (currentType == 0) {
+        TemplatePopulateList(firstPanelList, intMainSeq);
+        TemplatePopulateList(secondPanelList, intAdditionalSeq);
+        TemplatePopulateList(thirdPanelList, intOriginalSeq);
+    } else if (currentType == 1) {
+        TemplatePopulateList(firstPanelList, doubleMainSeq);
+        TemplatePopulateList(secondPanelList, doubleAdditionalSeq);
+        TemplatePopulateList(thirdPanelList, doubleOriginalSeq);
+    } else {
+        TemplatePopulateList(firstPanelList, charMainSeq);
+        TemplatePopulateList(secondPanelList, charAdditionalSeq);
+        TemplatePopulateList(thirdPanelList, charOriginalSeq);
     }
+}
+
+void MainWindow::onMainCreate() {
+    int option = sequenceOptionSelector->currentIndex();
+    int mutability = mutableOptionSelector->currentIndex();
+    int type = sequenceTypeSelector->currentIndex();
+    QString inputData = leftLineEdit->text();
+    
     try {
-        if (currentType == DataType::Int) {
-            int s, e, step;
-            if (!parseIntVal(rangeStartInput->text(), s)) return;
-            if (!parseIntVal(rangeEndInput->text(), e)) return;
-            if (!parseIntVal(rangeStepInput->text(), step)) return;
-            delete currentSeqInt;
-            currentSeqInt = SequenceUtils::Range<int>(s, e, step, new MutableArraySequence<int>());
-            log(QString("Range(%1, %2, %3)").arg(s).arg(e).arg(step));
+        if (type == 0) {
+            TemplateCreate(intMainSeq, intOriginalSeq, option, mutability, inputData);
+        } else if (type == 1) {
+            TemplateCreate(doubleMainSeq, doubleOriginalSeq, option, mutability, inputData);
         } else {
-            double s, e, step;
-            if (!parseDoubleVal(rangeStartInput->text(), s)) return;
-            if (!parseDoubleVal(rangeEndInput->text(), e)) return;
-            if (!parseDoubleVal(rangeStepInput->text(), step)) return;
-            delete currentSeqDouble;
-            currentSeqDouble = SequenceUtils::Range<double>(s, e, step, new MutableArraySequence<double>());
-            log(QString("Range(%1, %2, %3)").arg(s).arg(e).arg(step));
+            TemplateCreate(charMainSeq, charOriginalSeq, option, mutability, inputData);
         }
-        refreshDisplay();
-    } catch (const std::exception& e) { logError(e.what()); }
+        
+        globalLog->append("Основная последовательность успешно инициализирована.");
+        RefreshLists();
+    } CATCH_ALL_EXCEPTIONS
 }
 
-void MainWindow::onBasicStats()
-{
+void MainWindow::onAdditionalCreate() {
+    int option = sequenceOptionSelector->currentIndex();
+    int mutability = mutableOptionSelector->currentIndex();
+    int type = sequenceTypeSelector->currentIndex();
+    QString inputData = leftLineEdit->text();
+    
     try {
-        if (currentType == DataType::Int) {
-            if (!currentSeqInt) { logError("Нет последовательности"); return; }
-            IntRing ring;
-            auto st = DataAnalyzer<int>::GetBasicStats(currentSeqInt, ring);
-            log(QString("Min=%1  Max=%2  Avg=%3").arg(st.min).arg(st.max).arg(st.avg));
-        } else if (currentType == DataType::Double) {
-            if (!currentSeqDouble) { logError("Нет последовательности"); return; }
-            DoubleRing ring;
-            auto st = DataAnalyzer<double>::GetBasicStats(currentSeqDouble, ring);
-            log(QString("Min=%1  Max=%2  Avg=%3").arg(st.min).arg(st.max).arg(st.avg));
-        } else { logError("Анализ доступен только для int и double"); }
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onMedian()
-{
-    try {
-        if (currentType == DataType::Int) {
-            if (!currentSeqInt) { logError("Нет последовательности"); return; }
-            log("Медиана = " + QString::number(DataAnalyzer<int>::GetMedian(currentSeqInt)));
-        } else if (currentType == DataType::Double) {
-            if (!currentSeqDouble) { logError("Нет последовательности"); return; }
-            log("Медиана = " + QString::number(DataAnalyzer<double>::GetMedian(currentSeqDouble)));
-        } else { logError("Анализ доступен только для int и double"); }
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onInversions()
-{
-    try {
-        if (currentType == DataType::Int) {
-            if (!currentSeqInt) { logError("Нет последовательности"); return; }
-            log("Инверсий = " + QString::number(DataAnalyzer<int>::GetInversionsCount(currentSeqInt)));
-        } else if (currentType == DataType::Double) {
-            if (!currentSeqDouble) { logError("Нет последовательности"); return; }
-            log("Инверсий = " + QString::number(DataAnalyzer<double>::GetInversionsCount(currentSeqDouble)));
-        } else { logError("Анализ доступен только для int и double"); }
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onPrecedingSmaller()
-{
-    try {
-        auto printResult = [&](auto* seq, auto* outPtr) {
-            if (!seq) { logError("Нет последовательности"); return; }
-            auto* result = DataAnalyzer<std::remove_pointer_t<decltype(seq->Get(0), seq)>>::
-                GetPrecedingSmaller(seq, outPtr, seq);
-            // Используем шаблонный вывод через Get
-            for (size_t i = 0; i < result->GetLength(); ++i) {
-                auto* sub = result->Get(i);
-                QString s = QString("[%1]< %2: [").arg(i).arg(valueToString(seq->Get(i)));
-                for (size_t j = 0; j < sub->GetLength(); ++j) {
-                    if (j > 0) s += ", ";
-                    s += valueToString(sub->Get(j));
-                }
-                log(s + "]");
-            }
-        };
-        if (currentType == DataType::Int) {
-            if (!currentSeqInt) { logError("Нет последовательности"); return; }
-            MutableArraySequence<Sequence<int>*> out;
-            auto* result = DataAnalyzer<int>::GetPrecedingSmaller(currentSeqInt, &out, currentSeqInt);
-            for (size_t i = 0; i < result->GetLength(); ++i) {
-                auto* sub = result->Get(i);
-                QString s = QString("[%1] < %2: [").arg(i).arg(currentSeqInt->Get(i));
-                for (size_t j = 0; j < sub->GetLength(); ++j) {
-                    if (j > 0) s += ", ";
-                    s += QString::number(sub->Get(j));
-                }
-                log(s + "]");
-            }
-        } else if (currentType == DataType::Double) {
-            if (!currentSeqDouble) { logError("Нет последовательности"); return; }
-            MutableArraySequence<Sequence<double>*> out;
-            auto* result = DataAnalyzer<double>::GetPrecedingSmaller(currentSeqDouble, &out, currentSeqDouble);
-            for (size_t i = 0; i < result->GetLength(); ++i) {
-                auto* sub = result->Get(i);
-                QString s = QString("[%1] < %2: [").arg(i).arg(currentSeqDouble->Get(i));
-                for (size_t j = 0; j < sub->GetLength(); ++j) {
-                    if (j > 0) s += ", ";
-                    s += QString::number(sub->Get(j));
-                }
-                log(s + "]");
-            }
-        } else { logError("Анализ доступен только для int и double"); }
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onPrefixesPostfixes()
-{
-    try {
-        auto print = [&](auto* seq) {
-            if (!seq) { logError("Нет последовательности"); return; }
-            MutableArraySequence<Sequence<std::remove_pointer_t<decltype(seq)>>*> out;
-            // Нельзя шаблонно — делаем отдельно
-        };
-        if (currentType == DataType::Int) {
-            if (!currentSeqInt) { logError("Нет последовательности"); return; }
-            MutableArraySequence<Sequence<int>*> out;
-            auto* result = DataAnalyzer<int>::GetPrefixesAndPostfixes(currentSeqInt, &out);
-            for (size_t i = 0; i < result->GetLength(); ++i) {
-                auto* sub = result->Get(i);
-                QString s = "  [";
-                for (size_t j = 0; j < sub->GetLength(); ++j) {
-                    if (j > 0) s += ", ";
-                    s += QString::number(sub->Get(j));
-                }
-                log(s + "]");
-            }
-        } else if (currentType == DataType::Double) {
-            if (!currentSeqDouble) { logError("Нет последовательности"); return; }
-            MutableArraySequence<Sequence<double>*> out;
-            auto* result = DataAnalyzer<double>::GetPrefixesAndPostfixes(currentSeqDouble, &out);
-            for (size_t i = 0; i < result->GetLength(); ++i) {
-                auto* sub = result->Get(i);
-                QString s = "  [";
-                for (size_t j = 0; j < sub->GetLength(); ++j) {
-                    if (j > 0) s += ", ";
-                    s += QString::number(sub->Get(j));
-                }
-                log(s + "]");
-            }
-        } else { logError("Анализ доступен только для int и double"); }
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onMovingAverage()
-{
-    try {
-        if (currentType == DataType::Int) {
-            if (!currentSeqInt) { logError("Нет последовательности"); return; }
-            IntRing ring; MutableArraySequence<double> out;
-            auto* r = DataAnalyzer<int>::GetMovingAverage(currentSeqInt, ring, &out);
-            QString s = "Скользящее среднее: [";
-            for (size_t i = 0; i < r->GetLength(); ++i) {
-                if (i > 0) s += ", ";
-                s += QString::number(r->Get(i), 'f', 2);
-            }
-            log(s + "]");
-        } else if (currentType == DataType::Double) {
-            if (!currentSeqDouble) { logError("Нет последовательности"); return; }
-            DoubleRing ring; MutableArraySequence<double> out;
-            auto* r = DataAnalyzer<double>::GetMovingAverage(currentSeqDouble, ring, &out);
-            QString s = "Скользящее среднее: [";
-            for (size_t i = 0; i < r->GetLength(); ++i) {
-                if (i > 0) s += ", ";
-                s += QString::number(r->Get(i), 'f', 2);
-            }
-            log(s + "]");
-        } else { logError("Анализ доступен только для int и double"); }
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onSigmaDiff()
-{
-    try {
-        if (currentType == DataType::Int) {
-            if (!currentSeqInt) { logError("Нет последовательности"); return; }
-            IntRing ring; MutableArraySequence<double> out;
-            auto* r = DataAnalyzer<int>::GetSigmaDifference(currentSeqInt, ring, &out);
-            QString s = "√(σ²−aᵢ²): [";
-            for (size_t i = 0; i < r->GetLength(); ++i) {
-                if (i > 0) s += ", ";
-                s += QString::number(r->Get(i), 'f', 2);
-            }
-            log(s + "]");
-        } else if (currentType == DataType::Double) {
-            if (!currentSeqDouble) { logError("Нет последовательности"); return; }
-            DoubleRing ring; MutableArraySequence<double> out;
-            auto* r = DataAnalyzer<double>::GetSigmaDifference(currentSeqDouble, ring, &out);
-            QString s = "√(σ²−aᵢ²): [";
-            for (size_t i = 0; i < r->GetLength(); ++i) {
-                if (i > 0) s += ", ";
-                s += QString::number(r->Get(i), 'f', 2);
-            }
-            log(s + "]");
-        } else { logError("Анализ доступен только для int и double"); }
-    } catch (const std::exception& e) { logError(e.what()); }
-}
-
-void MainWindow::onReflectedSum()
-{
-    try {
-        if (currentType == DataType::Int) {
-            if (!currentSeqInt) { logError("Нет последовательности"); return; }
-            IntRing ring; MutableArraySequence<int> out;
-            auto* r = DataAnalyzer<int>::GetReflectedSum(currentSeqInt, ring, &out);
-            QString s = "aᵢ + a[n-1-i]: [";
-            for (size_t i = 0; i < r->GetLength(); ++i) {
-                if (i > 0) s += ", ";
-                s += QString::number(r->Get(i));
-            }
-            log(s + "]");
-        } else if (currentType == DataType::Double) {
-            if (!currentSeqDouble) { logError("Нет последовательности"); return; }
-            DoubleRing ring; MutableArraySequence<double> out;
-            auto* r = DataAnalyzer<double>::GetReflectedSum(currentSeqDouble, ring, &out);
-            QString s = "aᵢ + a[n-1-i]: [";
-            for (size_t i = 0; i < r->GetLength(); ++i) {
-                if (i > 0) s += ", ";
-                s += QString::number(r->Get(i));
-            }
-            log(s + "]");
-        } else { logError("Анализ доступен только для int и double"); }
-    } catch (const std::exception& e) { logError(e.what()); }
+        if (type == 0) {
+            TemplateCreate(intAdditionalSeq, option, mutability, inputData);
+        } else if (type == 1) {
+            TemplateCreate(doubleAdditionalSeq, option, mutability, inputData);
+        } else {
+            TemplateCreate(charAdditionalSeq, option, mutability, inputData);
+        }
+        
+        globalLog->append("Дополнительная последовательность успешно инициализирована.");
+        RefreshLists();
+    } CATCH_ALL_EXCEPTIONS
 }

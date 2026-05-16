@@ -1,9 +1,12 @@
 #include <gtest/gtest.h>
+#include <functional>
 
 #include "BitSequence.hpp"
 #include "Exceptions.hpp"
+#include "TestUtils.hpp"
+#include "SequenceUtils.hpp"
 
-inline int InvertBit(int x) {
+int InvertBit(int x) {
     if (x == 0) {
         return 1;
     } else {
@@ -11,11 +14,11 @@ inline int InvertBit(int x) {
     }
 }
 
-inline bool IsBitSet(int x) {
+bool IsBitSet(int x) {
     return x != 0;
 }
 
-inline int SumBits(int acc, int current) {
+int SumBits(int acc, int current) {
     return acc + current;
 }
 
@@ -23,7 +26,7 @@ TEST(BitSequenceTests, DefaultConstructorCreatesEmptySequence)
 {
     BitSequence<int> sequence;
 
-    EXPECT_EQ(sequence.GetLength(), 0);
+    EXPECT_TRUE(TestUtils::CheckSequence({}, &sequence, "Default empty BitSequence"));
     EXPECT_THROW(sequence.GetFirst(), OutOfRange);
     EXPECT_THROW(sequence.GetLast(), OutOfRange);
 }
@@ -33,12 +36,7 @@ TEST(BitSequenceTests, ItemsConstructorCopiesElementsAndCastsToBool)
     int items[] = {1, 0, 42, 0, -5}; 
     BitSequence<int> sequence(items, 5);
 
-    EXPECT_EQ(sequence.GetLength(), 5);
-    EXPECT_EQ(sequence.Get(0), 1);
-    EXPECT_EQ(sequence.Get(1), 0);
-    EXPECT_EQ(sequence.Get(2), 1);
-    EXPECT_EQ(sequence.Get(3), 0); 
-    EXPECT_EQ(sequence.Get(4), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 0, 1, 0, 1}, &sequence, "Items constructor with non-boolean ints"));
 }
 
 TEST(BitSequenceTests, CopyConstructorCreatesIndependentSequence)
@@ -49,10 +47,8 @@ TEST(BitSequenceTests, CopyConstructorCreatesIndependentSequence)
     BitSequence<int> copy(original);
     copy.InsertAt(0, 1);
 
-    EXPECT_EQ(original.GetLength(), 3);
-    EXPECT_EQ(original.Get(1), 0);
-    EXPECT_EQ(copy.GetLength(), 4);
-    EXPECT_EQ(copy.Get(1), 0);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 0, 1}, &original, "Original sequence remains unchanged"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 0, 0, 1}, &copy, "Copied sequence after InsertAt(0, 1)"));
 }
 
 TEST(BitSequenceTests, AssignmentCreatesIndependentSequence)
@@ -64,9 +60,8 @@ TEST(BitSequenceTests, AssignmentCreatesIndependentSequence)
     target = source;
     target.Append(1);
 
-    EXPECT_EQ(source.GetLength(), 3);
-    EXPECT_EQ(target.GetLength(), 4);
-    EXPECT_EQ(target.GetLast(), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 1, 0}, &source, "Source sequence remains unchanged"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 1, 0, 1}, &target, "Target sequence after Append(1)"));
 }
 
 TEST(BitSequenceTests, AppendWorksAcrossByteBoundaries)
@@ -77,11 +72,11 @@ TEST(BitSequenceTests, AppendWorksAcrossByteBoundaries)
         sequence.Append(i % 2);
     }
 
-    EXPECT_EQ(sequence.GetLength(), 20);
-    EXPECT_EQ(sequence.Get(0), 0);
-    EXPECT_EQ(sequence.Get(1), 1);
-    EXPECT_EQ(sequence.Get(8), 0);
-    EXPECT_EQ(sequence.Get(19), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence(
+        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}, 
+        &sequence, 
+        "Appending 20 alternating bits across byte boundaries"
+    ));
 }
 
 TEST(BitSequenceTests, PrependAddsElementsToBeginningAndShiftsProperly)
@@ -90,10 +85,7 @@ TEST(BitSequenceTests, PrependAddsElementsToBeginningAndShiftsProperly)
 
     sequence.Prepend(1)->Prepend(0)->Prepend(1);
 
-    EXPECT_EQ(sequence.GetLength(), 3);
-    EXPECT_EQ(sequence.GetFirst(), 1);
-    EXPECT_EQ(sequence.Get(1), 0);
-    EXPECT_EQ(sequence.GetLast(), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 0, 1}, &sequence, "Chained Prepend: 1, then 0, then 1"));
 }
 
 TEST(BitSequenceTests, InsertAtPlacesElementCorrectlyWithoutDataLoss)
@@ -103,11 +95,7 @@ TEST(BitSequenceTests, InsertAtPlacesElementCorrectlyWithoutDataLoss)
 
     sequence.InsertAt(0, 1);
 
-    EXPECT_EQ(sequence.GetLength(), 4);
-    EXPECT_EQ(sequence.Get(0), 1);
-    EXPECT_EQ(sequence.Get(1), 0);
-    EXPECT_EQ(sequence.Get(2), 1);
-    EXPECT_EQ(sequence.Get(3), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 0, 1, 1}, &sequence, "InsertAt(0, 1) into {1, 1, 1}"));
 }
 
 TEST(BitSequenceTests, ConcatAppendsAnotherSequence)
@@ -119,11 +107,7 @@ TEST(BitSequenceTests, ConcatAppendsAnotherSequence)
 
     left.Concat(&right);
 
-    EXPECT_EQ(left.GetLength(), 4);
-    EXPECT_EQ(left.Get(0), 1);
-    EXPECT_EQ(left.Get(1), 0);
-    EXPECT_EQ(left.Get(2), 0);
-    EXPECT_EQ(left.Get(3), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 0, 0, 1}, &left, "Concat {0, 1} to {1, 0}"));
 }
 
 TEST(BitSequenceTests, GetSubsequenceReturnsCorrectRange)
@@ -133,10 +117,7 @@ TEST(BitSequenceTests, GetSubsequenceReturnsCorrectRange)
 
     Sequence<int>* subSeq = sequence.GetSubsequence(1, 3);
 
-    EXPECT_EQ(subSeq->GetLength(), 3);
-    EXPECT_EQ(subSeq->Get(0), 0);
-    EXPECT_EQ(subSeq->Get(1), 1);
-    EXPECT_EQ(subSeq->Get(2), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({0, 1, 1}, subSeq, "GetSubsequence from index 1, length 3"));
 
     delete subSeq;
 }
@@ -146,12 +127,9 @@ TEST(BitSequenceTests, MapTransformsElements)
     int items[] = {1, 0, 1};
     BitSequence<int> sequence(items, 3);
 
-    Sequence<int>* mapped = sequence.Map(InvertBit);
+    Sequence<int>* mapped = SequenceUtils::Map<int>(&sequence, std::function<int(int)>(InvertBit));
 
-    EXPECT_EQ(mapped->GetLength(), 3);
-    EXPECT_EQ(mapped->Get(0), 0);
-    EXPECT_EQ(mapped->Get(1), 1);
-    EXPECT_EQ(mapped->Get(2), 0);
+    EXPECT_TRUE(TestUtils::CheckSequence({0, 1, 0}, mapped, "Map using InvertBit"));
 
     delete mapped;
 }
@@ -161,12 +139,9 @@ TEST(BitSequenceTests, WhereFiltersElements)
     int items[] = {1, 0, 1, 0, 1};
     BitSequence<int> sequence(items, 5);
 
-    Sequence<int>* filtered = sequence.Where(IsBitSet);
+    Sequence<int>* filtered = SequenceUtils::Where<int>(&sequence, std::function<bool(int)>(IsBitSet));
 
-    EXPECT_EQ(filtered->GetLength(), 3);
-    EXPECT_EQ(filtered->Get(0), 1);
-    EXPECT_EQ(filtered->Get(1), 1);
-    EXPECT_EQ(filtered->Get(2), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 1, 1}, filtered, "Where filtering only set bits"));
 
     delete filtered;
 }
@@ -176,7 +151,7 @@ TEST(BitSequenceTests, ReduceAccumulatesValues)
     int items[] = {1, 0, 1, 1};
     BitSequence<int> sequence(items, 4);
 
-    int sum = sequence.Reduce(SumBits);
+    int sum = SequenceUtils::Reduce<int, int>(&sequence, std::function<int(int, int)>(SumBits));
 
     EXPECT_EQ(sum, 3);
 }
@@ -188,12 +163,7 @@ TEST(BitSequenceTests, NOTInvertsAllBits)
 
     BitSequence<int>* result = sequence.NOT();
 
-    EXPECT_EQ(result->GetLength(), 5);
-    EXPECT_EQ(result->Get(0), 0);
-    EXPECT_EQ(result->Get(1), 1);
-    EXPECT_EQ(result->Get(2), 0);
-    EXPECT_EQ(result->Get(3), 1);
-    EXPECT_EQ(result->Get(4), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({0, 1, 0, 1, 1}, result, "NOT operation on {1, 0, 1, 0, 0}"));
 
     delete result;
 }
@@ -207,12 +177,7 @@ TEST(BitSequenceTests, ANDPerformsLogicalAndWithDifferentLengths)
 
     BitSequence<int>* result = seq1.AND(&seq2);
 
-    EXPECT_EQ(result->GetLength(), 5);
-    EXPECT_EQ(result->Get(0), 1);
-    EXPECT_EQ(result->Get(1), 0);
-    EXPECT_EQ(result->Get(2), 0);
-    EXPECT_EQ(result->Get(3), 0);
-    EXPECT_EQ(result->Get(4), 0);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 0, 0, 0, 0}, result, "AND with different lengths (3 and 5)"));
 
     delete result;
 }
@@ -226,11 +191,7 @@ TEST(BitSequenceTests, ORPerformsLogicalOrWithDifferentLengths)
 
     BitSequence<int>* result = seq1.OR(&seq2);
 
-    EXPECT_EQ(result->GetLength(), 4);
-    EXPECT_EQ(result->Get(0), 1);
-    EXPECT_EQ(result->Get(1), 1);
-    EXPECT_EQ(result->Get(2), 0);
-    EXPECT_EQ(result->Get(3), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 1, 0, 1}, result, "OR with different lengths (3 and 4)"));
 
     delete result;
 }
@@ -244,11 +205,7 @@ TEST(BitSequenceTests, XORPerformsLogicalXorWithDifferentLengths)
 
     BitSequence<int>* result = seq1.XOR(&seq2);
 
-    EXPECT_EQ(result->GetLength(), 4);
-    EXPECT_EQ(result->Get(0), 0);
-    EXPECT_EQ(result->Get(1), 1);
-    EXPECT_EQ(result->Get(2), 1);
-    EXPECT_EQ(result->Get(3), 1);
+    EXPECT_TRUE(TestUtils::CheckSequence({0, 1, 1, 1}, result, "XOR with different lengths (3 and 4)"));
 
     delete result;
 }

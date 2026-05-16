@@ -19,9 +19,10 @@ class ArraySequence : public Sequence<T>
     protected:
         ArraySequence();
         void SetItems(T* items, size_t count);
+        void SetItems(std::initializer_list<T> items);
         void CopyItems(const ArraySequence<T>& sequence);
         virtual ArraySequence<T>* Instance() = 0;
-        virtual ArraySequence<T>* CreateEmpty() = 0;
+        virtual ArraySequence<T>* CreateEmptyMut() = 0;
 
     public:
         ~ArraySequence() override;
@@ -44,18 +45,9 @@ class ArraySequence : public Sequence<T>
         Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
-        Sequence<T>* Map(T (*Function)(T)) override;
-        Sequence<T>* Where(bool (*Function)(T)) override;
-        T Reduce(T (*Function)(T, T)) override;
-
-        Option<T> GetFirst(bool (*Function)(T)) override;
-        Option<T> GetLast(bool (*Function)(T)) override;
+        Sequence<T>* CreateEmpty() override;
 
         IEnumerator<T>* GetEnumerator() override;
-
-        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T)) override;
-        Sequence<T>* Skip(size_t count) override;
-        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr) override;
 };
 
 template<class T>
@@ -78,12 +70,13 @@ class MutableArraySequence : public ArraySequence<T>
 {
     protected:
         ArraySequence<T>* Instance() override;
-        ArraySequence<T>* CreateEmpty() override;
+        ArraySequence<T>* CreateEmptyMut() override;
 
     public:
         MutableArraySequence();
         MutableArraySequence(T* items, size_t count);
         MutableArraySequence(const MutableArraySequence<T>& sequence);
+        MutableArraySequence(std::initializer_list<T> items);
 
         MutableArraySequence<T>& operator=(const MutableArraySequence<T>& sequence);
 };
@@ -93,12 +86,13 @@ class ImmutableArraySequence : public ArraySequence<T>
 {
     protected:
         ArraySequence<T>* Instance() override;
-        ArraySequence<T>* CreateEmpty() override;
+        ArraySequence<T>* CreateEmptyMut() override;
 
     public:
         ImmutableArraySequence();
         ImmutableArraySequence(T* items, size_t count);
         ImmutableArraySequence(const ImmutableArraySequence<T>& sequence);
+        ImmutableArraySequence(std::initializer_list<T> items);
 
         ImmutableArraySequence<T>& operator=(const ImmutableArraySequence<T>& sequence);
 };

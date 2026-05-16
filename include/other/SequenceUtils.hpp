@@ -5,115 +5,83 @@
 
 namespace SequenceUtils {
 
-    template<class T>
-    Pair<Sequence<T>*, Sequence<T>*> Unzip(Sequence<Pair<T, T>>* pairsSeq, Sequence<T>* sequence1, Sequence<T>* sequence2);
+    template<class T, class T2>
+    Pair<Sequence<T>*, Sequence<T2>*> Unzip(Sequence<Pair<T, T2>>* pairsSeq, Sequence<T>* sequence1, Sequence<T2>* sequence2);
 
     template<class T>
     Sequence<T>* Range(T start, T end, T step, Sequence<T>* sequence);
 
-    // =========================================================================
-    // ZipEnumerator — ленивый итератор по двум последовательностям.
-    // Останавливается когда заканчивается более короткая (как Python zip).
-    // =========================================================================
-    template<class T>
-    class ZipEnumerator : public IEnumerator<Pair<T, T>>
+    template<class T, class T2>
+    class ZipEnumerator : public IEnumerator<Pair<T, T2>>
     {
     private:
         IEnumerator<T>* enumA;
-        IEnumerator<T>* enumB;
-        Pair<T, T> current;
+        IEnumerator<T2>* enumB;
+        Pair<T, T2> current;
 
     public:
-        ZipEnumerator(IEnumerator<T>* a, IEnumerator<T>* b)
-            : enumA(a), enumB(b) {}
+        ZipEnumerator(IEnumerator<T>* a, IEnumerator<T2>* b);
+        ~ZipEnumerator() override;
 
-        ~ZipEnumerator() override
-        {
-            delete enumA;
-            delete enumB;
-        }
+        Pair<T, T2> GetCurrent() override;
 
-        Pair<T, T> GetCurrent() override { return current; }
+        bool MoveNext() override;
 
-        bool MoveNext() override
-        {
-            if (!enumA->MoveNext() || !enumB->MoveNext()) return false;
-            current = Pair<T, T>(enumA->GetCurrent(), enumB->GetCurrent());
-            return true;
-        }
-
-        void Reset() override
-        {
-            enumA->Reset();
-            enumB->Reset();
-        }
+        void Reset() override;
     };
 
-    // Возвращает связанный итератор пар — никакой промежуточной коллекции
-    template<class T>
-    ZipEnumerator<T>* Zip(Sequence<T>* a, Sequence<T>* b);
+    template<class T, class T2>
+    ZipEnumerator<T, T2>* Zip(Sequence<T>* a, Sequence<T2>* b);
 
-    // =========================================================================
-    // SplitEnumerator — ленивый итератор по частям.
-    // Каждый MoveNext() собирает следующую часть до следующего разделителя.
-    // prototype — пустая последовательность нужного типа (владение у вызывающего)
-    // =========================================================================
     template<class T>
     class SplitEnumerator : public IEnumerator<Sequence<T>*>
     {
     private:
         IEnumerator<T>* source;
-        bool (*predicate)(T);
+        std::function<bool(T)> predicate;
         Sequence<T>* prototype;
         Sequence<T>* current;
         bool done;
 
     public:
-        SplitEnumerator(IEnumerator<T>* src, bool (*pred)(T), Sequence<T>* proto)
-            : source(src), predicate(pred), prototype(proto), current(nullptr), done(false) {}
+        SplitEnumerator(IEnumerator<T>* src, std::function<bool(T)> predicate, Sequence<T>* proto);
+        
+        ~SplitEnumerator() override;
 
-        ~SplitEnumerator() override
-        {
-            delete source;
-        }
-
-        Sequence<T>* GetCurrent() override { return current; }
-
-        bool MoveNext() override
-        {
-            if (done) return false;
-
-            // Пустая часть того же типа через Skip всей длины прототипа
-            Sequence<T>* part = prototype->Skip(prototype->GetLength());
-
-            bool hitSeparator = false;
-            while (source->MoveNext()) {
-                T val = source->GetCurrent();
-                if (predicate(val)) {
-                    hitSeparator = true;
-                    break;
-                }
-                part = part->Append(val);
-            }
-
-            current = part;
-            if (!hitSeparator) done = true;
-
-            return true;
-        }
-
-        void Reset() override
-        {
-            source->Reset();
-            current = nullptr;
-            done = false;
-        }
+        Sequence<T>* GetCurrent() override;
+        bool MoveNext() override;
+        void Reset() override;
     };
 
-    // Возвращает связанный итератор частей — никакой промежуточной коллекции
     template<class T>
-    SplitEnumerator<T>* Split(Sequence<T>* seq, bool (*predicate)(T), Sequence<T>* prototype);
+    SplitEnumerator<T>* Split(Sequence<T>* seq, std::function<bool(T)> predicate, Sequence<T>* prototype);
 
+    template<class T>
+    Sequence<T>* FlatMap(Sequence<T>* seq, std::function<Sequence<T>*(T)> function);
+
+    template<class T>
+    Sequence<T>* Skip(Sequence<T>* seq, size_t count);
+
+    template<class T>
+    Sequence<T>* Splice(Sequence<T>* seq, size_t index, size_t count, Sequence<T>* insertSequence = nullptr);
+
+    template<class T>
+    Sequence<T>* Map(Sequence<T>* seq, std::function<T(T)> func);
+    
+    template<class T, class T2>
+    Sequence<T2>* Map(Sequence<T>* seq, std::function<T2(T)> func, Sequence<T2>* proto);
+
+    template<class T>
+    Sequence<T>* Where(Sequence<T>* seq, std::function<bool(T)> predicate);
+
+    template<class T, class T2>
+    T2 Reduce(Sequence<T>* seq, std::function<T2(T2, T)> func);
+
+    template<class T>
+    Option<T> GetFirst(Sequence<T>* seq, std::function<bool(T)> func);
+
+    template<class T>
+    Option<T> GetLast(Sequence<T>* seq, std::function<bool(T)> func);
 }
 
 #include "SequenceUtils.tpp"

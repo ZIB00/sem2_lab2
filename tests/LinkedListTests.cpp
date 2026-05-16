@@ -1,14 +1,54 @@
 #include <gtest/gtest.h>
-
 #include <string>
-
+#include <vector>
 #include "LinkedList.hpp"
+
+namespace {
+    template<class T>
+    testing::AssertionResult CheckLinkedList(
+        const std::vector<T>& expected, 
+        LinkedList<T>& actual, 
+        const std::string& contextAction = "") 
+    {
+        bool match = true;
+        if (expected.size() != actual.GetLength()) {
+            match = false;
+        } else {
+            for (size_t i = 0; i < expected.size(); ++i) {
+                if (expected[i] != actual.Get(i)) {
+                    match = false;
+                    break;
+                }
+            }
+        }
+
+        if (match) return testing::AssertionSuccess();
+
+        testing::AssertionResult failure = testing::AssertionFailure();
+        if (!contextAction.empty()) failure << "ACTION PERFORMED: " << contextAction << "\n";
+        failure << "LIST MISMATCH DETECTED!\n";
+        
+        failure << "EXPECTED: [";
+        for (size_t i = 0; i < expected.size(); ++i) {
+            failure << expected[i] << (i < expected.size() - 1 ? ", " : "");
+        }
+        failure << "] (length: " << expected.size() << ")\n";
+
+        failure << "RECEIVED: [";
+        for (size_t i = 0; i < actual.GetLength(); ++i) {
+            failure << actual.Get(i) << (i < actual.GetLength() - 1 ? ", " : "");
+        }
+        failure << "] (length: " << actual.GetLength() << ")\n";
+
+        return failure;
+    }
+}
 
 TEST(LinkedListTests, DefaultConstructorCreatesEmptyList)
 {
     LinkedList<int> list;
 
-    EXPECT_EQ(list.GetLength(), 0);
+    EXPECT_TRUE(CheckLinkedList({}, list, "Default empty list"));
 }
 
 TEST(LinkedListTests, EmptyListRejectsGetFirst)
@@ -38,10 +78,7 @@ TEST(LinkedListTests, ItemsConstructorCopiesElements)
 
     LinkedList<int> list(items, 3);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(0), 1);
-    EXPECT_EQ(list.Get(1), 2);
-    EXPECT_EQ(list.Get(2), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, list, "Items constructor"));
 }
 
 TEST(LinkedListTests, ItemsConstructorMakesIndependentCopy)
@@ -51,14 +88,14 @@ TEST(LinkedListTests, ItemsConstructorMakesIndependentCopy)
     LinkedList<int> list(items, 3);
     items[0] = 100;
 
-    EXPECT_EQ(list.Get(0), 1);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, list, "List after external array modification"));
 }
 
 TEST(LinkedListTests, ItemsConstructorAllowsZeroCountWithNullItems)
 {
     LinkedList<int> list(nullptr, 0);
 
-    EXPECT_EQ(list.GetLength(), 0);
+    EXPECT_TRUE(CheckLinkedList({}, list, "Constructor with nullptr and zero size"));
 }
 
 TEST(LinkedListTests, ItemsConstructorAllowsZeroCountWithNonNullItems)
@@ -67,7 +104,7 @@ TEST(LinkedListTests, ItemsConstructorAllowsZeroCountWithNonNullItems)
 
     LinkedList<int> list(items, 0);
 
-    EXPECT_EQ(list.GetLength(), 0);
+    EXPECT_TRUE(CheckLinkedList({}, list, "Constructor with items and zero size"));
 }
 
 TEST(LinkedListTests, ItemsConstructorRejectsNullItemsWhenCountIsPositive)
@@ -96,9 +133,7 @@ TEST(LinkedListTests, GetReturnsElementByIndex)
     int items[] = {10, 20, 30};
     LinkedList<int> list(items, 3);
 
-    EXPECT_EQ(list.Get(0), 10);
-    EXPECT_EQ(list.Get(1), 20);
-    EXPECT_EQ(list.Get(2), 30);
+    EXPECT_TRUE(CheckLinkedList({10, 20, 30}, list, "Get elements verification"));
 }
 
 TEST(LinkedListTests, GetRejectsIndexEqualToLength)
@@ -123,9 +158,7 @@ TEST(LinkedListTests, AppendAddsElementToEmptyList)
 
     list.Append(10);
 
-    EXPECT_EQ(list.GetLength(), 1);
-    EXPECT_EQ(list.GetFirst(), 10);
-    EXPECT_EQ(list.GetLast(), 10);
+    EXPECT_TRUE(CheckLinkedList({10}, list, "Append to empty list"));
 }
 
 TEST(LinkedListTests, AppendAddsElementToEnd)
@@ -135,11 +168,7 @@ TEST(LinkedListTests, AppendAddsElementToEnd)
 
     list.Append(3);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(0), 1);
-    EXPECT_EQ(list.Get(1), 2);
-    EXPECT_EQ(list.Get(2), 3);
-    EXPECT_EQ(list.GetLast(), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, list, "Append 3"));
 }
 
 TEST(LinkedListTests, PrependAddsElementToEmptyList)
@@ -148,9 +177,7 @@ TEST(LinkedListTests, PrependAddsElementToEmptyList)
 
     list.Prepend(10);
 
-    EXPECT_EQ(list.GetLength(), 1);
-    EXPECT_EQ(list.GetFirst(), 10);
-    EXPECT_EQ(list.GetLast(), 10);
+    EXPECT_TRUE(CheckLinkedList({10}, list, "Prepend to empty list"));
 }
 
 TEST(LinkedListTests, PrependAddsElementToBeginning)
@@ -160,11 +187,7 @@ TEST(LinkedListTests, PrependAddsElementToBeginning)
 
     list.Prepend(1);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(0), 1);
-    EXPECT_EQ(list.Get(1), 2);
-    EXPECT_EQ(list.Get(2), 3);
-    EXPECT_EQ(list.GetFirst(), 1);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, list, "Prepend 1"));
 }
 
 TEST(LinkedListTests, InsertAtZeroPrepends)
@@ -174,10 +197,7 @@ TEST(LinkedListTests, InsertAtZeroPrepends)
 
     list.InsertAt(1, 0);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(0), 1);
-    EXPECT_EQ(list.Get(1), 2);
-    EXPECT_EQ(list.Get(2), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, list, "InsertAt index 0"));
 }
 
 TEST(LinkedListTests, InsertAtMiddleInsertsElement)
@@ -187,10 +207,7 @@ TEST(LinkedListTests, InsertAtMiddleInsertsElement)
 
     list.InsertAt(2, 1);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(0), 1);
-    EXPECT_EQ(list.Get(1), 2);
-    EXPECT_EQ(list.Get(2), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, list, "InsertAt index 1"));
 }
 
 TEST(LinkedListTests, InsertAtLengthAppends)
@@ -200,11 +217,7 @@ TEST(LinkedListTests, InsertAtLengthAppends)
 
     list.InsertAt(3, 2);
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(0), 1);
-    EXPECT_EQ(list.Get(1), 2);
-    EXPECT_EQ(list.Get(2), 3);
-    EXPECT_EQ(list.GetLast(), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, list, "InsertAt end length"));
 }
 
 TEST(LinkedListTests, InsertAtRejectsIndexGreaterThanLength)
@@ -229,10 +242,7 @@ TEST(LinkedListTests, GetSubListReturnsInclusiveRange)
 
     LinkedList<int>* subList = list.GetSubList(1, 3);
 
-    EXPECT_EQ(subList->GetLength(), 3);
-    EXPECT_EQ(subList->Get(0), 2);
-    EXPECT_EQ(subList->Get(1), 3);
-    EXPECT_EQ(subList->Get(2), 4);
+    EXPECT_TRUE(CheckLinkedList({2, 3, 4}, *subList, "GetSubList(1, 3)"));
 
     delete subList;
 }
@@ -244,8 +254,7 @@ TEST(LinkedListTests, GetSubListCanReturnSingleElement)
 
     LinkedList<int>* subList = list.GetSubList(1, 1);
 
-    EXPECT_EQ(subList->GetLength(), 1);
-    EXPECT_EQ(subList->Get(0), 2);
+    EXPECT_TRUE(CheckLinkedList({2}, *subList, "GetSubList(1, 1)"));
 
     delete subList;
 }
@@ -257,10 +266,7 @@ TEST(LinkedListTests, GetSubListCanReturnWholeList)
 
     LinkedList<int>* subList = list.GetSubList(0, 2);
 
-    EXPECT_EQ(subList->GetLength(), 3);
-    EXPECT_EQ(subList->Get(0), 1);
-    EXPECT_EQ(subList->Get(1), 2);
-    EXPECT_EQ(subList->Get(2), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, *subList, "GetSubList(0, 2)"));
 
     delete subList;
 }
@@ -274,7 +280,7 @@ TEST(LinkedListTests, GetSubListReturnsIndependentList)
     subList->InsertAt(100, 0);
 
     EXPECT_EQ(list.Get(0), 1);
-    EXPECT_EQ(subList->Get(0), 100);
+    EXPECT_TRUE(CheckLinkedList({100, 1, 2}, *subList, "Independent SubList modification"));
 
     delete subList;
 }
@@ -311,11 +317,7 @@ TEST(LinkedListTests, ConcatReturnsCombinedList)
 
     LinkedList<int>* result = first.Concat(&second);
 
-    EXPECT_EQ(result->GetLength(), 4);
-    EXPECT_EQ(result->Get(0), 1);
-    EXPECT_EQ(result->Get(1), 2);
-    EXPECT_EQ(result->Get(2), 3);
-    EXPECT_EQ(result->Get(3), 4);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3, 4}, *result, "Concat two populated lists"));
 
     delete result;
 }
@@ -330,10 +332,8 @@ TEST(LinkedListTests, ConcatDoesNotChangeSourceLists)
     LinkedList<int>* result = first.Concat(&second);
     result->InsertAt(100, 0);
 
-    EXPECT_EQ(first.GetLength(), 2);
-    EXPECT_EQ(second.GetLength(), 2);
-    EXPECT_EQ(first.Get(0), 1);
-    EXPECT_EQ(second.Get(0), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2}, first, "First list after Concat result modification"));
+    EXPECT_TRUE(CheckLinkedList({3, 4}, second, "Second list after Concat result modification"));
 
     delete result;
 }
@@ -346,9 +346,7 @@ TEST(LinkedListTests, ConcatWithEmptyLeftListWorks)
 
     LinkedList<int>* result = first.Concat(&second);
 
-    EXPECT_EQ(result->GetLength(), 2);
-    EXPECT_EQ(result->Get(0), 1);
-    EXPECT_EQ(result->Get(1), 2);
+    EXPECT_TRUE(CheckLinkedList({1, 2}, *result, "Concat empty and {1, 2}"));
 
     delete result;
 }
@@ -361,9 +359,7 @@ TEST(LinkedListTests, ConcatWithEmptyRightListWorks)
 
     LinkedList<int>* result = first.Concat(&second);
 
-    EXPECT_EQ(result->GetLength(), 2);
-    EXPECT_EQ(result->Get(0), 1);
-    EXPECT_EQ(result->Get(1), 2);
+    EXPECT_TRUE(CheckLinkedList({1, 2}, *result, "Concat {1, 2} and empty"));
 
     delete result;
 }
@@ -382,10 +378,7 @@ TEST(LinkedListTests, CopyConstructorCopiesElements)
 
     LinkedList<int> copy(original);
 
-    EXPECT_EQ(copy.GetLength(), 3);
-    EXPECT_EQ(copy.Get(0), 1);
-    EXPECT_EQ(copy.Get(1), 2);
-    EXPECT_EQ(copy.Get(2), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, copy, "Copy constructor"));
 }
 
 TEST(LinkedListTests, CopyConstructorCreatesIndependentStorage)
@@ -397,7 +390,7 @@ TEST(LinkedListTests, CopyConstructorCreatesIndependentStorage)
     copy.InsertAt(100, 0);
 
     EXPECT_EQ(original.Get(0), 1);
-    EXPECT_EQ(copy.Get(0), 100);
+    EXPECT_TRUE(CheckLinkedList({100, 1, 2, 3}, copy, "Copied list after modification"));
 }
 
 TEST(LinkedListTests, CopyConstructorCopiesEmptyList)
@@ -406,7 +399,7 @@ TEST(LinkedListTests, CopyConstructorCopiesEmptyList)
 
     LinkedList<int> copy(original);
 
-    EXPECT_EQ(copy.GetLength(), 0);
+    EXPECT_TRUE(CheckLinkedList({}, copy, "Copy empty list"));
     EXPECT_THROW(copy.GetFirst(), OutOfRange);
 }
 
@@ -419,10 +412,7 @@ TEST(LinkedListTests, AssignmentCopiesElements)
 
     target = source;
 
-    EXPECT_EQ(target.GetLength(), 3);
-    EXPECT_EQ(target.Get(0), 1);
-    EXPECT_EQ(target.Get(1), 2);
-    EXPECT_EQ(target.Get(2), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, target, "Assignment operator"));
 }
 
 TEST(LinkedListTests, AssignmentCreatesIndependentStorage)
@@ -435,7 +425,7 @@ TEST(LinkedListTests, AssignmentCreatesIndependentStorage)
     target.InsertAt(100, 0);
 
     EXPECT_EQ(source.Get(0), 1);
-    EXPECT_EQ(target.Get(0), 100);
+    EXPECT_TRUE(CheckLinkedList({100, 1, 2, 3}, target, "Assigned list after modification"));
 }
 
 TEST(LinkedListTests, AssignmentFromEmptyListClearsTarget)
@@ -446,7 +436,7 @@ TEST(LinkedListTests, AssignmentFromEmptyListClearsTarget)
 
     target = source;
 
-    EXPECT_EQ(target.GetLength(), 0);
+    EXPECT_TRUE(CheckLinkedList({}, target, "Assignment from empty list"));
     EXPECT_THROW(target.GetFirst(), OutOfRange);
 }
 
@@ -458,10 +448,7 @@ TEST(LinkedListTests, AssignmentToEmptyListCopiesSource)
 
     target = source;
 
-    EXPECT_EQ(target.GetLength(), 3);
-    EXPECT_EQ(target.Get(0), 1);
-    EXPECT_EQ(target.Get(1), 2);
-    EXPECT_EQ(target.Get(2), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, target, "Assignment to empty list"));
 }
 
 TEST(LinkedListTests, SelfAssignmentKeepsListValid)
@@ -471,10 +458,7 @@ TEST(LinkedListTests, SelfAssignmentKeepsListValid)
 
     list = list;
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(0), 1);
-    EXPECT_EQ(list.Get(1), 2);
-    EXPECT_EQ(list.Get(2), 3);
+    EXPECT_TRUE(CheckLinkedList({1, 2, 3}, list, "Self-assignment"));
 }
 
 TEST(LinkedListTests, WorksWithStringValues)
@@ -485,8 +469,5 @@ TEST(LinkedListTests, WorksWithStringValues)
     list.Prepend("first");
     list.Append("third");
 
-    EXPECT_EQ(list.GetLength(), 3);
-    EXPECT_EQ(list.Get(0), "first");
-    EXPECT_EQ(list.Get(1), "second");
-    EXPECT_EQ(list.Get(2), "third");
+    EXPECT_TRUE(CheckLinkedList<std::string>({"first", "second", "third"}, list, "String list operations"));
 }

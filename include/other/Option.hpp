@@ -1,26 +1,29 @@
 #pragma once
+#include <functional>
 
 template<class T>
 class Option
 {
     private:
-        bool hasValue;
-        T value;
+        T* value;
 
     public:
         Option();
-        Option(T value);
+        Option(T val);
+        Option(const Option<T>& other); 
         ~Option();
+        
+        Option<T>& operator=(const Option<T>& other);
 
         bool HasValue();
         T GetValue();
         T ValueOr(T defaultValue);
 
         template<class R>
-        Option<R> Map(R (*Function)(T));
+        Option<R> Map(std::function<R(T)> function);
 
         template<class R>
-        Option<R> FlatMap(Option<R> (*Function)(T));
+        Option<R> FlatMap(std::function<Option<R>(T)> function); 
 };
 
 #include "Option.tpp"

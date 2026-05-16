@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DynamicArray.hpp"
+#include "LinkedList.hpp"
 #include "Sequence.hpp"
 
 constexpr size_t SEGMENT_SIZE = 10;
@@ -9,29 +10,20 @@ template<class T>
 class SegmentedList : public Sequence<T>
 {
     private:
-        struct Node
-        {
-            DynamicArray<T>* elements;
-            size_t count;
-            Node* next;
+        LinkedList<DynamicArray<T>*>* segments;
 
-            Node();
-            ~Node();
-        };
-
-        Node* head;
-        Node* tail;
         size_t length;
 
         void Clear();
         void ValidateNotEmpty();
-        Node* FindNode(size_t index, size_t& localIndex);
+        DynamicArray<T>* FindNode(size_t index, size_t& localIndex);
         void Set(size_t index, T value);
 
     public:
         SegmentedList();
         SegmentedList(T* items, size_t count);
         SegmentedList(const SegmentedList<T>& list);
+        SegmentedList(std::initializer_list<T> items);
         ~SegmentedList() override;
 
         SegmentedList<T>& operator=(const SegmentedList<T>& list);
@@ -52,18 +44,24 @@ class SegmentedList : public Sequence<T>
         Sequence<T>* InsertAt(T item, size_t index) override;
         Sequence<T>* Concat(Sequence<T>* list) override;
 
-        Sequence<T>* Map(T (*Function)(T)) override;
-        Sequence<T>* Where(bool (*Function)(T)) override;
-        T Reduce(T (*Function)(T, T)) override;
+        Sequence<T>* CreateEmpty() override;
 
-        Option<T> GetFirst(bool (*Function)(T)) override;
-        Option<T> GetLast(bool (*Function)(T)) override;
+        class Enumerator : public IEnumerator<T>
+        {
+            private:
+                SegmentedList<T>* list;
+                size_t segmentIndex;
+                size_t localIndex;
+                bool started;
+
+            public:
+                Enumerator(SegmentedList<T>* list);
+                T GetCurrent() override;
+                bool MoveNext() override;
+                void Reset() override;
+        };
 
         IEnumerator<T>* GetEnumerator() override;
-
-        Sequence<T>* FlatMap(Sequence<T>* (*Function)(T)) override;
-        Sequence<T>* Skip(size_t count) override;
-        Sequence<T>* Splice(size_t index, size_t count, Sequence<T>* insertSequence = nullptr) override;
 };
 
 #include "SegmentedList.tpp"

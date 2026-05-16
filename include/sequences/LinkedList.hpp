@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Exceptions.hpp"
+#include <initializer_list>
 
 template<class T>
 class LinkedList
@@ -17,17 +18,19 @@ class LinkedList
         Node* head;
         Node* tail;
 
-        void Clear();
-
     public:
         LinkedList(T* items, size_t count);
         LinkedList();
         LinkedList(const LinkedList<T>& list);
+        LinkedList(std::initializer_list<T> items);
         ~LinkedList();
 
         LinkedList<T>& operator=(const LinkedList<T>& list);
         T& operator[](size_t index);
         const T& operator[](size_t index) const;
+        LinkedList<T>* operator+(const LinkedList<T>* other);
+        bool operator==(const LinkedList<T>* other);
+        bool operator!=(const LinkedList<T>* other);
 
         T GetFirst();
         T GetLast();
@@ -39,6 +42,8 @@ class LinkedList
         void Prepend(T item);
         void InsertAt(T item, size_t index);
         LinkedList<T>* Concat(const LinkedList<T>* list);
+
+        void Clear();
 };
 
 #include "LinkedList.tpp"

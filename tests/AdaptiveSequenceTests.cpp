@@ -1,7 +1,10 @@
 #include <gtest/gtest.h>
+#include <functional>
 
 #include "AdaptiveSequence.hpp"
 #include "Exceptions.hpp"
+#include "TestUtils.hpp"
+#include "SequenceUtils.hpp"
 
 namespace AdaptiveSequenceTests
 {
@@ -22,7 +25,7 @@ TEST(AdaptiveSequenceTests, DefaultConstructorCreatesEmptySequence)
 {
     AdaptiveSequence<int> sequence;
 
-    EXPECT_EQ(sequence.GetLength(), 0);
+    EXPECT_TRUE(TestUtils::CheckSequence({}, &sequence, "Default constructor creating empty sequence"));
     EXPECT_THROW(sequence.GetFirst(), OutOfRange);
     EXPECT_THROW(sequence.GetLast(), OutOfRange);
 }
@@ -32,10 +35,7 @@ TEST(AdaptiveSequenceTests, ItemsConstructorCopiesElements)
     int items[] = {1, 2, 3};
     AdaptiveSequence<int> sequence(items, 3);
 
-    EXPECT_EQ(sequence.GetLength(), 3);
-    EXPECT_EQ(sequence.Get(0), 1);
-    EXPECT_EQ(sequence.Get(1), 2);
-    EXPECT_EQ(sequence.Get(2), 3);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &sequence, "Items constructor initialization"));
 }
 
 TEST(AdaptiveSequenceTests, CopyConstructorCreatesIndependentSequence)
@@ -46,10 +46,8 @@ TEST(AdaptiveSequenceTests, CopyConstructorCreatesIndependentSequence)
     AdaptiveSequence<int> copy(original);
     copy.InsertAt(99, 1);
 
-    EXPECT_EQ(original.GetLength(), 3);
-    EXPECT_EQ(original.Get(1), 2);
-    EXPECT_EQ(copy.GetLength(), 4);
-    EXPECT_EQ(copy.Get(1), 99);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &original, "Original sequence after copy modification"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 99, 2, 3}, &copy, "Copied sequence after InsertAt(99, 1)"));
 }
 
 TEST(AdaptiveSequenceTests, AssignmentCreatesIndependentSequence)
@@ -61,9 +59,8 @@ TEST(AdaptiveSequenceTests, AssignmentCreatesIndependentSequence)
     target = source;
     target.Append(4);
 
-    EXPECT_EQ(source.GetLength(), 3);
-    EXPECT_EQ(target.GetLength(), 4);
-    EXPECT_EQ(target.GetLast(), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &source, "Source sequence after assignment and target modification"));
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3, 4}, &target, "Target sequence after assignment and Append(4)"));
 }
 
 TEST(AdaptiveSequenceTests, AppendAddsElementsToEnd)
@@ -72,9 +69,7 @@ TEST(AdaptiveSequenceTests, AppendAddsElementsToEnd)
 
     sequence.Append(1)->Append(2)->Append(3);
 
-    EXPECT_EQ(sequence.GetLength(), 3);
-    EXPECT_EQ(sequence.GetLast(), 3);
-    EXPECT_EQ(sequence.Get(1), 2);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &sequence, "Chained Append: 1, 2, 3"));
 }
 
 TEST(AdaptiveSequenceTests, PrependAddsElementsToBeginning)
@@ -83,9 +78,7 @@ TEST(AdaptiveSequenceTests, PrependAddsElementsToBeginning)
 
     sequence.Prepend(3)->Prepend(2)->Prepend(1);
 
-    EXPECT_EQ(sequence.GetLength(), 3);
-    EXPECT_EQ(sequence.GetFirst(), 1);
-    EXPECT_EQ(sequence.Get(2), 3);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &sequence, "Chained Prepend: 3, 2, 1"));
 }
 
 TEST(AdaptiveSequenceTests, InsertAtPlacesElementCorrectly)
@@ -95,8 +88,7 @@ TEST(AdaptiveSequenceTests, InsertAtPlacesElementCorrectly)
 
     sequence.InsertAt(2, 1);
 
-    EXPECT_EQ(sequence.GetLength(), 3);
-    EXPECT_EQ(sequence.Get(1), 2);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3}, &sequence, "InsertAt(2, 1) into {1, 3}"));
 }
 
 TEST(AdaptiveSequenceTests, ConcatAppendsAnotherSequence)
@@ -108,9 +100,7 @@ TEST(AdaptiveSequenceTests, ConcatAppendsAnotherSequence)
 
     left.Concat(&right);
 
-    EXPECT_EQ(left.GetLength(), 4);
-    EXPECT_EQ(left.Get(2), 3);
-    EXPECT_EQ(left.Get(3), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({1, 2, 3, 4}, &left, "Concat {3, 4} to {1, 2}"));
 }
 
 TEST(AdaptiveSequenceTests, GetSubsequenceReturnsCorrectRange)
@@ -120,9 +110,7 @@ TEST(AdaptiveSequenceTests, GetSubsequenceReturnsCorrectRange)
 
     Sequence<int>* subSeq = sequence.GetSubsequence(1, 3);
 
-    EXPECT_EQ(subSeq->GetLength(), 3);
-    EXPECT_EQ(subSeq->Get(0), 2);
-    EXPECT_EQ(subSeq->Get(2), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 3, 4}, subSeq, "GetSubsequence from index 1, length 3"));
 
     delete subSeq;
 }
@@ -142,12 +130,9 @@ TEST(AdaptiveSequenceTests, MapTransformsElements)
     int items[] = {1, 2, 3};
     AdaptiveSequence<int> sequence(items, 3);
 
-    Sequence<int>* mapped = sequence.Map(AdaptiveSequenceTests::MultiplyByTwo);
+    Sequence<int>* mapped = SequenceUtils::Map<int>(&sequence, std::function<int(int)>(AdaptiveSequenceTests::MultiplyByTwo));
 
-    EXPECT_EQ(mapped->GetLength(), 3);
-    EXPECT_EQ(mapped->Get(0), 2);
-    EXPECT_EQ(mapped->Get(1), 4);
-    EXPECT_EQ(mapped->Get(2), 6);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4, 6}, mapped, "Map with MultiplyByTwo function"));
 
     delete mapped;
 }
@@ -157,11 +142,9 @@ TEST(AdaptiveSequenceTests, WhereFiltersElements)
     int items[] = {1, 2, 3, 4, 5};
     AdaptiveSequence<int> sequence(items, 5);
 
-    Sequence<int>* filtered = sequence.Where(AdaptiveSequenceTests::IsEven);
+    Sequence<int>* filtered = SequenceUtils::Where<int>(&sequence, std::function<bool(int)>(AdaptiveSequenceTests::IsEven));
 
-    EXPECT_EQ(filtered->GetLength(), 2);
-    EXPECT_EQ(filtered->Get(0), 2);
-    EXPECT_EQ(filtered->Get(1), 4);
+    EXPECT_TRUE(TestUtils::CheckSequence({2, 4}, filtered, "Where with IsEven function"));
 
     delete filtered;
 }
@@ -171,7 +154,7 @@ TEST(AdaptiveSequenceTests, ReduceAccumulatesValues)
     int items[] = {1, 2, 3, 4};
     AdaptiveSequence<int> sequence(items, 4);
 
-    int sum = sequence.Reduce(AdaptiveSequenceTests::SumValues);
+    int sum = SequenceUtils::Reduce<int, int>(&sequence, std::function<int(int, int)>(AdaptiveSequenceTests::SumValues));
 
     EXPECT_EQ(sum, 10);
 }
@@ -184,10 +167,7 @@ TEST(AdaptiveSequenceTests, MultipleInsertsTriggerListBackendWithoutDataLoss)
         sequence.Append(i);
     }
 
-    EXPECT_EQ(sequence.GetLength(), 10);
-    EXPECT_EQ(sequence.GetFirst(), 0);
-    EXPECT_EQ(sequence.GetLast(), 9);
-    EXPECT_EQ(sequence.Get(5), 5);
+    EXPECT_TRUE(TestUtils::CheckSequence({0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, &sequence, "10 sequential Appends"));
 }
 
 TEST(AdaptiveSequenceTests, MultipleGetsTriggerArrayBackendWithoutDataLoss)
@@ -196,12 +176,11 @@ TEST(AdaptiveSequenceTests, MultipleGetsTriggerArrayBackendWithoutDataLoss)
     AdaptiveSequence<int> sequence(items, 10);
 
     for (int i = 0; i < 15; ++i) {
+        SCOPED_TRACE("Accessing index: " + std::to_string(i % 10)); 
         sequence.Get(i % 10);
     }
 
     sequence.Append(10);
     
-    EXPECT_EQ(sequence.GetLength(), 11);
-    EXPECT_EQ(sequence.Get(5), 5);
-    EXPECT_EQ(sequence.GetLast(), 10);
+    EXPECT_TRUE(TestUtils::CheckSequence({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, &sequence, "Multiple Gets followed by Append(10)"));
 }
