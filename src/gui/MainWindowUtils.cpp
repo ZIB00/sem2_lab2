@@ -2,69 +2,48 @@
 
 void MainWindow::onZip() {
     try {
-        int type = sequenceTypeSelector->currentIndex();
-
-        if (type == 0) {
-            if (!intMainSeq || !intAdditionalSeq) { globalLog->append("Zip: нужны Основная и Дополнительная."); return; }
+        UniversalLambda([&](auto& state) {
+            if (!state.main || !state.additional) { 
+                globalLog->append("Zip: нужны Основная и Дополнительная."); 
+                return; 
+            }
             QString result = "Zip результат: ";
-            size_t minLen = std::min(intMainSeq->GetLength(), intAdditionalSeq->GetLength());
+            size_t minLen = std::min(state.main->GetLength(), state.additional->GetLength());
             for (size_t i = 0; i < minLen; i++) {
-                result += "{" + QString::number(intMainSeq->Get(i)) + ", " + QString::number(intAdditionalSeq->Get(i)) + "} ";
+                result += "{" + ElementToString(state.main->Get(i)) + ", " + ElementToString(state.additional->Get(i)) + "} ";
             }
             globalLog->append(result.trimmed());
-        } else if (type == 1) {
-            if (!doubleMainSeq || !doubleAdditionalSeq) { globalLog->append("Zip: нужны Основная и Дополнительная."); return; }
-            QString result = "Zip результат: ";
-            size_t minLen = std::min(doubleMainSeq->GetLength(), doubleAdditionalSeq->GetLength());
-            for (size_t i = 0; i < minLen; i++) {
-                result += "{" + QString::number(doubleMainSeq->Get(i)) + ", " + QString::number(doubleAdditionalSeq->Get(i)) + "} ";
-            }
-            globalLog->append(result.trimmed());
-        } else {
-            if (!charMainSeq || !charAdditionalSeq) { globalLog->append("Zip: нужны Основная и Дополнительная."); return; }
-            QString result = "Zip результат: ";
-            size_t minLen = std::min(charMainSeq->GetLength(), charAdditionalSeq->GetLength());
-            for (size_t i = 0; i < minLen; i++) {
-                QString mainChar = QString(QChar(static_cast<ushort>(charMainSeq->Get(i))));
-                QString addChar = QString(QChar(static_cast<ushort>(charAdditionalSeq->Get(i))));
-                result += "{" + mainChar + ", " + addChar + "} ";
-            }
-            globalLog->append(result.trimmed());
-        }
+        });
     } CATCH_ALL_EXCEPTIONS
 }
 
 void MainWindow::onUnzip() {
     try {
-        if (!intMainSeq || intMainSeq->GetLength() == 0) {
+        if (!seqInt.main || seqInt.main->GetLength() == 0) {
             globalLog->append("Unzip: нужна непустая последовательность целых чисел.");
             return;
         }
 
         MutableArraySequence<Pair<int, int>>* pairsSeq = new MutableArraySequence<Pair<int, int>>();
-        size_t pairCount = intMainSeq->GetLength() / 2;
-
+        size_t pairCount = seqInt.main->GetLength() / 2;
         for (size_t i = 0; i < pairCount; i++) {
             Pair<int, int> pair;
-            pair.first = intMainSeq->Get(i * 2);
-            pair.second = intMainSeq->Get(i * 2 + 1);
+            pair.first = seqInt.main->Get(i * 2);
+            pair.second = seqInt.main->Get(i * 2 + 1);
             pairsSeq->Append(pair);
         }
 
         MutableArraySequence<int>* leftSeq = new MutableArraySequence<int>();
         MutableArraySequence<int>* rightSeq = new MutableArraySequence<int>();
-
         SequenceUtils::Unzip(pairsSeq, leftSeq, rightSeq);
 
-        QString leftResult = "Unzip left: ";
-        QString rightResult = "Unzip right: ";
-
-        for (size_t i = 0; i < leftSeq->GetLength(); i++) { leftResult += QString::number(leftSeq->Get(i)) + " "; }
-        for (size_t i = 0; i < rightSeq->GetLength(); i++) { rightResult += QString::number(rightSeq->Get(i)) + " "; }
+        QString leftResult = "Sequence 1: ";
+        QString rightResult = "Sequence 2: ";
+        for (size_t i = 0; i < leftSeq->GetLength(); i++) leftResult += QString::number(leftSeq->Get(i)) + " ";
+        for (size_t i = 0; i < rightSeq->GetLength(); i++) rightResult += QString::number(rightSeq->Get(i)) + " ";
 
         globalLog->append(leftResult.trimmed());
         globalLog->append(rightResult.trimmed());
-
         delete pairsSeq; delete leftSeq; delete rightSeq;
     } CATCH_ALL_EXCEPTIONS
 }
@@ -73,39 +52,31 @@ void MainWindow::onRange() {
     try {
         int type = sequenceTypeSelector->currentIndex();
         QStringList params = rightLineEditUtilts->text().split(QRegularExpression("[\\s,]+"), Qt::SkipEmptyParts);
-
-        if (params.size() < 3) { 
-            throw InvalidArgument("Ошибка Range: введите три числа через пробел (начало конец шаг)."); 
-        }
+        if (params.size() < 3) throw InvalidArgument("Ошибка Range: введите три числа через пробел."); 
 
         if (type == 0) {
             int startVal, endVal, stepVal;
-            ParseStringToken(params.at(0), startVal);
-            ParseStringToken(params.at(1), endVal);
-            ParseStringToken(params.at(2), stepVal);
-            if (stepVal == 0) { throw InvalidArgument("Ошибка Range: шаг диапазона не может быть равен 0."); }
+            ParseStringToken(params.at(0), startVal); ParseStringToken(params.at(1), endVal); ParseStringToken(params.at(2), stepVal);
+            if (stepVal == 0) throw InvalidArgument("Ошибка Range: шаг не может быть равен 0."); 
 
-            MutableArraySequence<int>* rangeSeq = new MutableArraySequence<int>();
-            Sequence<int>* result = SequenceUtils::Range(startVal, endVal, stepVal, rangeSeq);
-            if (intMainSeq && intMainSeq != intOriginalSeq) delete intMainSeq;
-            intMainSeq = result;
+            auto* rangeSeq = new MutableArraySequence<int>();
+            auto* result = SequenceUtils::Range(startVal, endVal, stepVal, rangeSeq);
+            if (seqInt.main && seqInt.main != seqInt.original) delete seqInt.main;
+            seqInt.main = result;
+            globalLog->append("Range сгенерирован и помещен в Основную.");
         } else if (type == 1) {
             double startVal, endVal, stepVal;
-            ParseStringToken(params.at(0), startVal);
-            ParseStringToken(params.at(1), endVal);
-            ParseStringToken(params.at(2), stepVal);
-            if (stepVal == 0.0) { throw InvalidArgument("Ошибка Range: шаг диапазона не может быть равен 0."); }
+            ParseStringToken(params.at(0), startVal); ParseStringToken(params.at(1), endVal); ParseStringToken(params.at(2), stepVal);
+            if (stepVal == 0.0) throw InvalidArgument("Ошибка Range: шаг не может быть равен 0."); 
 
-            MutableArraySequence<double>* rangeSeq = new MutableArraySequence<double>();
-            Sequence<double>* result = SequenceUtils::Range(startVal, endVal, stepVal, rangeSeq);
-            if (doubleMainSeq && doubleMainSeq != doubleOriginalSeq) delete doubleMainSeq;
-            doubleMainSeq = result;
+            auto* rangeSeq = new MutableArraySequence<double>();
+            auto* result = SequenceUtils::Range(startVal, endVal, stepVal, rangeSeq);
+            if (seqDouble.main && seqDouble.main != seqDouble.original) delete seqDouble.main;
+            seqDouble.main = result;
+            globalLog->append("Range сгенерирован и помещен в Основную.");
         } else {
-            globalLog->append("Range: поддерживается только для числовых типов."); 
-            return;
+            globalLog->append("Range: поддерживается только для числовых типов.");
         }
-
-        globalLog->append("Range сгенерирован и помещен в Основную.");
         RefreshLists();
     } CATCH_ALL_EXCEPTIONS
 }
@@ -115,44 +86,38 @@ void MainWindow::onSplit() {
         int type = sequenceTypeSelector->currentIndex();
 
         if (type == 0) {
-            if (!intMainSeq || intMainSeq->GetLength() == 0) { globalLog->append("Split: последовательность пуста."); return; }
+            if (!seqInt.main || seqInt.main->GetLength() == 0) { globalLog->append("Split: последовательность пуста."); return; }
             MutableArraySequence<int> proto;
-            auto* enumerator = SequenceUtils::Split(intMainSeq, std::function<bool(int)>([](int x) { return x == 0; }), &proto);
-
+            auto* enumerator = SequenceUtils::Split(seqInt.main, std::function<bool(int)>([](int x) { return x == 0; }), &proto);
             int segmentIndex = 0;
             while (enumerator->MoveNext()) {
                 Sequence<int>* segment = enumerator->GetCurrent();
                 QString segmentText = "Split сегмент " + QString::number(segmentIndex++) + ": ";
-                for (size_t i = 0; i < segment->GetLength(); i++) { segmentText += QString::number(segment->Get(i)) + " "; }
+                for (size_t i = 0; i < segment->GetLength(); i++) segmentText += ElementToString(segment->Get(i)) + " ";
                 globalLog->append(segmentText.trimmed());
             }
             delete enumerator;
-            if (segmentIndex == 0) { globalLog->append("Split: все элементы равны 0, нет сегментов."); }
-
         } else if (type == 1) {
-            if (!doubleMainSeq || doubleMainSeq->GetLength() == 0) { globalLog->append("Split: последовательность пуста."); return; }
+            if (!seqDouble.main || seqDouble.main->GetLength() == 0) { globalLog->append("Split: последовательность пуста."); return; }
             MutableArraySequence<double> proto;
-            auto* enumerator = SequenceUtils::Split(doubleMainSeq, std::function<bool(double)>([](double x) { return x == 0.0; }), &proto);
-
+            auto* enumerator = SequenceUtils::Split(seqDouble.main, std::function<bool(double)>([](double x) { return x == 0.0; }), &proto);
             int segmentIndex = 0;
             while (enumerator->MoveNext()) {
                 Sequence<double>* segment = enumerator->GetCurrent();
                 QString segmentText = "Split сегмент " + QString::number(segmentIndex++) + ": ";
-                for (size_t i = 0; i < segment->GetLength(); i++) { segmentText += QString::number(segment->Get(i)) + " "; }
+                for (size_t i = 0; i < segment->GetLength(); i++) segmentText += ElementToString(segment->Get(i)) + " ";
                 globalLog->append(segmentText.trimmed());
             }
             delete enumerator;
-
         } else {
-            if (!charMainSeq || charMainSeq->GetLength() == 0) { globalLog->append("Split: последовательность пуста."); return; }
+            if (!seqChar.main || seqChar.main->GetLength() == 0) { globalLog->append("Split: последовательность пуста."); return; }
             MutableArraySequence<char16_t> proto;
-            auto* enumerator = SequenceUtils::Split(charMainSeq, std::function<bool(char16_t)>([](char16_t x) { return x == u'_'; }), &proto);
-
+            auto* enumerator = SequenceUtils::Split(seqChar.main, std::function<bool(char16_t)>([](char16_t x) { return x == u'_'; }), &proto);
             int segmentIndex = 0;
             while (enumerator->MoveNext()) {
                 Sequence<char16_t>* segment = enumerator->GetCurrent();
                 QString segmentText = "Split сегмент " + QString::number(segmentIndex++) + ": ";
-                for (size_t i = 0; i < segment->GetLength(); i++) { segmentText += QChar(segment->Get(i)); }
+                for (size_t i = 0; i < segment->GetLength(); i++) segmentText += ElementToString(segment->Get(i)) + " ";
                 globalLog->append(segmentText.trimmed());
             }
             delete enumerator;
@@ -166,74 +131,59 @@ void MainWindow::onFlatMap() {
         bool isMutable = (mutableOptionSelector->currentIndex() == 0);
 
         if (type == 0) {
-            if (!intMainSeq || (!isMutable && !intOriginalSeq)) { globalLog->append("FlatMap: ошибка данных."); return; }
-            Sequence<int>* baseSeq = isMutable ? intMainSeq : intOriginalSeq;
-            std::function<Sequence<int>*(int)> expandFn = [](int x) -> Sequence<int>* {
-                MutableArraySequence<int>* chunk = new MutableArraySequence<int>();
+            if (!seqInt.main || (!isMutable && !seqInt.original)) return;
+            auto* baseSeq = isMutable ? seqInt.main : seqInt.original;
+            std::function<Sequence<int>*(int)> expandFn = [](int x) {
+                auto* chunk = new MutableArraySequence<int>();
                 chunk->Append(x); chunk->Append(x * 2); return chunk;
             };
-            Sequence<int>* result = SequenceUtils::FlatMap(baseSeq, expandFn);
-            if (intMainSeq != result && intMainSeq != intOriginalSeq) delete intMainSeq;
-            intMainSeq = result;
-
+            auto* result = SequenceUtils::FlatMap(baseSeq, expandFn);
+            if (seqInt.main != result && seqInt.main != seqInt.original) delete seqInt.main;
+            seqInt.main = result;
         } else if (type == 1) {
-            if (!doubleMainSeq || (!isMutable && !doubleOriginalSeq)) { globalLog->append("FlatMap: ошибка данных."); return; }
-            Sequence<double>* baseSeq = isMutable ? doubleMainSeq : doubleOriginalSeq;
-            std::function<Sequence<double>*(double)> expandFn = [](double x) -> Sequence<double>* {
-                MutableArraySequence<double>* chunk = new MutableArraySequence<double>();
+            if (!seqDouble.main || (!isMutable && !seqDouble.original)) return;
+            auto* baseSeq = isMutable ? seqDouble.main : seqDouble.original;
+            std::function<Sequence<double>*(double)> expandFn = [](double x) {
+                auto* chunk = new MutableArraySequence<double>();
                 chunk->Append(x); chunk->Append(x * 2.0); return chunk;
             };
-            Sequence<double>* result = SequenceUtils::FlatMap(baseSeq, expandFn);
-            if (doubleMainSeq != result && doubleMainSeq != doubleOriginalSeq) delete doubleMainSeq;
-            doubleMainSeq = result;
-
+            auto* result = SequenceUtils::FlatMap(baseSeq, expandFn);
+            if (seqDouble.main != result && seqDouble.main != seqDouble.original) delete seqDouble.main;
+            seqDouble.main = result;
         } else {
-            if (!charMainSeq || (!isMutable && !charOriginalSeq)) { globalLog->append("FlatMap: ошибка данных."); return; }
-            Sequence<char16_t>* baseSeq = isMutable ? charMainSeq : charOriginalSeq;
-            std::function<Sequence<char16_t>*(char16_t)> expandFn = [](char16_t x) -> Sequence<char16_t>* {
-                MutableArraySequence<char16_t>* chunk = new MutableArraySequence<char16_t>();
+            if (!seqChar.main || (!isMutable && !seqChar.original)) return;
+            auto* baseSeq = isMutable ? seqChar.main : seqChar.original;
+            std::function<Sequence<char16_t>*(char16_t)> expandFn = [](char16_t x) {
+                auto* chunk = new MutableArraySequence<char16_t>();
                 chunk->Append(x); chunk->Append(static_cast<char16_t>(x + 1)); return chunk;
             };
-            Sequence<char16_t>* result = SequenceUtils::FlatMap(baseSeq, expandFn);
-            if (charMainSeq != result && charMainSeq != charOriginalSeq) delete charMainSeq;
-            charMainSeq = result;
+            auto* result = SequenceUtils::FlatMap(baseSeq, expandFn);
+            if (seqChar.main != result && seqChar.main != seqChar.original) delete seqChar.main;
+            seqChar.main = result;
         }
-
-        globalLog->append("FlatMap: каждый элемент x -> [x, x*2]");
+        globalLog->append("FlatMap выполнен.");
         RefreshLists();
     } CATCH_ALL_EXCEPTIONS
 }
 
 void MainWindow::onSkip() {
     try {
-        int type = sequenceTypeSelector->currentIndex();
         bool isMutable = (mutableOptionSelector->currentIndex() == 0);
         QString countText = rightLineEditUtilts->text().trimmed();
-        
         int countInt;
         ParseStringToken(countText, countInt);
-        if (countInt < 0) {
-            throw InvalidArgument("Ошибка Skip: количество пропускаемых элементов не может быть отрицательным.");
-        }
+
+        if (countInt < 0) throw InvalidArgument("Ошибка Skip: значение должно быть неотрицательным.");
         size_t count = static_cast<size_t>(countInt);
 
-        if (type == 0 && intMainSeq) {
-            Sequence<int>* baseSeq = isMutable ? intMainSeq : intOriginalSeq;
-            Sequence<int>* result = SequenceUtils::Skip(baseSeq, count);
-            if (intMainSeq != result && intMainSeq != intOriginalSeq) delete intMainSeq;
-            intMainSeq = result;
-        } else if (type == 1 && doubleMainSeq) {
-            Sequence<double>* baseSeq = isMutable ? doubleMainSeq : doubleOriginalSeq;
-            Sequence<double>* result = SequenceUtils::Skip(baseSeq, count);
-            if (doubleMainSeq != result && doubleMainSeq != doubleOriginalSeq) delete doubleMainSeq;
-            doubleMainSeq = result;
-        } else if (type == 2 && charMainSeq) {
-            Sequence<char16_t>* baseSeq = isMutable ? charMainSeq : charOriginalSeq;
-            Sequence<char16_t>* result = SequenceUtils::Skip(baseSeq, count);
-            if (charMainSeq != result && charMainSeq != charOriginalSeq) delete charMainSeq;
-            charMainSeq = result;
-        }
-
+        UniversalLambda([&](auto& state) {
+            if (state.main) {
+                auto* baseSeq = isMutable ? state.main : state.original;
+                auto* result = SequenceUtils::Skip(baseSeq, count);
+                if (state.main != result && state.main != state.original) delete state.main;
+                state.main = result;
+            }
+        });
         globalLog->append("Выполнена утилита Skip.");
         RefreshLists();
     } CATCH_ALL_EXCEPTIONS
@@ -241,43 +191,24 @@ void MainWindow::onSkip() {
 
 void MainWindow::onSplice() {
     try {
-        int type = sequenceTypeSelector->currentIndex();
         bool isMutable = (mutableOptionSelector->currentIndex() == 0);
         QString indexText = rightLineEditUtilts->text().trimmed();
-
-        if (indexText.isEmpty()) { globalLog->append("Splice: введите индекс."); return; }
-
         bool ok = false;
         size_t targetIndex = indexText.toUInt(&ok);
-        if (!ok) { globalLog->append("Splice: индекс должен быть неотрицательным целым числом."); return; }
-
-        if (type == 0) {
-            if (!intMainSeq || (!isMutable && !intOriginalSeq)) return;
-            Sequence<int>* baseSeq = isMutable ? intMainSeq : intOriginalSeq;
-            if (targetIndex >= baseSeq->GetLength()) { globalLog->append("Splice: индекс вне диапазона."); return; }
-            
-            Sequence<int>* result = SequenceUtils::Splice(baseSeq, targetIndex, 1);
-            if (intMainSeq != result && intMainSeq != intOriginalSeq) delete intMainSeq;
-            intMainSeq = result;
-        } else if (type == 1) {
-            if (!doubleMainSeq || (!isMutable && !doubleOriginalSeq)) return;
-            Sequence<double>* baseSeq = isMutable ? doubleMainSeq : doubleOriginalSeq;
-            if (targetIndex >= baseSeq->GetLength()) { globalLog->append("Splice: индекс вне диапазона."); return; }
-            
-            Sequence<double>* result = SequenceUtils::Splice(baseSeq, targetIndex, 1);
-            if (doubleMainSeq != result && doubleMainSeq != doubleOriginalSeq) delete doubleMainSeq;
-            doubleMainSeq = result;
-        } else {
-            if (!charMainSeq || (!isMutable && !charOriginalSeq)) return;
-            Sequence<char16_t>* baseSeq = isMutable ? charMainSeq : charOriginalSeq;
-            if (targetIndex >= baseSeq->GetLength()) { globalLog->append("Splice: индекс вне диапазона."); return; }
-            
-            Sequence<char16_t>* result = SequenceUtils::Splice(baseSeq, targetIndex, 1);
-            if (charMainSeq != result && charMainSeq != charOriginalSeq) delete charMainSeq;
-            charMainSeq = result;
+        if (!ok) { 
+            globalLog->append("Splice: неверный индекс."); 
+            return; 
         }
 
-        globalLog->append("Splice: удалён 1 элемент с индекса " + QString::number(targetIndex));
+        UniversalLambda([&](auto& state) {
+            if (!state.main || (!isMutable && !state.original)) return;
+            auto* baseSeq = isMutable ? state.main : state.original;
+            if (targetIndex >= baseSeq->GetLength()) { globalLog->append("Splice: индекс вне диапазона."); return; }
+            auto* result = SequenceUtils::Splice(baseSeq, targetIndex, 1);
+            if (state.main != result && state.main != state.original) delete state.main;
+            state.main = result;
+            globalLog->append("Splice: удалён 1 элемент.");
+        });
         RefreshLists();
     } CATCH_ALL_EXCEPTIONS
 }
@@ -287,24 +218,26 @@ void MainWindow::onMap() {
         int type = sequenceTypeSelector->currentIndex();
         bool isMutable = (mutableOptionSelector->currentIndex() == 0);
 
-        if (type == 0 && intMainSeq) {
-            Sequence<int>* baseSeq = isMutable ? intMainSeq : intOriginalSeq;
-            Sequence<int>* result = SequenceUtils::Map<int>(baseSeq, [](int element) { return element * 2; });
-            if (intMainSeq != result && intMainSeq != intOriginalSeq) delete intMainSeq;
-            intMainSeq = result;
-        } else if (type == 1 && doubleMainSeq) {
-            Sequence<double>* baseSeq = isMutable ? doubleMainSeq : doubleOriginalSeq;
-            Sequence<double>* result = SequenceUtils::Map<double>(baseSeq, [](double element) { return element * 2.0; });
-            if (doubleMainSeq != result && doubleMainSeq != doubleOriginalSeq) delete doubleMainSeq;
-            doubleMainSeq = result;
-        } else if (type == 2 && charMainSeq) {
-            Sequence<char16_t>* baseSeq = isMutable ? charMainSeq : charOriginalSeq;
-            Sequence<char16_t>* result = SequenceUtils::Map<char16_t>(baseSeq, [](char16_t element) { return static_cast<char16_t>(element + 1); });
-            if (charMainSeq != result && charMainSeq != charOriginalSeq) delete charMainSeq;
-            charMainSeq = result;
+        if (type == 0) {
+            if (!seqInt.main) return;
+            auto* baseSeq = isMutable ? seqInt.main : seqInt.original;
+            auto* result = SequenceUtils::Map<int>(baseSeq, [](int e) { return e * 2; });
+            if (seqInt.main != result && seqInt.main != seqInt.original) delete seqInt.main;
+            seqInt.main = result;
+        } else if (type == 1) {
+            if (!seqDouble.main) return;
+            auto* baseSeq = isMutable ? seqDouble.main : seqDouble.original;
+            auto* result = SequenceUtils::Map<double>(baseSeq, [](double e) { return e * 2.0; });
+            if (seqDouble.main != result && seqDouble.main != seqDouble.original) delete seqDouble.main;
+            seqDouble.main = result;
+        } else {
+            if (!seqChar.main) return;
+            auto* baseSeq = isMutable ? seqChar.main : seqChar.original;
+            auto* result = SequenceUtils::Map<char16_t>(baseSeq, [](char16_t e) { return static_cast<char16_t>(e + 1); });
+            if (seqChar.main != result && seqChar.main != seqChar.original) delete seqChar.main;
+            seqChar.main = result;
         }
-
-        globalLog->append("Выполнена утилита Map (умножение на 2 или сдвиг символа).");
+        globalLog->append("Выполнена утилита Map.");
         RefreshLists();
     } CATCH_ALL_EXCEPTIONS
 }
@@ -314,24 +247,26 @@ void MainWindow::onWhere() {
         int type = sequenceTypeSelector->currentIndex();
         bool isMutable = (mutableOptionSelector->currentIndex() == 0);
 
-        if (type == 0 && intMainSeq) {
-            Sequence<int>* baseSeq = isMutable ? intMainSeq : intOriginalSeq;
-            Sequence<int>* result = SequenceUtils::Where<int>(baseSeq, [](int element) { return element >= 0; });
-            if (intMainSeq != result && intMainSeq != intOriginalSeq) delete intMainSeq;
-            intMainSeq = result;
-        } else if (type == 1 && doubleMainSeq) {
-            Sequence<double>* baseSeq = isMutable ? doubleMainSeq : doubleOriginalSeq;
-            Sequence<double>* result = SequenceUtils::Where<double>(baseSeq, [](double element) { return element >= 0.0; });
-            if (doubleMainSeq != result && doubleMainSeq != doubleOriginalSeq) delete doubleMainSeq;
-            doubleMainSeq = result;
-        } else if (type == 2 && charMainSeq) {
-            Sequence<char16_t>* baseSeq = isMutable ? charMainSeq : charOriginalSeq;
-            Sequence<char16_t>* result = SequenceUtils::Where<char16_t>(baseSeq, [](char16_t element) { return element != 0; });
-            if (charMainSeq != result && charMainSeq != charOriginalSeq) delete charMainSeq;
-            charMainSeq = result;
+        if (type == 0) {
+            if (!seqInt.main) return;
+            auto* baseSeq = isMutable ? seqInt.main : seqInt.original;
+            auto* result = SequenceUtils::Where<int>(baseSeq, [](int e) { return e >= 0; });
+            if (seqInt.main != result && seqInt.main != seqInt.original) delete seqInt.main;
+            seqInt.main = result;
+        } else if (type == 1) {
+            if (!seqDouble.main) return;
+            auto* baseSeq = isMutable ? seqDouble.main : seqDouble.original;
+            auto* result = SequenceUtils::Where<double>(baseSeq, [](double e) { return e >= 0.0; });
+            if (seqDouble.main != result && seqDouble.main != seqDouble.original) delete seqDouble.main;
+            seqDouble.main = result;
+        } else {
+            if (!seqChar.main) return;
+            auto* baseSeq = isMutable ? seqChar.main : seqChar.original;
+            auto* result = SequenceUtils::Where<char16_t>(baseSeq, [](char16_t e) { return e != 0; });
+            if (seqChar.main != result && seqChar.main != seqChar.original) delete seqChar.main;
+            seqChar.main = result;
         }
-
-        globalLog->append("Выполнена фильтрация Where (оставлены только неотрицательные элементы).");
+        globalLog->append("Выполнена фильтрация Where.");
         RefreshLists();
     } CATCH_ALL_EXCEPTIONS
 }
@@ -340,68 +275,47 @@ void MainWindow::onReduce() {
     try {
         int type = sequenceTypeSelector->currentIndex();
 
-        if (type == 0 && intMainSeq) {
-            int total = SequenceUtils::Reduce<int, int>(intMainSeq, [](int accumulator, int element) { return accumulator + element; });
-            globalLog->append("Результат Reduce (сумма): " + QString::number(total));
-        } else if (type == 1 && doubleMainSeq) {
-            double total = SequenceUtils::Reduce<double, double>(doubleMainSeq, [](double accumulator, double element) { return accumulator + element; });
-            globalLog->append("Результат Reduce (сумма): " + QString::number(total));
+        if (type == 0) {
+            if (seqInt.main) {
+                int total = SequenceUtils::Reduce<int, int>(seqInt.main, [](int acc, int e) { return acc + e; });
+                globalLog->append("Результат Reduce (сумма): " + QString::number(total));
+            }
+        } else if (type == 1) {
+            if (seqDouble.main) {
+                double total = SequenceUtils::Reduce<double, double>(seqDouble.main, [](double acc, double e) { return acc + e; });
+                globalLog->append("Результат Reduce (сумма): " + QString::number(total));
+            }
         } else {
-            globalLog->append("Reduce не поддерживается для выбранного типа.");
+            globalLog->append("Reduce не поддерживается для символов.");
         }
     } CATCH_ALL_EXCEPTIONS
 }
 
 void MainWindow::onGetFirstOpt() {
     try {
-        int type = sequenceTypeSelector->currentIndex();
         QString thresholdText = rightLineEditUtilts->text().trimmed();
-
-        if (type == 0 && intMainSeq) {
-            int threshold;
+        UniversalLambda([&](auto& state) {
+            if (!state.main) return;
+            using T = typename std::decay_t<decltype(state)>::ValueType;
+            T threshold; 
             ParseStringToken(thresholdText, threshold);
-            Option<int> result = SequenceUtils::GetFirst<int>(intMainSeq, [threshold](int x) { return x >= threshold; });
-            if (result.HasValue()) { globalLog->append("GetFirst >= " + QString::number(threshold) + " -> " + QString::number(result.GetValue())); } 
-            else { globalLog->append("GetFirst >= " + QString::number(threshold) + " -> Option::None (не найдено)."); }
-        } else if (type == 1 && doubleMainSeq) {
-            double threshold;
-            ParseStringToken(thresholdText, threshold);
-            Option<double> result = SequenceUtils::GetFirst<double>(doubleMainSeq, [threshold](double x) { return x >= threshold; });
-            if (result.HasValue()) { globalLog->append("GetFirst >= " + QString::number(threshold) + " -> " + QString::number(result.GetValue())); } 
-            else { globalLog->append("GetFirst >= " + QString::number(threshold) + " -> Option::None (не найдено)."); }
-        } else if (type == 2 && charMainSeq) {
-            char16_t threshold;
-            ParseStringToken(thresholdText, threshold);
-            Option<char16_t> result = SequenceUtils::GetFirst<char16_t>(charMainSeq, [threshold](char16_t x) { return x >= threshold; });
-            if (result.HasValue()) { globalLog->append("GetFirst >= '" + QString(QChar(threshold)) + "' -> '" + QString(QChar(result.GetValue())) + "'"); } 
-            else { globalLog->append("GetFirst -> Option::None (не найдено)."); }
-        }
+            Option<T> result = SequenceUtils::GetFirst<T>(state.main, [threshold](T x) { return x >= threshold; });
+            if (result.HasValue()) globalLog->append("GetFirst >= " + ElementToString(threshold) + " -> " + ElementToString(result.GetValue()));
+            else globalLog->append("GetFirst -> Option::None.");
+        });
     } CATCH_ALL_EXCEPTIONS
 }
 
 void MainWindow::onGetLastOpt() {
     try {
-        int type = sequenceTypeSelector->currentIndex();
         QString thresholdText = rightLineEditUtilts->text().trimmed();
-
-        if (type == 0 && intMainSeq) {
-            int threshold;
-            ParseStringToken(thresholdText, threshold);
-            Option<int> result = SequenceUtils::GetLast<int>(intMainSeq, [threshold](int x) { return x <= threshold; });
-            if (result.HasValue()) { globalLog->append("GetLast <= " + QString::number(threshold) + " -> " + QString::number(result.GetValue())); } 
-            else { globalLog->append("GetLast <= " + QString::number(threshold) + " -> Option::None (не найдено)."); }
-        } else if (type == 1 && doubleMainSeq) {
-            double threshold;
-            ParseStringToken(thresholdText, threshold);
-            Option<double> result = SequenceUtils::GetLast<double>(doubleMainSeq, [threshold](double x) { return x <= threshold; });
-            if (result.HasValue()) { globalLog->append("GetLast <= " + QString::number(threshold) + " -> " + QString::number(result.GetValue())); } 
-            else { globalLog->append("GetLast <= " + QString::number(threshold) + " -> Option::None (не найдено)."); }
-        } else if (type == 2 && charMainSeq) {
-            char16_t threshold;
-            ParseStringToken(thresholdText, threshold);
-            Option<char16_t> result = SequenceUtils::GetLast<char16_t>(charMainSeq, [threshold](char16_t x) { return x <= threshold; });
-            if (result.HasValue()) { globalLog->append("GetLast <= '" + QString(QChar(threshold)) + "' -> '" + QString(QChar(result.GetValue())) + "'"); } 
-            else { globalLog->append("GetLast -> Option::None (не найдено)."); }
-        }
+        UniversalLambda([&](auto& state) {
+            if (!state.main) return;
+            using T = typename std::decay_t<decltype(state)>::ValueType;
+            T threshold; ParseStringToken(thresholdText, threshold);
+            Option<T> result = SequenceUtils::GetLast<T>(state.main, [threshold](T x) { return x <= threshold; });
+            if (result.HasValue()) globalLog->append("GetLast <= " + ElementToString(threshold) + " -> " + ElementToString(result.GetValue()));
+            else globalLog->append("GetLast -> Option::None.");
+        });
     } CATCH_ALL_EXCEPTIONS
 }

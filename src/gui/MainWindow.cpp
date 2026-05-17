@@ -1,48 +1,13 @@
 #include "MainWindow.hpp"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
-    intMainSeq = nullptr;
-    intAdditionalSeq = nullptr;
-    intOriginalSeq = nullptr;
-
-    doubleMainSeq = nullptr;
-    doubleAdditionalSeq = nullptr;
-    doubleOriginalSeq = nullptr;
-
-    charMainSeq = nullptr;
-    charAdditionalSeq = nullptr;
-    charOriginalSeq = nullptr;
-
     SetupInterface();
 }
 
-MainWindow::~MainWindow() {
-    if (intMainSeq) { delete intMainSeq; }
-    if (intAdditionalSeq) { delete intAdditionalSeq; }
-    if (intOriginalSeq) { delete intOriginalSeq; }
-
-    if (doubleMainSeq) { delete doubleMainSeq; }
-    if (doubleAdditionalSeq) { delete doubleAdditionalSeq; }
-    if (doubleOriginalSeq) { delete doubleOriginalSeq; }
-
-    if (charMainSeq) { delete charMainSeq; }
-    if (charAdditionalSeq) { delete charAdditionalSeq; }
-    if (charOriginalSeq) { delete charOriginalSeq; }
-}
-
 void MainWindow::ClearSequences() {
-    if (intMainSeq) { delete intMainSeq; intMainSeq = nullptr; }
-    if (intAdditionalSeq) { delete intAdditionalSeq; intAdditionalSeq = nullptr; }
-    if (intOriginalSeq) { delete intOriginalSeq; intOriginalSeq = nullptr; }
-
-    if (doubleMainSeq) { delete doubleMainSeq; doubleMainSeq = nullptr; }
-    if (doubleAdditionalSeq) { delete doubleAdditionalSeq; doubleAdditionalSeq = nullptr; }
-    if (doubleOriginalSeq) { delete doubleOriginalSeq; doubleOriginalSeq = nullptr; }
-
-    if (charMainSeq) { delete charMainSeq; charMainSeq = nullptr; }
-    if (charAdditionalSeq) { delete charAdditionalSeq; charAdditionalSeq = nullptr; }
-    if (charOriginalSeq) { delete charOriginalSeq; charOriginalSeq = nullptr; }
-
+    seqInt.clear();
+    seqDouble.clear();
+    seqChar.clear();
     RefreshLists();
 }
 
@@ -292,7 +257,7 @@ void MainWindow::SetupRightPanel(QGroupBox* rightPanelContainer) {
     connect(buttonReduce, &QPushButton::clicked, this, &MainWindow::onReduce);
     connect(buttonGetFirstOpt, &QPushButton::clicked, this, &MainWindow::onGetFirstOpt);
     connect(buttonGetLastOpt, &QPushButton::clicked, this, &MainWindow::onGetLastOpt);
-    connect(buttonStats, &QPushButton::clicked, this, &MainWindow::onStats);
+    connect(buttonStats, &QPushButton::clicked, this, &MainWindow::onMinMaxAvg);
     connect(buttonPermutations, &QPushButton::clicked, this, &MainWindow::onPermutations);
     connect(buttonSmaller, &QPushButton::clicked, this, &MainWindow::onSmaller);
     connect(buttonMovingAvg, &QPushButton::clicked, this, &MainWindow::onMovingAvg);
@@ -302,10 +267,8 @@ void MainWindow::SetupRightPanel(QGroupBox* rightPanelContainer) {
 
 void MainWindow::SetupLogPanel(QGroupBox* logPanelContainer) {
     QVBoxLayout* logPanelLayout = new QVBoxLayout(logPanelContainer);
-
     globalLog = new QTextEdit(logPanelContainer);
     globalLog->setReadOnly(true);
-
     logPanelLayout->addWidget(globalLog);
 }
 
@@ -320,7 +283,7 @@ void MainWindow::onHelp() {
 
         "[ Списки элементов (Панель по центру) ]\n"
         "- Основная: Ваша текущая рабочая последовательность. Вы можете кликать по элементам, чтобы выделить их. Для выделения нескольких элементов зажмите Ctrl или Shift.\n"
-        "- Дополнительная: Она нужна как второй участник для объединения (Concat), Zip и битовых операций.\n"
+        "- Дополнительная: Сюда выводится результат неизменяемых операций. Также она нужна как «второй участник» для объединения (Concat), Zip и битовых операций.\n"
         "- Оригинал: Показывает исходную версию списка в момент создания (доступно только для неизменяемых структур).\n\n"
 
         "[ Правое текстовое поле (Ввод значений) ]\n"
@@ -343,7 +306,7 @@ void MainWindow::onHelp() {
         "- Zip: собирает элементы двух списков в пары.\n"
         "- Unzip: разбивает пары обратно на два списка (выводит в лог).\n"
         "- Range: создает новый список чисел по вашим параметрам из правого поля.\n"
-        "- Split: разрезает список там, где встречаются нули (для чисел) или символ '_' (для букв).\n"
+        "- Split: разрезает список там, где встречаются нули (или пробелы).\n"
         "- FlatMap: берет элемент X и делает из него два: [X, X*2].\n"
         "- Skip: пропускает N элементов с начала.\n"
         "- Splice: вырезает элемент по указанному справа индексу.\n"
@@ -379,71 +342,39 @@ void MainWindow::HandleSequenceStructureChanged(int index) {
     if (isBitSequence) {
         sequenceTypeSelector->setCurrentIndex(0);
         sequenceTypeSelector->setEnabled(false);
-
         QRegularExpression rx("[01\\s,]*");
-        
-        if (!leftLineEdit->validator()) {
-            leftLineEdit->setValidator(new QRegularExpressionValidator(rx, leftLineEdit));
-        }
-        if (!rightLineEditFunctional->validator()) {
-            rightLineEditFunctional->setValidator(new QRegularExpressionValidator(rx, rightLineEditFunctional));
-        }
+        leftLineEdit->setValidator(new QRegularExpressionValidator(rx, leftLineEdit));
+        rightLineEditFunctional->setValidator(new QRegularExpressionValidator(rx, rightLineEditFunctional));
     } else {
         sequenceTypeSelector->setEnabled(true);
-        
-        auto* model = qobject_cast<QStandardItemModel*>(sequenceTypeSelector->model());
-        if (model) {
-            model->item(1)->setEnabled(true);
-            if (rightTabWidget->currentIndex() != 2) {
-                model->item(2)->setEnabled(true);
-            }
+        if (leftLineEdit->validator()) { 
+            const_cast<QValidator*>(leftLineEdit->validator())->deleteLater(); 
+            leftLineEdit->setValidator(nullptr); 
         }
-
-        if (leftLineEdit->validator()) {
-            const_cast<QValidator*>(leftLineEdit->validator())->deleteLater();
-            leftLineEdit->setValidator(nullptr);
-        }
-        if (rightLineEditFunctional->validator()) {
-            const_cast<QValidator*>(rightLineEditFunctional->validator())->deleteLater();
-            rightLineEditFunctional->setValidator(nullptr);
-        }
+        if (rightLineEditFunctional->validator()) { 
+            const_cast<QValidator*>(rightLineEditFunctional->validator())->deleteLater(); 
+            rightLineEditFunctional->setValidator(nullptr); 
+        } 
     }
 }
 
 void MainWindow::HandleMutabilityChanged(int index) {
-    bool isImmutable = (index == 1);
-    
-    thirdPanelBox->setVisible(isImmutable);
+    thirdPanelBox->setVisible(index == 1);
 }
 
 void MainWindow::HandleTabChanged(int index) {
     auto* model = qobject_cast<QStandardItemModel*>(sequenceTypeSelector->model());
-    
     if (index == 2) { 
-        if (sequenceTypeSelector->currentIndex() == 2) {
-            sequenceTypeSelector->setCurrentIndex(0);
-        }
-        
-        if (model) {
-            model->item(2)->setEnabled(false);
-        }
-
+        if (sequenceTypeSelector->currentIndex() == 2) sequenceTypeSelector->setCurrentIndex(0);
+        if (model) model->item(2)->setEnabled(false);
         secondPanelBox->setVisible(false);
         thirdPanelBox->setVisible(false);
         createAdditionalSequencePushButton->setEnabled(false);
         firstPanelList->setSelectionMode(QAbstractItemView::NoSelection);
-        
         ClearSequences();
-        
     } else { 
-        if (model) {
-            model->item(2)->setEnabled(true);
-        }
-        
-        if (sequenceOptionSelector->currentIndex() != 2) {
-            sequenceTypeSelector->setEnabled(true);
-        }
-        
+        if (model) model->item(2)->setEnabled(true);
+        if (sequenceOptionSelector->currentIndex() != 2) sequenceTypeSelector->setEnabled(true);
         secondPanelBox->setVisible(true);
         createAdditionalSequencePushButton->setEnabled(true);
         firstPanelList->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -451,38 +382,21 @@ void MainWindow::HandleTabChanged(int index) {
 }
 
 void MainWindow::RefreshLists() {
-    int currentType = sequenceTypeSelector->currentIndex();
-
-    if (currentType == 0) {
-        TemplatePopulateList(firstPanelList, intMainSeq);
-        TemplatePopulateList(secondPanelList, intAdditionalSeq);
-        TemplatePopulateList(thirdPanelList, intOriginalSeq);
-    } else if (currentType == 1) {
-        TemplatePopulateList(firstPanelList, doubleMainSeq);
-        TemplatePopulateList(secondPanelList, doubleAdditionalSeq);
-        TemplatePopulateList(thirdPanelList, doubleOriginalSeq);
-    } else {
-        TemplatePopulateList(firstPanelList, charMainSeq);
-        TemplatePopulateList(secondPanelList, charAdditionalSeq);
-        TemplatePopulateList(thirdPanelList, charOriginalSeq);
-    }
+    UniversalLambda([&](auto& state) {
+        TemplatePopulateList(firstPanelList, state.main);
+        TemplatePopulateList(secondPanelList, state.additional);
+        TemplatePopulateList(thirdPanelList, state.original);
+    });
 }
 
 void MainWindow::onMainCreate() {
     int option = sequenceOptionSelector->currentIndex();
     int mutability = mutableOptionSelector->currentIndex();
-    int type = sequenceTypeSelector->currentIndex();
     QString inputData = leftLineEdit->text();
-    
     try {
-        if (type == 0) {
-            TemplateCreate(intMainSeq, intOriginalSeq, option, mutability, inputData);
-        } else if (type == 1) {
-            TemplateCreate(doubleMainSeq, doubleOriginalSeq, option, mutability, inputData);
-        } else {
-            TemplateCreate(charMainSeq, charOriginalSeq, option, mutability, inputData);
-        }
-        
+        UniversalLambda([&](auto& state) {
+            TemplateCreate(state.main, state.original, option, mutability, inputData);
+        });
         globalLog->append("Основная последовательность успешно инициализирована.");
         RefreshLists();
     } CATCH_ALL_EXCEPTIONS
@@ -491,18 +405,11 @@ void MainWindow::onMainCreate() {
 void MainWindow::onAdditionalCreate() {
     int option = sequenceOptionSelector->currentIndex();
     int mutability = mutableOptionSelector->currentIndex();
-    int type = sequenceTypeSelector->currentIndex();
     QString inputData = leftLineEdit->text();
-    
     try {
-        if (type == 0) {
-            TemplateCreate(intAdditionalSeq, option, mutability, inputData);
-        } else if (type == 1) {
-            TemplateCreate(doubleAdditionalSeq, option, mutability, inputData);
-        } else {
-            TemplateCreate(charAdditionalSeq, option, mutability, inputData);
-        }
-        
+        UniversalLambda([&](auto& state) {
+            TemplateCreate(state.additional, option, mutability, inputData);
+        });
         globalLog->append("Дополнительная последовательность успешно инициализирована.");
         RefreshLists();
     } CATCH_ALL_EXCEPTIONS

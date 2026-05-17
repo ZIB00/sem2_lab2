@@ -16,6 +16,9 @@
 #include <QDialog>
 #include <QStandardItemModel>
 #include <QRegularExpression>
+#include <type_traits>
+#include <algorithm>
+#include <functional>
 
 #include "Sequence.hpp"
 #include "ArraySequence.hpp"
@@ -65,12 +68,31 @@ inline void ParseStringToken(const QString& token, char16_t& outValue) {
     outValue = token.at(0).unicode();
 }
 
+template <class T>
+struct SequenceState {
+    using ValueType = T;
+    Sequence<T>* main = nullptr;
+    Sequence<T>* additional = nullptr;
+    Sequence<T>* original = nullptr;
+
+    void clear() {
+        delete main; 
+        main = nullptr;
+        delete additional; 
+        additional = nullptr;
+        delete original; 
+        original = nullptr;
+    }
+
+    ~SequenceState() { clear(); }
+};
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
     explicit MainWindow(QWidget* parent = nullptr);
-    ~MainWindow() override;
+    ~MainWindow() override = default;
 
 private:
     void SetupInterface();
@@ -109,7 +131,7 @@ private:
     void onReduce();
     void onGetFirstOpt();
     void onGetLastOpt();
-    void onStats();
+    void onMinMaxAvg();
     void onPermutations();
     void onSmaller();
     void onMovingAvg();
@@ -120,17 +142,39 @@ private:
     void HandleSequenceStructureChanged(int index);
     void HandleMutabilityChanged(int index);
 
-    template<typename T>
+    template<class T>
     Sequence<T>* NewSequenceInstance(int option, int mutability);
 
-    template<typename T>
+    template<class T>
     void TemplatePopulateList(QListWidget* targetList, Sequence<T>* targetSequence);
 
-    template<typename T>
+    template<class T>
     void TemplateCreate(Sequence<T>*& mainSeq, Sequence<T>*& origSeq, int option, int mutability, const QString& input);
 
-    template<typename T>
-    void TemplateCreate(Sequence<T>*& mainSeq, int option, int mutability, const QString& input);
+    template<class T>
+    void TemplateCreate(Sequence<T>*& targetSeq, int option, int mutability, const QString& input);
+
+    template <class Func>
+    void UniversalLambda(Func&& action) {
+        int type = sequenceTypeSelector->currentIndex();
+        if (type == 0) {
+            action(seqInt);
+        } else if (type == 1) {
+            action(seqDouble);
+        } else {
+            action(seqChar);
+        }
+    }
+
+    template <class Func>
+    void UniversalLambdaIntDouble(Func&& action) {
+        int type = sequenceTypeSelector->currentIndex();
+        if (type == 0) {
+            action(seqInt);
+        } else if (type == 1) {
+            action(seqDouble);
+        }
+    }
 
     QComboBox* sequenceOptionSelector;
     QComboBox* mutableOptionSelector;
@@ -156,20 +200,12 @@ private:
 
     QTabWidget* rightTabWidget;
 
-    Sequence<int>* intMainSeq;
-    Sequence<int>* intAdditionalSeq;
-    Sequence<int>* intOriginalSeq;
-
-    Sequence<double>* doubleMainSeq;
-    Sequence<double>* doubleAdditionalSeq;
-    Sequence<double>* doubleOriginalSeq;
-
-    Sequence<char16_t>* charMainSeq;
-    Sequence<char16_t>* charAdditionalSeq;
-    Sequence<char16_t>* charOriginalSeq;
+    SequenceState<int> seqInt;
+    SequenceState<double> seqDouble;
+    SequenceState<char16_t> seqChar;
 };
 
-template<typename T>
+template<class T>
 void MainWindow::TemplatePopulateList(QListWidget* targetList, Sequence<T>* targetSequence) {
     targetList->clear();
     if (targetSequence == nullptr) return;
@@ -178,7 +214,7 @@ void MainWindow::TemplatePopulateList(QListWidget* targetList, Sequence<T>* targ
     }
 }
 
-template<typename T>
+template<class T>
 void MainWindow::TemplateCreate(Sequence<T>*& mainSeq, Sequence<T>*& origSeq, int option, int mutability, const QString& input) {
     if (mainSeq) { delete mainSeq; mainSeq = nullptr; }
     if (origSeq) { delete origSeq; origSeq = nullptr; }
@@ -203,9 +239,12 @@ void MainWindow::TemplateCreate(Sequence<T>*& mainSeq, Sequence<T>*& origSeq, in
     }
 }
 
-template<typename T>
+template<class T>
 void MainWindow::TemplateCreate(Sequence<T>*& targetSeq, int option, int mutability, const QString& input) {
-    if (targetSeq) { delete targetSeq; targetSeq = nullptr; }
+    if (targetSeq) { 
+        delete targetSeq; 
+        targetSeq = nullptr; 
+    }
 
     targetSeq = NewSequenceInstance<T>(option, mutability);
 
@@ -225,18 +264,24 @@ void MainWindow::TemplateCreate(Sequence<T>*& targetSeq, int option, int mutabil
     }
 }
 
-template<typename T>
+template<class T>
 Sequence<T>* MainWindow::NewSequenceInstance(int option, int mutability) {
     if (option == 0) {
-        if (mutability == 0) { return new MutableArraySequence<T>(); }
-        else { return new ImmutableArraySequence<T>(); }
+        if (mutability == 0) { 
+            return new MutableArraySequence<T>(); 
+        } else { 
+            return new ImmutableArraySequence<T>(); 
+        }
     }
     if (option == 1) {
-        if (mutability == 0) { return new MutableListSequence<T>(); }
-        else { return new ImmutableListSequence<T>(); }
+        if (mutability == 0) { 
+            return new MutableListSequence<T>(); 
+        } else { 
+            return new ImmutableListSequence<T>(); 
+        }
     }
-    if (option == 2) { return new BitSequence<T>(); }
-    if (option == 3) { return new AdaptiveSequence<T>(); }
-    if (option == 4) { return new SegmentedList<T>(); }
+    if (option == 2) return new BitSequence<T>(); 
+    if (option == 3) return new AdaptiveSequence<T>(); 
+    if (option == 4) return new SegmentedList<T>(); 
     return nullptr;
 }

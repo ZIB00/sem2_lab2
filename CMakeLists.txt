@@ -10,19 +10,6 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets) #документация
 
-add_executable(main
-    src/main.cpp
-)
-
-target_include_directories(main PRIVATE
-    include
-    include/other
-    include/sequences
-    templates
-    templates/other
-    templates/sequences
-)
-
 add_executable(gui WIN32
     src/gui/main_gui.cpp
     src/gui/MainWindow.cpp
