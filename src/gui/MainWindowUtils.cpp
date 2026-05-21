@@ -300,7 +300,7 @@ void MainWindow::onGetFirstOpt() {
             T threshold; 
             ParseStringToken(thresholdText, threshold);
             Option<T> result = SequenceUtils::GetFirst<T>(state.main, [threshold](T x) { return x >= threshold; });
-            if (result.HasValue()) globalLog->append("GetFirst >= " + ElementToString(threshold) + " -> " + ElementToString(result.GetValue()));
+            if (result.HasValue()) globalLog->append("GetFirst >= " + ElementToString(threshold) + " -> " + ElementToString(result.Value()));
             else globalLog->append("GetFirst -> Option::None.");
         });
     } CATCH_ALL_EXCEPTIONS
@@ -314,7 +314,7 @@ void MainWindow::onGetLastOpt() {
             using T = typename std::decay_t<decltype(state)>::ValueType;
             T threshold; ParseStringToken(thresholdText, threshold);
             Option<T> result = SequenceUtils::GetLast<T>(state.main, [threshold](T x) { return x <= threshold; });
-            if (result.HasValue()) globalLog->append("GetLast <= " + ElementToString(threshold) + " -> " + ElementToString(result.GetValue()));
+            if (result.HasValue()) globalLog->append("GetLast <= " + ElementToString(threshold) + " -> " + ElementToString(result.Value()));
             else globalLog->append("GetLast -> Option::None.");
         });
     } CATCH_ALL_EXCEPTIONS

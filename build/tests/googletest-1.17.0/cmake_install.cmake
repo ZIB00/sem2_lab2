@@ -1,4 +1,4 @@
-# Install script for directory: C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/tests/googletest-1.17.0
+# Install script for directory: C:/Programs/sem2_lab2/tests/googletest-1.17.0
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,12 +39,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/tests/googletest-1.17.0/googlemock/cmake_install.cmake")
+  include("C:/Programs/sem2_lab2/build/tests/googletest-1.17.0/googlemock/cmake_install.cmake")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/tests/googletest-1.17.0/install_local_manifest.txt"
+  file(WRITE "C:/Programs/sem2_lab2/build/tests/googletest-1.17.0/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

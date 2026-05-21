@@ -5,7 +5,7 @@ void MainWindow::onMinMaxAvg() {
         UniversalLambdaIntDouble([&](auto& state) {
             using T = typename std::decay_t<decltype(state)>::ValueType;
             if (!state.main || state.main->GetLength() == 0) {
-                globalLog->append("Меньших: последовательность пуста.");
+                globalLog->append("Последовательность пуста.");
                 return;
             }
             if (state.main) {
@@ -43,7 +43,7 @@ void MainWindow::onSmaller() {
             MutableArraySequence<Sequence<T>*> outContainer;
             MutableArraySequence<T> emptyProto;
             Sequence<Sequence<T>*>* result = DataAnalyzer::GetPrecedingSmaller(state.main, &outContainer, &emptyProto);
-
+            
             for (size_t i = 0; i < result->GetLength(); i++) {
                 QString line = "a[" + QString::number(i) + "]=" + QString::number(state.main->Get(i)) + " -> {";
                 Sequence<T>* inner = result->Get(i);

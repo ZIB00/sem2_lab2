@@ -1,4 +1,4 @@
-# Install script for directory: C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/tests/googletest-1.17.0/googlemock
+# Install script for directory: C:/Programs/sem2_lab2/tests/googletest-1.17.0/googlemock
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,34 +38,34 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "gmock" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/tests/googletest-1.17.0/googlemock/include/")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "C:/Programs/sem2_lab2/tests/googletest-1.17.0/googlemock/include/")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "gmock" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/lib/libgmock.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Programs/sem2_lab2/build/lib/libgmock.a")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "gmock" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/lib/libgmock_main.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Programs/sem2_lab2/build/lib/libgmock_main.a")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "gmock" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/tests/googletest-1.17.0/googletest/generated/gmock.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "C:/Programs/sem2_lab2/build/tests/googletest-1.17.0/googletest/generated/gmock.pc")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "gmock" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/tests/googletest-1.17.0/googletest/generated/gmock_main.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "C:/Programs/sem2_lab2/build/tests/googletest-1.17.0/googletest/generated/gmock_main.pc")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/tests/googletest-1.17.0/googletest/cmake_install.cmake")
+  include("C:/Programs/sem2_lab2/build/tests/googletest-1.17.0/googletest/cmake_install.cmake")
 
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "C:/Program1/my_projects/my_programs_CPP/sem2_lab2(1)/build/tests/googletest-1.17.0/googlemock/install_local_manifest.txt"
+  file(WRITE "C:/Programs/sem2_lab2/build/tests/googletest-1.17.0/googlemock/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

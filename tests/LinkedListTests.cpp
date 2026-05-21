@@ -1,21 +1,28 @@
 #include <gtest/gtest.h>
 #include <string>
-#include <vector>
 #include "LinkedList.hpp"
 
 namespace {
     template<class T>
     testing::AssertionResult CheckLinkedList(
-        const std::vector<T>& expected, 
+        std::initializer_list<T> expected, 
         LinkedList<T>& actual, 
         const std::string& contextAction = "") 
     {
-        bool match = true;
-        if (expected.size() != actual.GetLength()) {
-            match = false;
-        } else {
-            for (size_t i = 0; i < expected.size(); ++i) {
-                if (expected[i] != actual.Get(i)) {
+        if (actual == nullptr) {
+            return testing::AssertionFailure()
+                << "[Action: " << contextAction << "]\n"
+                << "ERROR: Actual sequence pointer is NULL!";
+        }
+
+        size_t expSize = expected.size();
+        size_t actSize = actual.GetLength();
+        
+        bool match = (expSize == actSize);
+        if (match) {
+            size_t i = 0;
+            for (const auto& val : expected) {
+                if (val != actual.Get(i++)) {
                     match = false;
                     break;
                 }
@@ -25,20 +32,23 @@ namespace {
         if (match) return testing::AssertionSuccess();
 
         testing::AssertionResult failure = testing::AssertionFailure();
-        if (!contextAction.empty()) failure << "ACTION PERFORMED: " << contextAction << "\n";
-        failure << "LIST MISMATCH DETECTED!\n";
-        
-        failure << "EXPECTED: [";
-        for (size_t i = 0; i < expected.size(); ++i) {
-            failure << expected[i] << (i < expected.size() - 1 ? ", " : "");
+        if (!contextAction.empty()) {
+            failure << "ACTION PERFORMED: " << contextAction << "\n";
         }
-        failure << "] (length: " << expected.size() << ")\n";
+        failure << "SEQUENCE MISMATCH DETECTED!\n";
+
+        failure << "EXPECTED: [";
+        size_t idx = 0;
+        for (const auto& val : expected) {
+            failure << val << (idx++ < expSize - 1 ? ", " : "");
+        }
+        failure << "] (length: " << expSize << ")\n";
 
         failure << "RECEIVED: [";
-        for (size_t i = 0; i < actual.GetLength(); ++i) {
-            failure << actual.Get(i) << (i < actual.GetLength() - 1 ? ", " : "");
+        for (size_t i = 0; i < actSize; ++i) {
+            failure << actual.Get(i) << (i < actSize - 1 ? ", " : "");
         }
-        failure << "] (length: " << actual.GetLength() << ")\n";
+        failure << "] (length: " << actSize << ")\n";
 
         return failure;
     }

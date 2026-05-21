@@ -36,9 +36,9 @@ class Sequence : public ICollection<T>, public IEnumerable<T>
 
         virtual T GetFirst() = 0;
         virtual T GetLast() = 0;
-        virtual T Get(size_t index) = 0;
+        //virtual T Get(size_t index) = 0;
         virtual Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) = 0;
-        virtual size_t GetLength() = 0;
+        //virtual size_t GetLength() = 0;
 
         virtual Sequence<T>* Append(T item) = 0;
         virtual Sequence<T>* Prepend(T item) = 0;

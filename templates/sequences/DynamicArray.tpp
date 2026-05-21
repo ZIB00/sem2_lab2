@@ -235,7 +235,7 @@ void DynamicArray<T>::Resize(size_t newSize)
             newData[i] = this->data[i];
         }
     } catch (...) {
-        delete[] newData; // Чистим, если элементы не скопировались
+        delete[] newData;
         throw;
     }
 

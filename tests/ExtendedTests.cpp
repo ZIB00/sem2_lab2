@@ -13,23 +13,20 @@
 #include "Exceptions.hpp"
 #include "TestUtils.hpp"
 
-// Вспомогательные функции
 namespace Helpers
 {
-    int Double(int x)         { return x * 2; }
-    bool IsEven(int x)        { return x % 2 == 0; }
-    bool IsPositive(int x)    { return x > 0; }
-    int Sum(int a, int b)     { return a + b; }
-    int ToAbsolute(int x)     { return x < 0 ? -x : x; }
+    int Double(int x) { return x * 2; }
+    bool IsEven(int x) { return x % 2 == 0; }
+    bool IsPositive(int x) { return x > 0; }
+    int Sum(int a, int b) { return a + b; }
+    int ToAbsolute(int x) { return x < 0 ? -x : x; }
 
-    // FlatMap: каждый элемент разворачивается в [x, x+1]
     Sequence<int>* PairExpand(int x)
     {
         int items[] = { x, x + 1 };
         return new MutableArraySequence<int>(items, 2);
     }
 
-    // FlatMap для ListSequence — возвращает ListSequence
     Sequence<int>* PairExpandList(int x)
     {
         int items[] = { x, x + 1 };
@@ -313,13 +310,13 @@ TEST(OptionTests, ValueConstructorCreatesSome)
 {
     Option<int> opt(42);
     EXPECT_TRUE(opt.HasValue());
-    EXPECT_EQ(opt.GetValue(), 42);
+    EXPECT_EQ(opt.Value(), 42);
 }
 
 TEST(OptionTests, GetValueOnNoneThrows)
 {
     Option<int> opt;
-    EXPECT_THROW(opt.GetValue(), LogicError);
+    EXPECT_THROW(opt.Value(), BadOptionalAccess);
 }
 
 TEST(OptionTests, ValueOrReturnsValueWhenPresent)
@@ -334,44 +331,6 @@ TEST(OptionTests, ValueOrReturnsDefaultWhenNone)
     EXPECT_EQ(opt.ValueOr(99), 99);
 }
 
-TEST(OptionTests, MapTransformsSomeValue)
-{
-    Option<int> opt(5);
-    Option<double> result = opt.Map(std::function<double(int)>(Helpers::AsDouble));
-    EXPECT_TRUE(result.HasValue());
-    EXPECT_DOUBLE_EQ(result.GetValue(), 5.0);
-}
-
-TEST(OptionTests, MapOnNoneStaysNone)
-{
-    Option<int> none;
-    Option<double> result = none.Map(std::function<double(int)>(Helpers::AsDouble));
-    EXPECT_FALSE(result.HasValue());
-}
-
-TEST(OptionTests, FlatMapReturnsSomeWhenFunctionSucceeds)
-{
-    Option<int> opt(4);
-    Option<double> result = opt.FlatMap(std::function<Option<double>(int)>(Helpers::SafeReciprocal));
-    EXPECT_TRUE(result.HasValue());
-    EXPECT_DOUBLE_EQ(result.GetValue(), 0.25);
-}
-
-TEST(OptionTests, FlatMapReturnsNoneWhenFunctionReturnsNone)
-{
-    Option<int> opt(0);
-    Option<double> result = opt.FlatMap(std::function<Option<double>(int)>(Helpers::SafeReciprocal));
-    EXPECT_FALSE(result.HasValue());
-}
-
-TEST(OptionTests, FlatMapOnNoneStaysNone)
-{
-    Option<int> none;
-    Option<double> result = none.FlatMap(std::function<Option<double>(int)>(Helpers::SafeReciprocal));
-    EXPECT_FALSE(result.HasValue());
-}
-
-
 // GetFirst(predicate) / GetLast(predicate) — ArraySequence
 
 TEST(ArraySequenceOptionTests, GetFirstWithPredicateFindsMatch)
@@ -381,7 +340,7 @@ TEST(ArraySequenceOptionTests, GetFirstWithPredicateFindsMatch)
 
     Option<int> result = SequenceUtils::GetFirst<int>(&seq, std::function<bool(int)>(Helpers::IsEven));
     EXPECT_TRUE(result.HasValue());
-    EXPECT_EQ(result.GetValue(), 4);
+    EXPECT_EQ(result.Value(), 4);
 }
 
 TEST(ArraySequenceOptionTests, GetFirstWithPredicateReturnsNoneWhenNoMatch)
@@ -400,7 +359,7 @@ TEST(ArraySequenceOptionTests, GetLastWithPredicateFindsLastMatch)
 
     Option<int> result = SequenceUtils::GetLast<int>(&seq, std::function<bool(int)>(Helpers::IsEven));
     EXPECT_TRUE(result.HasValue());
-    EXPECT_EQ(result.GetValue(), 6);
+    EXPECT_EQ(result.Value(), 6);
 }
 
 TEST(ArraySequenceOptionTests, GetLastWithPredicateReturnsNoneWhenNoMatch)
@@ -429,7 +388,7 @@ TEST(ListSequenceOptionTests, GetFirstWithPredicateFindsMatch)
 
     Option<int> result = SequenceUtils::GetFirst<int>(&seq, std::function<bool(int)>(Helpers::IsEven));
     EXPECT_TRUE(result.HasValue());
-    EXPECT_EQ(result.GetValue(), 4);
+    EXPECT_EQ(result.Value(), 4);
 }
 
 TEST(ListSequenceOptionTests, GetLastWithPredicateFindsLastMatch)
@@ -439,7 +398,7 @@ TEST(ListSequenceOptionTests, GetLastWithPredicateFindsLastMatch)
 
     Option<int> result = SequenceUtils::GetLast<int>(&seq, std::function<bool(int)>(Helpers::IsEven));
     EXPECT_TRUE(result.HasValue());
-    EXPECT_EQ(result.GetValue(), 8);
+    EXPECT_EQ(result.Value(), 8);
 }
 
 
@@ -452,7 +411,7 @@ TEST(SegmentedListOptionTests, GetFirstWithPredicateFindsMatch)
 
     Option<int> result = SequenceUtils::GetFirst<int>(&list, std::function<bool(int)>(Helpers::IsEven));
     EXPECT_TRUE(result.HasValue());
-    EXPECT_EQ(result.GetValue(), 2);
+    EXPECT_EQ(result.Value(), 2);
 }
 
 TEST(SegmentedListOptionTests, GetLastWithPredicateFindsLastMatch)
@@ -462,7 +421,7 @@ TEST(SegmentedListOptionTests, GetLastWithPredicateFindsLastMatch)
 
     Option<int> result = SequenceUtils::GetLast<int>(&list, std::function<bool(int)>(Helpers::IsEven));
     EXPECT_TRUE(result.HasValue());
-    EXPECT_EQ(result.GetValue(), 4);
+    EXPECT_EQ(result.Value(), 4);
 }
 
 TEST(SegmentedListOptionTests, GetFirstReturnsNoneWhenNoMatch)

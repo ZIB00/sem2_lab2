@@ -1,21 +1,28 @@
 #include <gtest/gtest.h>
 #include <string>
-#include <vector>
 #include "DynamicArray.hpp"
 
 namespace {
     template<class T>
     testing::AssertionResult CheckDynamicArray(
-        const std::vector<T>& expected, 
+        std::initializer_list<T> expected, 
         DynamicArray<T>& actual, 
         const std::string& contextAction = "") 
     {
-        bool match = true;
-        if (expected.size() != actual.GetSize()) {
-            match = false;
-        } else {
-            for (size_t i = 0; i < expected.size(); ++i) {
-                if (expected[i] != actual.Get(i)) {
+        if (actual == nullptr) {
+            return testing::AssertionFailure() 
+                << "[Action: " << contextAction << "]\n"
+                << "ERROR: Actual sequence pointer is NULL!";
+        }
+
+        size_t expSize = expected.size();
+        size_t actSize = actual.GetSize();
+        
+        bool match = (expSize == actSize);
+        if (match) {
+            size_t i = 0;
+            for (const auto& val : expected) {
+                if (val != actual.Get(i++)) {
                     match = false;
                     break;
                 }
@@ -25,20 +32,23 @@ namespace {
         if (match) return testing::AssertionSuccess();
 
         testing::AssertionResult failure = testing::AssertionFailure();
-        if (!contextAction.empty()) failure << "ACTION PERFORMED: " << contextAction << "\n";
-        failure << "ARRAY MISMATCH DETECTED!\n";
-        
-        failure << "EXPECTED: [";
-        for (size_t i = 0; i < expected.size(); ++i) {
-            failure << expected[i] << (i < expected.size() - 1 ? ", " : "");
+        if (!contextAction.empty()) {
+            failure << "ACTION PERFORMED: " << contextAction << "\n";
         }
-        failure << "] (size: " << expected.size() << ")\n";
+        failure << "SEQUENCE MISMATCH DETECTED!\n";
+
+        failure << "EXPECTED: [";
+        size_t idx = 0;
+        for (const auto& val : expected) {
+            failure << val << (idx++ < expSize - 1 ? ", " : "");
+        }
+        failure << "] (length: " << expSize << ")\n";
 
         failure << "RECEIVED: [";
-        for (size_t i = 0; i < actual.GetSize(); ++i) {
-            failure << actual.Get(i) << (i < actual.GetSize() - 1 ? ", " : "");
+        for (size_t i = 0; i < actSize; ++i) {
+            failure << actual.Get(i) << (i < actSize - 1 ? ", " : "");
         }
-        failure << "] (size: " << actual.GetSize() << ")\n";
+        failure << "] (length: " << actSize << ")\n";
 
         return failure;
     }
@@ -192,7 +202,7 @@ TEST(DynamicArrayTests, ResizeToZeroClearsArray)
     int items[] = {1, 2, 3};
     DynamicArray<int> array(items, 3);
 
-    array.Resize(0);
+    array.Resize(1);
 
     EXPECT_TRUE(CheckDynamicArray({}, array, "Resize to 0"));
     EXPECT_THROW(array.Get(0), OutOfRange);

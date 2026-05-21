@@ -26,3 +26,10 @@ class OtherError : public std::exception
     public:
         using std::exception::exception;
 };
+
+class BadOptionalAccess : public std::exception {
+public:
+    const char* what() const noexcept override {
+        return "bad optional access: optional is empty";
+    }
+};
